@@ -1,4 +1,4 @@
-function overOrder(I) // Returns the smallest order containing 
+function overOrder(I) // Returns the smallest order containing I
     return Order(Basis(I,FieldOfFractions(Order(I))));
     //return Order(TwoElement(I));
 end function;
@@ -10,7 +10,7 @@ end function;
 function orderOfIndex(K, d)
     "Finding orders:";
     primeIdeals := AssociativeArray();
-    Ok := Integers(K);
+    Zk := Integers(K);
 
     for pe in Factorisation(d^2) do
         p := pe[1];
@@ -22,7 +22,7 @@ function orderOfIndex(K, d)
             primeIdeals[p][i] := [];
         end for;
 
-        for PE in Factorisation(ideal<Ok|p>) do
+        for PE in Factorisation(ideal<Zk|p>) do
             P := PE[1];
             E := PE[2];
             v := Valuation(Norm(P),p);
@@ -35,7 +35,7 @@ function orderOfIndex(K, d)
 
     "Partitions:";
 
-    possConds := [* ideal<Ok|1> *];
+    possConds := [ ideal<Zk|1> ];
     for pe in Factorisation(d^2) do
         p := pe[1];
         e := pe[2];
@@ -44,7 +44,7 @@ function orderOfIndex(K, d)
 
         for part in RestrictedPartitions(e, Keys(primeIdeals[p])) do
             part;
-            curFact := [ideal<Ok|1>];
+            curFact := [ideal<Zk|1>];
             for i in part do
                 newFact := [* *];
                 for P in primeIdeals[p][i] do
@@ -56,7 +56,7 @@ function orderOfIndex(K, d)
             end for;
             possFacts cat:= curFact;
         end for;
-        curConds := [* *];
+        curConds := [];
         for P in possFacts do
             for f in possConds do
                 Append(~curConds, f*P);
@@ -72,7 +72,7 @@ function orderOfIndex(K, d)
         f,Norm(f);
         if Conductor(overOrder(f)) eq f then
             Of := overOrder(f);
-            if Index(Ok,Of) eq d then
+            if Index(Zk,Of) eq d then
                 Append(~out, Of);
             end if;
         end if;
@@ -82,23 +82,25 @@ function orderOfIndex(K, d)
 end function;
 
 R<x> := PolynomialRing(RationalField());
-K := NumberField(x^6 + 18*x^2 +  5*x+ 108);
+K := NumberField(x^6 + 20432*x^5+ 18*x^2 +  5*x+ 108);
 //K := NumberField([x^2 - 3, x^2 -7]);
 DefiningPolynomial(K);
-iOk := Integers(K);
+Zk := Integers(K);
 I := 1;
-iO := iOk;
-while I eq 1 do
-    randElt := [K!Random(iOk,6) : i in [1..2]];
-    iO := Order(randElt);
-    I := Index(iOk,iO);
-end while;
+repeat
+    randElt := [K!Random(Zk,6) : i in [1..2]];
+    O := Order(randElt);
+    I := Index(Zk,O);
+until I ne 1;
 
 "Discriminant:", Factorisation(Discriminant(K));
-"Order:", iO;
+"Order:", O;
 "Index:", I;
-"Conductor:", TwoElement(idealOfO(iOk,Conductor(iO))), idealOfO(iOk,Conductor(iO));
-"Index of cond:",Norm(idealOfO(iOk,Conductor(iO)));
-"Factorisation:",Factorisation(idealOfO(iOk,Conductor(iO)));
+"Conductor:", TwoElement(idealOfO(Zk,Conductor(O))), idealOfO(Zk,Conductor(O));
+"Index of conductor:",Norm(idealOfO(Zk,Conductor(O)));
+"Factorisation:",Factorisation(idealOfO(Zk,Conductor(O)));
 
-orderOfIndex(K,10);
+result := orderOfIndex(K,33);
+//if #result gt 0 then
+//    result[1];
+//end if;
