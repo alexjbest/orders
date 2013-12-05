@@ -1,0 +1,1294 @@
+% vim: sw=2 ft=tex
+%         File: log.tex
+% Date Created: 2013 Oct 14
+%  Last Change: 2013 Nov 07
+%       Author: csulbj
+\author{Alex J. Best}
+\date{\today}
+\title{Finding orders with prescribed index\\Project Log}
+\documentclass[11pt,a4paper]{article}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{fullpage}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+
+\newcommand{\oK}{\mathfrak{o}_\mathcal{K}}
+
+\begin{document}
+\maketitle
+
+\marginpar{13/10/13}
+Implementations exist in Magma (refs)
+Finding power basis for order with specified index in a given order.
+
+\marginpar{15/10/13}
+Istv\'an Ga\'al has done a lot of work in this area, and there exists(ed) an implementation within KANT (run by Pohst).
+
+\marginpar{16/10/13}
+Should think up naive algorithm first in a general setting (no power basis etc).
+Take an absolute number field $K|\mathbb{Q}$ and consider $\mathcal{O}\subset \mathcal{O}_K$ letting $I=[\mathcal{O}_K:\mathcal{O}]$ we should find a relation between $I$ and the conductor of $\mathcal{O}$.
+Recall the conductor $\mathfrak{f}$ of $\mathcal{O}$ is the largest ideal of $\mathcal{O}_K$ contained in $\mathcal{O}$, so $\mathfrak{f} = \{\alpha\in\mathcal{O}_K\mid \alpha\mathcal{O}_K\subseteq \mathcal{O}\}$.
+Will probably come down to computing some quotient $\mathcal{O}/\mathcal{N}$.
+
+\marginpar{25/10/13}
+We have that $\mathcal{O}_K/\mathcal{O}\cong (\mathcal{O}_K/\mathfrak{f})/(\mathcal{O}/\mathfrak{f})$ so we can see $[\mathcal{O}_K:\mathcal{O}][\mathcal{O}:\mathfrak{f}] = [\mathcal{O}_K:\mathfrak{f}]$.
+As we know the index we wish to obtain we know that the norm of the conductor of the order we are looking for is divisible by the index.
+This gives us some prime ideals that must divide the conductor so we start with these.
+We then calculate the possible conductors and their corresponding orders (how?).
+
+\marginpar{7/11/13}
+Given $[F:\mathbb{Q}] = d$ we have $\mathcal{O}_F\subset F$ and $\mathcal{O} = \mathbb{Z} + f\mathcal{O}_F$.
+Then $\mathbb{O}_F/\mathcal{O} = \mathcal{O}_F/f\mathcal{O}_f$ torsion module.
+$\operatorname{norm}(f\mathcal{O}_F) = f^2 \in \mathbb{Z}$.
+
+Can work one prime at a time (locally) then path things together for a speedup.
+
+\begin{table}[h]
+\begin{tabular}{llllllllllllllllllllllllllllllllllll}
+a&b&c&d&e&f&g&h&i&j&k&l&m&n&o&p&q&r&s&t&u&v\\
+$\mathbb{a}$&$\mathbb{b}$&$\mathbb{c}$&$\mathbb{d}$&$\mathbb{e}$&$\mathbb{f}$&$\mathbb{g}$&$\mathbb{h}$&$\mathbb{i}$&$\mathbb{j}$&$\mathbb{k}$&$\mathbb{l}$&$\mathbb{m}$&$\mathbb{n}$&$\mathbb{o}$&$\mathbb{p}$&$\mathbb{q}$&$\mathbb{r}$&$\mathbb{s}$&$\mathbb{t}$&$\mathbb{u}$&$\mathbb{v}$\\
+w&x&y&z&1&2&3&4&5&6&7&8&9&0 \\
+$\mathbb{w}$&$\mathbb{x}$&$\mathbb{y}$&$\mathbb{z}$&$\mathbb{1}$&$\mathbb{2}$&$\mathbb{3}$&$\mathbb{4}$&$\mathbb{5}$&$\mathbb{6}$&$\mathbb{7}$&$\mathbb{8}$&$\mathbb{9}$&$\mathbb{0}$ \\
+\end{tabular}
+\caption{\label{}Table of mathbb symbols and their intended counterparts}
+\end{table}
+
+
+\section*{Translation of \"{U}ber das L\"{o}sen von Einheitenund
+Indexformgleichungen in algebraischen
+Zahlk\"{o}rpern mit einer Anwendung auf die
+Bestimmung aller ganzen Punkte einer
+Mordellschen Kurve - Chapter 2
+}
+If $\mathcal{K}$ is an algebraic number field so has for any $I \in\mathbb{N}$ the set $\{\alpha\in\oK\mid ( \oK: \mathbb{Z}[\alpha]) = I\}$ for a result of Gy\H{o}ry [25] a finite representative system $\mathfrak{I}_\mathcal{K}(I)$ with respect to $\mathbb{Z}$-equivalence, where two integral algebraic numbers $\alpha,\beta\in \oK$ are called $\mathbb{Z}$-equivalent if $\alpha\pm\beta\in\oK$.
+The calculation of $\mathfrak{I}_\mathcal{K}(I)$ is called the index form equation.
+These designations stirred therefore, because an integral basis $\omega_1 = 1,\omega_2,\ldots,\omega_n$ of $\oK$ of a form $\mathfrak{I}_\mathcal{K}(t_1,\ldots,t_n) \in \mathbb{Z}[t_2,\ldots,t_n]$ with the property exists, since for all $\alpha = x_1\omega_1 +\ldots + x_n\omega_n \in \oK$ with $( \oK : \mathbb{Z}[\alpha]) <\infty$ each 
+\[( \oK : \mathbb{Z}[\alpha]) = \pm I_\mathcal{K}(x_2,\ldots, x_n)\]
+applies.
+
+The shape IK called index form of K with respect to 1; ::: ; ! N .
+We will in this chapter apply our method for equations on the unit to lots of index form equations.
+We mainly use the classic method by which the finiteness of Gy\H{o}ry IK ( I) showed that, the calculation of the efective IK ( I) on the lots of finitely many units -
+%equations in the Galois closure of K zuruckfuhrte . With our development
+%of Gy } rys method to an algorithm , which is partly based on two papers
+%o
+%Smart 50 , 51] supports , we drew lots for the first time index form equations in number fieldn
+%of degree 8 , 10 and 12 In addition, we used an idea of Niklasch 39 ] to
+%Kreisteilungskorpern the Q ( 17) Q ( 19) and Q ( 23) all power wholeness bases
+%to be calculated.
+%The applicability of Gy } rys method is in practice restricted by the
+%o
+%Necessity drove through bills in the Galois closure of K to need .
+%Alternative methods for lots of index form equations , which is not the ga -
+%loisschen closure bedurfen exist so far only for number field of degree 4 for
+%cubic number field showed Gaal and Schulte 20] , since the determination of IK ( I)
+%is equivalent to the lots of a cubic Thue equation for quartic number field
+%Gaal developed , and Peth } Pohst 17, 18] a method in which the calculation
+%essentially on the toss of a ternary system of IK ( I) For square -
+%men will zuruckgefuhrt . In addition, there are methods of Gaal, 15, 16]
+%for and by Gaal and Pohst 19] special body of sixth degree .
+%To further formulation , we define some notations. As usual in this
+%Work is given as K = Q K () with a whole algebraic number . we
+%choose d 2 N with Doc Z] . Furthermore, we denote the Galois closure of K
+%with L and set m: = L: Q] . For the Galois group of L we write Q = G.
+%Since lots of index form equation for n = K: Q ] 2 is trivial , is without
+%Restriction n 3
+%we use
+%N : = f1 ; ::: ng \nonumber\\
+%N2: = ffi j g j 1 i <j ng \nonumber\\
+%N3: = ffi j ; kg j 1 i <j <k ng :
+%The Galois group G was operating on the amounts of N , N2 and N3 vermoge
+%G N! N : ( i) 7!
+%i = i0 , where ((i) ) = ( i0 )\nonumber\\
+%G N2 ! N2 : ( fi j g) 7! fi j g : = f i j g\nonumber\\
+%G N3 ! N3 : ( fi , j , kg) 7! fi , j; kg: = f i , j; kg:
+%There are
+%2
+%3
+%: = Fw1 ; ::: ws g : = fG j 2 N 2 g\nonumber\\
+%: = Fw1 ; ::: g Wt : = fG j 2 N 3 g
+%the quantities of the orbit with respect to the operations of G on N2 and N3. the
+%Values ​​of s and t , which exclude Lich depend on n and G, we sometimes write
+%also known as s ( n , G), and t ( n , G).
+%We choose for each j 2 f1 ; ::: sg a fixed j 2 j, and similarly for each k 2 !
+%f1 ; ::: tg a fixed k 2 Wk . Is fi = j ; 2 kg N3 given with i < j <k ,
+%we de ne (1): = fi , jg , (2) : = fj , kg, and (3): = fi ; kg. 2 to N2
+%Let F be the stabilizer of the Fixkorper respect to the action of G on N 2.
+%Nally we set K: = Q ((i) , ( ​​j )) for = fi , jg 2 N2 and more K: =
+%Q ((i ), ( j ), ( k )) for fi = j ; 2 kg N3.
+%For every 2 IK (I) and each fi = ; jg 2 N2 is the choice of d
+%( i)
+%( j)
+%: = D ((i) ( j) ? )
+%?
+%an algebraic integer of F . it is
+%dn ( n ? 1) I 2 disck = dn ( n ? 1)
+%Y
+%fi ; jg2N2
+%((I) : ( j)) = 2
+%(2-2 )
+%Y
+%fi ; jg2N2
+%((I) ( j ?)) 2 2 \nonumber\\
+%ij
+%where we in the right product ij instead of fi , jg wrote | a read -
+%simplification , which we in the following apply indexing with elements
+%retained for N2 and N3. Let
+%n (n ? 1) disc
+%I 0 = I 2 d disc Z] K 2 N
+%33
+%and we choose Gj G minimal with Gj j = wj (1
+%every 2 IK ( I), the equation
+%I0 =
+%Y
+%s
+%YY
+%2
+%ij =
+%fi ; jg2N2
+%j = 1 2GJ
+%(
+%j s ) , we obtain for
+%j)
+%2:
+%(2-3)
+%The first step in the calculation of IK ( I) will consist of a finite
+%F to determine s such that for every 2 IK (I) a =
+%A lot of F 1
+%(a 1 ; ::: a s ) 2 A exists with
+%j
+%2 a j j UF
+%(1 j
+%s ) :
+%(2-4)
+%In the case of I = d = 1, that I 0 = 1 Obviously, A = f o provides (1 ; ::: 1) g of the Desired .
+%If, however, I 0 > 1 , then the determination of A is by far more difficult to -
+%A times with respect to the second or following step for calculating the k ( I)
+%mogli waxed should contain a few entries that are not added to a solution of IK ( I)
+%gema (rther
+%( pe1j
+%1
+%2GJ
+%perj2
+%r )
+%(
+%P1 = 1e)
+%( e)
+%pr r\nonumber\\
+%where for each i 2 f1 ; ::: rg is the exponent i (s ) is a linear function in E
+%i (s) =
+%r s
+%XX
+%= 1 = 1
+%s
+%i
+%is the coe Zieten i 2 N 0 are defined by
+%Y
+%(p) 2 = 1 p1
+%2G
+%Let
+%0
+%B
+%L : = B
+%@
+%pr r
+%r , 1
+%(1
+%111
+%:::
+%1R1
+%:::
+%11s
+%:::
+%1rs
+%r11
+%:::
+%rr1
+%:::
+%r1s
+%:::
+%rrs
+%..
+%.
+%..
+%.
+%..
+%.
+%..
+%.
+%s ) :
+%1
+%C.\nonumber\\
+%C
+%A
+%(2-6)
+%Accordingly, as the amount
+%L : = fx 2 N rs
+%0
+%j (1 ; ::: r) t = L xg
+%(2-7)
+%finally , and it is e.
+%remark 2.1
+%The so- constructed set A contains usually a large number of elements ,
+%what not to solutions of IK ( I) gema (2-4) belong . Some of these elements
+%can be screened using the following two criteria :
+%1 Let I = 1, and is further 2 IK ( I) arbitrarily . Then Z] Z] applies . for
+%each = fi j g 2 N2 thus shares ( i) ? ( j) the di erence ( i) ? ( j) in oF.
+%Thus, for a mu (a 1 ; ::: as) 2 A each aj is a divisor of d oF be
+%(1 j s ) . PDR is pd1 the prime ideal of oL d so for valid
+%1
+%r
+%each (x11 ; ::: r1 ; ::: x1s ; ::: xrs ) t 2 L, which with a solution of IK ( I)
+%corresponds , therefore x j d (1
+%r , 1 j s ) .
+%2 Let K be normal with G abelian , and were also 2 IK (I) and fi , jg 2 N2
+%arbitrarily set . For each 2 G is then due
+%( d ((i) : ( j ))) = d ( (()) ( i) : ( ()) (j))
+%the di erence ( i) ? ( j) a divisor of (d ((i) : ( j ))) in oK .
+%For a (a 1 ; ::: a s ) 2 A so mu
+%((I) : ( j)) ( a)
+%s, fi , j = g )
+%(1
+%( i) ? ( j)
+%always be an algebraic integer of ok .
+%example 2.2
+%Let K = Q () , where zero of t5 ? 10 t3 + t2 + 10 t 5 + 1 Then K is normal
+%with Galois C (5) , and K 1 has class number An integral basis of oK
+%is given by
+%2
+%3
+%4
+%! 1 = 1; ! = 2 , ! 3 = 2 , ! 4 = 3; ! 5 = 2 + 2 + 6 + 7 + 3 \nonumber\\
+%and by ( ok : Z]) = 7, we can choose d = 7 .
+%We want iK 2 N minimal with IK ( iK ) = 6 , and calculate the representative system
+%IK ( iK ) calculated explicitly . Since K is not the real maximum Teilkorpe2 , 3, 5, 7 in each pairwise different prime ideals in out ok :
+%Ok 2 = p 1 \nonumber\\
+%It is particularly
+%3 oK
+%= P2 \nonumber\\
+%5 ok
+%= P5 \nonumber\\
+%3
+%7 ok
+%P5P6 = p4 p7 p8 :
+%dn ( ? n 1) Disck o = 718 o = p18 p18 p18 p18p18 :
+%K
+%4 5 6 7 8
+%Z disc ] K
+%Furthermore, we note
+%2
+%= Fff1 , 2g , f2 , 3g , f3 , 4g , f4 , 5g , f1; 5gg ; ff1 ; 3g , f2 , 4g , f3 , 5g , f1 , 4g , f2 ; 5ggg \nonumber\\
+%so is G = G1 = G2.
+%35
+%Case 1 I = 2
+%It is k ( 2) = , as the linear system
+%0 2 1 0 10
+%B 18 C B 0
+%B C B
+%B 18 C B 0
+%B C = B
+%B C B
+%B 18 C B 0
+%B C B
+%B 18 C B 0
+%@ A @
+%0
+%2
+%2
+%2
+%2
+%0 2
+%18
+%0
+%2
+%2
+%2
+%2
+%2
+%0
+%2
+%2
+%2
+%2
+%2
+%0
+%2
+%2
+%2
+%2
+%2
+%0
+%2
+%2
+%2
+%2
+%2
+%10
+%0
+%0
+%0
+%0
+%0
+%0
+%2
+%2
+%2
+%2
+%2
+%0
+%2
+%2
+%2
+%2
+%2
+%0
+%2
+%2
+%2
+%2
+%2
+%0
+%2
+%2
+%2
+%2
+%2
+%0
+%2
+%2
+%2
+%2
+%2
+%1
+%C
+%C
+%C
+%C x
+%C
+%C
+%C
+%C
+%A
+%from (2-7 ) has no solution in N 12th
+%0
+%Case 2 I = 3
+%It is k ( 3) = ; , since the same system of equations as in the case I = 2.
+%Case 3 I = 4, 6
+%It is k ( 4) = ; = IK (6 ) how easily the basis of the equations of
+%Fall I = 2 and I = 3 concludes .
+%4.Fall I = 5
+%We obtain the linear equation system
+%0 10 1 0 10
+%B 18 C B 0
+%B C B
+%B 18 C B 0
+%B C = B
+%B C B
+%B 18 C B 0
+%B C B
+%B 18 C B 0
+%@ A @
+%0
+%2
+%2
+%2
+%2
+%0 2
+%18
+%0
+%2
+%2
+%2
+%2
+%2
+%0
+%2
+%2
+%2
+%2
+%2
+%0
+%2
+%2
+%2
+%2
+%2
+%0
+%2
+%2
+%2
+%2
+%2
+%10
+%0
+%0
+%0
+%0
+%0
+%0
+%2
+%2
+%2
+%2
+%2
+%0
+%2
+%2
+%2
+%2
+%2
+%0
+%2
+%2
+%2
+%2
+%2
+%0
+%2
+%2
+%2
+%2
+%2
+%0
+%2
+%2
+%2
+%2
+%2
+%1
+%C
+%C
+%C
+%C x
+%C
+%C
+%C
+%C
+%A
+%with slogans in 97240 N 12th From this we can 93236 vermoge many of the second
+%0
+%Sort of criterion 2.1 . For I = 5 A thus contains 4004 elements .
+%5.Fall I = 7
+%We obtain the linear equation system
+%0 1 0
+%B 20 C 2 B
+%B 20 C 2 B
+%B C = B
+%B 20 C 2 B
+%B C B
+%B 20 C 2 B
+%@ A @
+%2
+%2
+%2
+%2
+%2 2
+%20
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%1
+%C
+%C
+%C x
+%C
+%C
+%C
+%A
+%with slogans in 92378 N 10th From this we can 87373 vermoge many of the second
+%0
+%Sort of criterion 2.1 . For I = 7 A thus contains 5005 elements .
+%We will continue this example later .
+%For the remainder of this chapter is a = (a 1 ; ::: as) 2 A arbitrary but fixed identifier coded
+%ben . Let
+%IK ( I, a) : = f
+%2 IK ( a) j is equivalent to a vermoge (2-4) g
+%and more
+%a
+%j
+%: = (A j)
+%( 2 G , 1 j s )\nonumber\\
+%36
+%where a
+%each
+%CHAPTER 2 INDEX FORM EQUATIONS
+%j
+%2 IK ( I, a)
+%is due to aj 2 F j well-de ned , so for a valid
+%2 a UF
+%8 2 N2:
+%(2-8)
+%The second step is to calculate IK ( I) , we calculate for each a 2 N3
+%finite set U UF ( 1) UF ( 2) UF ( 3) , so that for every 2 IK ( I, a)
+%Triple " = (" (1 ) " (2 ) " (3 ) ) 2 U and a 2 unit UL exist with
+%( i)
+%= A ( i) ' ( i)
+%(1 i 3 ) :
+%(2-9)
+%Are fi = j ; 2 kg N3 with i < j < k and 2 k ( I, a) is arbitrarily given , then
+%( i) ? ( j ) + ( j) ? (k)
+%= ( I) ? (k)\nonumber\\
+%so
+%((I) ( j) ? ) Ij + ( ( j) ( k)? ) Jk = ik ((i) ( k)? )
+%We are " ( i) : = ( i) a ( 1 i ) (1 i 3 ), it is " ( i) 2 UK
+%(2-8) . We thus get the unit equation
+%( i)
+%(1
+%i
+%Gema 3)
+%((I) : ( j)) aij " ij + ( ( j) : ( k)) ajk " jk = 1
+%((I) : ( k)) aik " ik ((i) : ( k)) aik " ik
+%over the field K , whose solution set is denoted by L . For each ('; ) 2
+%L We test whether 2 UF ( 3) exists with " UF 2 (1 ) 2 UF ( 2) , and add in
+%The existence of such a triple ( ' ; ; ) set U to be added .
+%The third and final step in the solution of the index form equation is
+%by comparing the sets U all 2 IK ( I, a) to be determined. CHECKING to
+%Q
+%we are for each element ( " ) 2N3 2N3 the finite set U, if a 2 oK
+%can be constructed so as applies with respect to (2-9) :
+%8 9 2 N3
+%2 UL 8 i 2 f1 , 2, 3g :
+%( i)
+%= A ( i) ' (i):
+%(2-10)
+%So for every 2 N3 is an arbitrary but fixed gewahlter tuple " , where U 2 .
+%We will assume , as a 2 IK ( I, a) exists , which (2-10) does . to
+%Construction of first calculate quantities gradually
+%N2 ( 1) N2 $ (2) $ $ ::: N2 () = N2
+%(
+%and this simultaneously for each 2 N 2) (1
+%each, a " 2 UL exists with
+%u = a "
+%8 2 N2 ():
+%Units) u 2 UL, so that
+%(2-11)
+%(1)
+%For a 2 N3 arbitrarily we set initially N2: = f (1) , (2) , (3) g and more
+%u (i ) . = " (i ) (1 i 3 ) The condition ( 2-11 ) corresponds to even ( 2-9).
+%(
+%For a 2 N is now a quantity N2) with known units u , and
+%(
+%applies without limitation N2) N2 = 6 , since otherwise we are done . There are then
+%37
+%(
+%(
+%= Fi j g 2 N2) and fj = 0 ; kg N 2 N2 N2). Be without restriction i <j <k
+%There are 2 kg N3 gema (2-9 ) according to given " a unit 2 UL , to fi = j
+%with
+%ij =
+%jk =
+%ik =
+%= a
+%(2 ) = a
+%(3 ) = a
+%(1)
+%(1 ) "(is satisfied o Enbar .
+%remark 2.3
+%(
+%Was already fi ; 2 kg N2) and does not match the definition of uik in (2-12)
+%the already known value for uik uberein , then ( ' ) 2N3 is not a
+%2 IK ( I, a) correspond .
+%With the above construction , we have for each
+%determined so that
+%2 N2 a unit u 2 UL
+%8 2 N2
+%(2-13 )
+%u = a "
+%applies with an unknown unit " UL 2 . By (2-3 ) and ( 2-13)
+%combine , we get " out modulo torsion
+%I 0 = " n (n ? 1)
+%Y
+%2N2
+%a2 u 2 :
+%Because of (2-13 ) and ( 2-2) we know as " for all fi , jg 2 N 2 , the di erences
+%( i) ? ( j) , which equals Z modulo equivalence is uniquely determined. to
+%based on these di erences to compute e ectively , we proceed as follows s ago. to
+%! an integral basis 1 = 1 ; ::: ! ok and n of an integral basis 1 = 1 ; ::: m
+%of 2 cm oL Let T n is given by
+%(! 1 ; ::: n! ) = (1 ; ::: m ) T:
+%Furthermore, let T1 ; ::: Tm 2 GL (m , Z ) given by
+%(I (1) ; ::: i (m)) = (1 ; ::: m ) Ti
+%(1 i n )\nonumber\\
+%the automorphisms 1 ; ::: m 2 G are numbered such as j () = ( j) for
+%all j 2 f1 ; ::: ng .
+%38
+%CHAPTER 2 INDEX FORM EQUATIONS
+%Experience i have to put the = 1 x1 + + xn with n unknowns x1 ; ::: xn 2 Z. own
+%for a fi j g 2 N2 then ( i) ? ( j) the display
+%( i) ? ( j)
+%Ij1 = 1 +
+%with ijk Z 2 (1 k m ) , it follows
+%0
+%B
+%B
+%@
+%(1 ; ::: m )
+%ij 1
+%..
+%.
+%ijm
+%1
+%C =
+%C
+%A
+%+ M ijm
+%( i) ? ( j)
+%=
+%(
+%(
+%(
+%(
+%(1i !) ; ::: ! Ni ) ) ? (! 1j) ; ::: ! Nj ) )
+%=
+%(
+%(
+%( j
+%( j
+%(1i ) ; ::: m)) ? (1j ) ; ::: m))
+%= (( 1 ; ::: m))
+%0 1
+%W x 1 C. ..
+%B . C
+%@ A
+%x
+%0n 1
+%W x 1 C. ..
+%T B . C
+%@ A
+%Xn 0 1
+%W x 1 .. C\nonumber\\
+%(Ti ? Tj) T B . C
+%@ A
+%xn
+%ie , we obtain for x1 ; ::: xn , the linear system of equations
+%0
+%B
+%B
+%@
+%ij 1
+%..
+%.
+%ijm
+%1
+%0 1
+%C = (T T ? ) W x T 1 .. C:
+%C i j
+%B . C
+%A
+%@ A
+%xn
+%(2-14 )
+%Since the di erences by ( i) ? ( j ) modulo Z- equivalence clearly defined
+%, we obtain the coe cients x2 ; ::: xn
+%thus , by for each
+%fi , jg -free 2 N 2 , the linear system of equations (2-14 ) and subsequently end the cut -
+%volume of each solution quantities Lij calculate Zn . it is
+%\
+%fi ; jg2N2
+%Lij
+%=
+%0x 1011
+%B x1 C B 0 C
+%B 2 C + C C B :
+%B .. B C. .. C
+%B . C B.C
+%@ A @ A
+%xn
+%0
+%In the third step, the development of Gy } rys method is an al-
+%o
+%algorithm completed . Its e ciency can, however, by two simple , in
+%following modi cations shown significantly increased.
+%The first communication mode , which is derived from Smart 50 ] is in the second
+%and third step, exploiting the action of G to N3. background is
+%this fact , as for ; , " and, as in (2-9 ) is always
+%((I) )
+%= a
+%((I) )
+%( " (I)) ()
+%(1 i 3 )
+%39
+%for every 2 G applies . Instead of the second step for each 2 N 3 , the amount
+%To be determined by the toss of a unit U equation , there are only
+%Sets U 1 ; ::: U t calculated . For the determination of IC ( I, a) in the third step
+%U t initially
+%Then we set for each ("1 ; ::: ' t) 2 U 1
+%"
+%i
+%: = (( " I ( j 1 ) ), ( " i ( j2 ), ( " i ( j3 )))
+%( I 1 t , 2 G)\nonumber\\
+%wherein jk = jk (i; ) 2 f1 , 2, 3g ( i ( jk ) ) = () (k ) (1 k 3 ) , and -
+%Search end followed by the method already described , whether with ( " ) 2N3
+%2 IK ( I, a) vermoge (2-10) corresponds . Is this approach ? on the one hand
+%the number of loose ends in the second step EinheitengleichungenQ n = j JN3
+%of 3
+%to t = j 3 j reduced , on the other, in the third step instead of 2N3 jU j only
+%Q
+%yet to examine t = 1 jU ij many tuples ( " ) 2N3 .
+%i
+%Basis of the second modi cation is the observation that for the successive
+%(
+%Construction is not necessarily the quantity N2) in the third step of the method
+%every 2 N3 are needed . For any W N3 , we de ne the graph to
+%: ( W ) whose vertex set is N2 and the two vertices 1 , 2 2 N2 together
+%are connected if there exists W 2 = 1 second Is the graph ? ( W)
+%hangend together , this indicates an inspection of the third step , since there to
+%Calculation of IK ( I, a) suffices , in the second step for each 2 W, the set U
+%to be determined. We illustrate this fact with a simple example .
+%example 2.4
+%Let n = 5 with G ' C (5). If G = h , then at a suitable numbering of the
+%conjugated
+%k
+%i i + k mod 5
+%(0 k <5 , 1 i 5 ) :
+%It is then
+%3
+%W1 = f = f 1 = f1 , 2, 3g , f2 , 3, 4g , f3 , 4, 5g , f1 , 4, 5g , f1 , 2, 5g g\nonumber\\
+%W2 = f 2 = f1 , 2, 4g , f2 , 3, 5g , f1 , 3, 4g , f2 , 4, 5g , f1 , 3, 5ggg \nonumber\\
+%therefore t (5, C (5) ) = 2
+%There? ( W1) hangend together , it is enough in the second step , for each of the 2 W1
+%(1)
+%(5)
+%Set U to be calculated. We can approximately N2 ; ::: N2 as follows elections , with
+%we use the terms from the iteration of page 36:
+%= 1:
+%= F1 , 2, 3g
+%(1)
+%= ) N2 = ff1 , 2g , f1 , 3g , f2 ; 3gg .
+%= 2:
+%= F2 , 3g , 0 = f2 , 4g =) = f2 , 3, 4g
+%(2)
+%= ) N2 = ff1 , 2g , f1 , 3g , f2 , 3g , f2 , 4g , f3 ; 4gg .
+%= 3:
+%= F3 , 4g , f3 = 0 ; 5g =) = f3 , 4, 5g
+%(3)
+%= ) N2 = ff1 , 2g , f1 , 3g , f2 , 3g , f2 , 4g , f3 , 4g , f3 , 5g ; f4 ; 5gg .
+%= 4:
+%= F4 , 5g , 0 = f1; 5g =) = f1 , 4, 5g
+%(4)
+%= ) N2 = ffb
+%B S
+%a ba
+%a b
+%B
+%b aa S
+%b
+%S
+%B
+%b AAAS
+%b B
+%aa
+%b
+%S a
+%bb
+%f3 , 5g r
+%B b S ARF1 ; 4g
+%B bb S
+%AA
+%B
+%S
+%BRF1 ; 5g
+%f3 , 4g r @ a
+%a
+%!
+%a
+%B
+%!mal with the property , as appropriate for i1 ; ::: iu 2
+%f1 ; ::: ? tg the graph ( Wi1 ::: Wiu ) is hangend together . Due to the first
+%Modi cation , it is then sufficient , in the second step using many units u -
+%equations to be solved . In the third step are accordingly i1 j jU jU j iu many
+%Tuple ( " ) to investigate 2N3 .
+%For all possible combinations of n 12 and jGj < Table 20 provides the
+%on the next side of the overview of the values ​​of t ( n , G), and u ( n , G) , wherein the
+%Name of the Galois groups of 8 ] were taken over .
+%Steps 2 and 3 of our development of Gy } rys methods that we are now
+%o
+%in a continuation of the example 2.2 .
+%Example 2.5 ( continuation of 2.2)
+%According to the results already achieved remains the determination of IK ( I)
+%for I 2 f5 , 7g. I = 5, so 4004 unit equations in the second step
+%to loose . In most of these equations can be very quickly using the
+%Criterion from 1:27 to establish because they do not have solutions. Only for a
+%Unit equation need all three steps of the process from the first chapter
+%be carried out . Since the solutions of these equations is not ok 2
+%( ok : Z] ) = 5 can be constructed IK applies (5) = , . The result for this
+%required computation time was 743S total . Of this, 139 seconds on
+%the second step , that is the equation of the unit lots , less than
+%41
+%n
+%3
+%4
+%5
+%6
+%7
+%8
+%9
+%10
+%11
+%12
+%G
+%A3
+%S3
+%C (4)
+%E ( 4)
+%D (4)
+%C (5)
+%D (5 )
+%C (6)
+%D6 (6 )
+%D ( 6)
+%A4 ( 6)
+%F18 (6 )
+%C (7)
+%D ( 7)
+%C (8)
+%jGj t (n , G ) u (n , G )
+%3
+%6
+%4
+%4
+%8
+%5
+%10
+%6
+%6
+%12
+%12
+%18
+%7
+%14
+%8
+%4] 2
+%8
+%E ( 8)
+%8
+%D8 ( 8)
+%8
+%Q8 ( 8)
+%8
+%D ( 8)
+%16
+%1 23 ] 4
+%16
+%2
+%2D8 (8)
+%16
+%E (8): 2
+%16
+%24 ] 2
+%16
+%1 23 ] E ( 4)
+%16
+%2
+%C (9 )
+%9
+%E ( 9)
+%9
+%D ( 9)
+%18
+%S ( 3)] 3
+%18
+%1
+%S ( 3) 2] S ( 3) 18
+%C (10)
+%10
+%D (10 )
+%10
+%C (11)
+%11
+%C (4) ] C (3) 12
+%E ( 4)] C (3) 12
+%D6 (6)] 2 12
+%A4 ( 12)
+%12
+%1 3: 2] 4
+%12
+%2
+%1
+%1
+%1
+%1
+%1
+%2
+%2
+%4
+%4
+%3
+%4
+%2
+%5
+%4
+%7
+%7
+%7
+%7
+%7
+%5
+%5
+%5
+%5
+%5
+%5
+%10
+%12
+%7
+%8
+%8
+%12
+%12
+%15
+%19
+%19
+%19
+%21
+%19
+%1
+%1
+%1
+%1
+%1
+%1
+%1
+%2
+%2
+%1
+%2
+%1
+%2
+%1
+%2
+%3
+%3
+%3
+%3
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%2
+%3
+%4
+%4
+%4
+%4
+%5
+%5
+%5
+%6
+%5
+%42
+%CHAPTER 2 INDEX FORM EQUATIONS
+%Second to the third step and the big e residue on the first step , ie the
+%Determination of A.
+%It now is known already iK = 7th As in the case I = 5 may 5005 for part of the Great
+%Unit equations to consider the explicit calculation of IK ( 7)
+%are easily determined because they have no solutions. From the remaining
+%ten unit equations which solved by the methods of the first chapter
+%must be , for IK ( 7) results in the following 25 -element Vetretersystem :
+%IK (7) = f 4 + 5 ! \nonumber\\
+%4! 3 ? 3 ! 4 ? 4! 5; ! 2; ! 2 + ! 3 ? ! 4 ? ! 5\nonumber\\
+%2 ! 2 ? 3 ! 3 + 2 ! 4 + 3 ! 5; 2 ! 2 + ! 3 ? ! 4 ? ! 5 , 2 ! 2 + 6! 3 ? 5 ! 4 ? 6! 5\nonumber\\
+%3 ! 2 ? 3 ! 3 + ! 4 + 2 ! 5 , 3 ! 2 ? 3 ! 3 + 2 ! 4 + 3 ! 5 , 3 ! 2 ? 2 ! 3 + ! 4 + 2 ! 5\nonumber\\
+%4! 2 ? 3 ! 3 + ! 4 + 2 ! 5 , 4 ​​! 2 ? 2 ! 3 + ! 4 + 2 ! 5 , 5 ! 2 ? 2 ! 3 + 5 ? \nonumber\\
+%5 ! 2 ? 2 ! 3 + ! 4 + 2 ! 5, 6 ! 2 ? 6! 3 + 3 ! 4 & 5 ! 5, 6 ! 2 ? 2 ! 3 + 5 ? \nonumber\\
+%7! 2 ? 6! 3 + 3 ! 4 & 5 ! 5 , 8! 2 ? 5 ! 3 + 2 ! 4 + 4! 5\nonumber\\
+%9! 2 ? ! 3 5 2 4 + 4 + 5; ! 10 2 ? 9 3 + 4 4 + 5 7 ! \nonumber\\
+%13! 2 ? ! 7 3 3 4 + 5 + 6 ; ! 14 2 ? 12 3 + 7 + 4 11 5 ! \nonumber\\
+%15! 2 ? ! 8 3 3 4 + 5 + 6 ; ! 22 2 ? 13 3 4 4 + 5 + 9 ! \nonumber\\
+%23! 2 ? ! 11 3 + 3 + 4 8 5 g :
+%The total computation time was 1442s with 779s for the second step and about
+%a second for the third step.
+%An inspection of the result shows in other respects , since oK exactly two classes of non-
+%isomorphic equation systems of index 7 has . The orders of the first
+%Have Z- equivalence class modulo 2 power base generator , while the Ordnun -
+%tions of the second class each about 3 power base generator modulo Z- equivalence
+%grout .
+%Besides this example, we have rys with Gy } method index form equations in
+%o
+%Kreisteilungskorpern and its maximum real Teilkorpern solved . in fact
+%we determined where in each case all power wholeness bases modulo Z- equivalence , ie
+%more precisely , we calculated IKM ( 1) and IK + ( 1 ) for all m 2 N , m 6 2 mod 4 , with
+%m
+%Km : Q] 12, wherein for the eingefuhrte in subsection 1.3.2 Notation
+%Kreisteilungskorper be recalled . The results of these calculations are in Ta -
+%belle arrested on page 43rd
+%For Kreisteilungskorper higher degree is the use of Gy } rys method very
+%o
+%consuming ( see, eg, Q ( 13) in the table) . The cause hierfur is both in the
+%second step , ie the unit lots of equations , as well as the com-
+%combination of u (n , G ) many sets U in the third step , the cardinality
+%these quantities with increasing unit rank erfahrungsgema increases greatly .
+%For special Kreisteilungskorper , namely when m is a prime number , can
+%used , however, of a Niklasch 39, Section II -4.3 ] developed process
+%be that based on the full power of all units except bases of Km mo -
+%modulo Z- equivalence determined. The main advantage of this method consists in that
+%43
+%m
+%1
+%3
+%4
+%5
+%7
+%8
+%9
+%11
+%12
+%13
+%15
+%16
+%20
+%21
+%24
+%28
+%36
+%+
+%Km : Q] jik + (1) j
+%m
+%1
+%1
+%1
+%2
+%3
+%2
+%3
+%5
+%2
+%6
+%4
+%4
+%4
+%6
+%4
+%6
+%6
+%t
+%Km : Q] jIKm ( 1) j
+%1
+%{
+%1
+%{
+%1
+%{
+%1
+%{
+%9
+%3s
+%1
+%{
+%6
+%2s
+%25
+%47s
+%1
+%{
+%36 2576s
+%12
+%27s
+%6
+%24s
+%10
+%23s
+%30 1750s
+%6
+%27s
+%15 639s
+%15 681S
+%1
+%2
+%2
+%4
+%6
+%4
+%6
+%10
+%4
+%12
+%8
+%8
+%8
+%12
+%8
+%12
+%12
+%1
+%1
+%1
+%6
+%9
+%2
+%9
+%15
+%4
+%18
+%16
+%4
+%8
+%24
+%8
+%12
+%12
+%t
+%{
+%{
+%{
+%0s
+%15s
+%0s
+%50s
+%2900s
+%0s
+%34195s
+%891s
+%303s
+%951s
+%32872s
+%804S
+%31004s
+%21066s
+%its cost is linear in the number of exception units. We are this
+%Procedures now represent short and wholeness so that all power bases of Q ( 17) ,
+%Q (19) and Q ( 23) directions .
+%For any prime p > 3 p is a primitive p- th root of unity . the
+%(
+%j
+%Conjugate of p are numbered as pj ) = p ( y 1 < p) .
+%(
+%We put $: = 1 ? p . For each k 2 f1 ; ::: p ? 1g is 1 ? pk ) associated to $
+%k
+%because N (1 ? p) = N (1 ? p) and
+%k
+%1 ? p
+%1 ? p = 1 p + +
+%k
+%+ P 1 2 OKP ? :
+%(
+%(
+%So for i , j 2 f1 ; ::: p ? 1g, i 6 = j , and any pi) ? pj ) associated to $ due
+%( i)
+%( j)
+%i
+%j ? i
+%p ? p = p (1 p ? )
+%Let 2 IKP ( 1) arbitrary but fixed chosen . Gema (2-2 ) and ( 2-4) (i ) ? ( j) for
+%(
+%(
+%i , j 2 f1 ; ::: p ? 1g, i 6 = j , associated to pi) ? pj ) , and thus also associated to $ .
+%For each k 2 Z , p 6 j k , is thus
+%! k: = (1 ?)
+%?
+%(k)
+%(1)
+%(1)
+%( 2-15)
+%a unit in OKP , the conjugate should be read in (2-15 ) modulo p | a
+%Convention that we maintain the following . For j , k 2 Z , p 6 j jk , then
+%!
+%(
+%!1). There! G of (2-17 ) is an exceptional unit can for all possibilities ! G
+%will go through the calculation of XKP . We will now see as
+%modulo Z- equivalence g can be reconstructed only by specifying ! . to
+%We determine first ? g using (2-17 ) and then using ( 2-16) gradually
+%(
+%! ( ? ? g g ) ! g2 = gg ) + g ! \nonumber\\
+%(
+%! ( ? ? g g ) ! g3 = gg ) + g ! \nonumber\\
+%2
+%..
+%..
+%.
+%.
+%(
+%? ( ? ? g g ) ! gp 2 = gg ) 3 + g ? :
+%p
+%p
+%We come in as p = a2 + + ap 1 p 2 with unknowns a2 ; ? ::: ; ? Ap 1 2 Z.
+%( ? 1) ? ( 1) = "$ with an unknown unit " 2 o . place
+%It should also be
+%kp
+%we
+%1
+%0
+%(p ? 2) 2
+%B
+%A: B =
+%@
+%p ? p
+%2
+%p ? p
+%4
+%2 (p ? 1)
+%..
+%.
+%p ? 1
+%p ? p
+%?
+%:::
+%2
+%p
+%2
+%p
+%then A is regular because det2 A = discKp . from
+%p
+%..
+%; ::: ap 1 2 Z are uniquely determined up to sign ? .
+%Based on the results achieved in the last chapter except to units in district -
+%teilungskorpern we have with this method, all the power of wholeness bases in Q ( 17) ,
+%Q (19) and Q (23 ) is determined . The results of these calculations and the Ta -
+%Table of page 43 of a match Bremner 7] GEAU Erten presumption that
+%so far only for p 7 was veri ed :
+%Assumption 2.6 ( Bremner )
+%(
+%0
+%0
+%Let p 2 OKP de ned by p : = p + pp + 1) = 2 ? . Then there exists for every
+%2 IKP ( 1) is an automorphism of the Galois group of Kp = Q , so that
+%0
+%either Z- is equivalent to (p) or (p).
+
+\nocite{*} % Insert publications even if they are not cited
+\bibliographystyle{alpha}
+\bibliography{biblio}
+
+\end{document}
