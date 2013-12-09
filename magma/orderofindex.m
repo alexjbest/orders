@@ -1,5 +1,5 @@
-function overOrder(I) // Returns the smallest order containing I
-    return Order(Basis(I,FieldOfFractions(Order(I))));
+function overOrder(I,K) // Returns the smallest order containing I
+    return Order(Basis(I,K));
     //return Order(TwoElement(I));
 end function;
 
@@ -40,13 +40,13 @@ function orderOfIndex(K, d)
         p := pe[1];
         e := pe[2];
         p,"^",e;
-        possFacts := [* *];
+        possFacts := [ ];
 
         for part in RestrictedPartitions(e, Keys(primeIdeals[p])) do
             part;
             curFact := [ideal<Zk|1>];
             for i in part do
-                newFact := [* *];
+                newFact := [ ];
                 for P in primeIdeals[p][i] do
                     for f in curFact do
                         Append(~newFact, f*P);
@@ -70,10 +70,12 @@ function orderOfIndex(K, d)
     "Trying conductors:";
     for f in possConds do
         f,Norm(f);
-        if Conductor(overOrder(f)) eq f then
-            Of := overOrder(f);
-            if Index(Zk,Of) eq d then
+        Of := overOrder(f,K);
+        if Conductor(Of) eq f then
+            if Index(Zk,Of) eq d then // Sanity check
                 Append(~out, Of);
+            else;
+                error Error();
             end if;
         end if;
     end for;
@@ -82,8 +84,7 @@ function orderOfIndex(K, d)
 end function;
 
 R<x> := PolynomialRing(RationalField());
-K := NumberField(x^6 + 20432*x^5+ 18*x^2 +  5*x+ 108);
-//K := NumberField([x^2 - 3, x^2 -7]);
+K := NumberField(20432*x^5+ 18*x^2 +  5*x+ 108);
 DefiningPolynomial(K);
 Zk := Integers(K);
 I := 1;
@@ -100,7 +101,9 @@ until I ne 1;
 "Index of conductor:",Norm(idealOfO(Zk,Conductor(O)));
 "Factorisation:",Factorisation(idealOfO(Zk,Conductor(O)));
 
-result := orderOfIndex(K,33);
-//if #result gt 0 then
-//    result[1];
-//end if;
+result := orderOfIndex(K,11);
+if #result gt 0 then
+    result;
+else;
+    "No orders with given index";
+end if;
