@@ -75,7 +75,7 @@ function orderOfIndex(K, d)
             if Index(Zk,Of) eq d then // Sanity check
                 Append(~out, Of);
             else;
-                error Error();
+                //error Error();
             end if;
         end if;
     end for;
