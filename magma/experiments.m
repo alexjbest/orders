@@ -1,7 +1,12 @@
 load "orderofindex.m";
 
 R<x> := PolynomialRing(RationalField());
-K := NumberField(x^5+ 18*x^2 +  5*x+ 178);
+
+//K := NumberField(x^5+ 18*x^2 +  5*x+ 178);
+K5 := NumberField(x^2- 5);
+K13 := NumberField(x^2- 13);
+K := Compositum(K5,K13);
+
 DefiningPolynomial(K);
 Zk := Integers(K);
 repeat
@@ -17,12 +22,13 @@ until I ne 1;
 "Index of conductor:",Norm(idealOfO(Zk,Conductor(O)));
 "Factorisation:",Factorisation(idealOfO(Zk,Conductor(O)));
 
-result := orderOfIndex(K,26);
+result := orderOfIndex(K,4);
 if #result gt 0 then
     result;
     "Localistion fiddling!";
 
-    O := result[1];
+    O := result[2];
+    Basis(O, K);
     cond := idealOfO(Zk,Conductor(O));
     Factorisation(cond);
     P21 := Factorisation(cond)[1][1];
@@ -30,5 +36,4 @@ if #result gt 0 then
 else;
     "No orders with given index";
 end if;
-
 
