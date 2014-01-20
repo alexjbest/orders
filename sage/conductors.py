@@ -9,7 +9,7 @@ def conductor(order):
     n = len(omega)
     for i in range(n):
         for j in range(n):
-            print coordinates(omega[i]*omega[j])
+            print order.coordinates(omega[i]*omega[j])
     #d = gcd()
     #H = (d*M).hermite_form()
     #beta = omega*d*H.inverse()
