@@ -8,7 +8,7 @@ def conductor(order):
     tau = order.basis()
     n = len(omega)
     b = [[0]*n for i in range(n)]
-    M = matrix(R, nrows = n*n, ncols = n)
+    M = matrix(R.fraction_field(), nrows = n*n, ncols = n)
 
     for i in range(n):
         for j in range(n):
