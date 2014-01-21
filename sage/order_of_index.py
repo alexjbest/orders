@@ -5,7 +5,7 @@ def conductor(order):
     K = order.fraction_field()
     R = Integers()
     omega = K.maximal_order().basis()
-    n = len(omega)
+    n = len(omega) # K.degree()
     M = matrix(R.fraction_field(), nrows = n*n, ncols = n)
 
     d = 1
@@ -15,15 +15,15 @@ def conductor(order):
             for k in range(n):
                 M[j*n + k, i] = coords[k]
                 d = lcm(d,coords[k].denominator())
-    print M
-    print d
+    #print M
+    #print d
     
-    H = (M).hermite_form(include_zero_rows = False)
-    print H
-    print d*H.inverse()
+    H = M.hermite_form(include_zero_rows = False) # Paper defines this as dM hermite ?!
+    #print H
+    #print d*H.inverse()
     
     beta = vector(omega)*d*H.inverse()
-    print beta
+    #print beta
     return K.ideal(list(beta))
 
 def order_of_index(O,I):
@@ -32,7 +32,8 @@ def order_of_index(O,I):
     R = Integers() # This may need to be different when relative orders are looked for.
 
     # We find all ideals of norm I^2, which are all possibly conductors of O
-    possible_conductors = ideals_of_norm(K,I*I)
+    possible_conductors = ideals_of_norm(K, I*I)
+    print [p.norm() for p in possible_conductors]
 
     orders = []
     for f in possible_conductors:
@@ -40,7 +41,8 @@ def order_of_index(O,I):
         #print f.basis()
         Of = K.order(f.basis()) # Use ring_generators here?!
         if conductor(Of) == f:
-            if Of.index_in(ZK) == I:
+            print Of.index_in(O)
+            if Of.index_in(O) == I:
                 print Of
                 orders.append(Of)
             else:
@@ -79,9 +81,9 @@ def ideals_of_norm(K,N):
                 current_factorisation = new_factorisation
             possible_factorisations += new_factorisation
 
-        current_conductors = []
+        current_ideals = []
         for P in possible_factorisations:
             for f in ideals:
-                current_conductors.append(f*P)
-        ideals = current_conductors
+                current_ideals.append(f*P)
+        ideals = current_ideals
     return ideals
