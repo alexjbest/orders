@@ -73,6 +73,7 @@ def order_of_index(O,I):
         Of = K.order(f.basis()) # Use ring_generators here?!
         if conductor(Of) == f:
             if Of.index_in(ZK) == I:
+                print Of
                 orders.append(Of)
             else:
                 raise Exception(str(Of) + " has index " + str(Of.index_in(ZK)) + " but " + str(f))
