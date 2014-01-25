@@ -37,19 +37,14 @@ def order_of_index(O,I):
 
     orders = []
     for f in possible_conductors:
-        #print f
-        #print f.basis()
-        Of = K.order(f.basis()) # Use ring_generators here?!
-        if conductor(Of) == f:
-            print Of.index_in(O)
-            if Of.index_in(O) == I:
-                print Of
-                orders.append(Of)
-            else:
-                raise Exception(str(Of) + " has index " + str(Of.index_in(ZK)) + " but " + str(f))
-    
+        print f
+        print f.basis()
+        cur_orders = orders_with_conductor_and_index(f, I)
+        if cur_orders:
+            orders += cur_orders
+        else:
+            print "No orders found with right index for method"
     return orders
-            
 
 def ideals_of_norm(K,N):
     # We use the factorisation of prime ideals to find all ideals with given norm N
@@ -87,3 +82,25 @@ def ideals_of_norm(K,N):
                 current_ideals.append(f*P)
         ideals = current_ideals
     return ideals
+
+def orders_with_conductor_and_index(f,I):
+    K = f.number_field()
+    Zk = K.maximal_order()
+    naive_O = K.order(f.basis()) # Use ring_generators here?!
+    if conductor(naive_O) == f:
+        if naive_O.index_in(Zk) == I:
+            return [naive_O]
+        else: # Still not clever enough!
+            orders = []
+            quo = Zk.free_module().quotient(naive_O.free_module())
+            r = quo.cardinality() / I
+            for a in quo:
+                if a.additive_order() == r:
+                    O = K.order(naive_O.gens() + [Zk(a.lift())])
+                    if not O in orders:
+                        orders.append(O)
+            return orders
+    else:
+        pass
+        #raise Exception("AAAH")
+    return []
