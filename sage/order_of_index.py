@@ -97,8 +97,9 @@ def orders_with_conductor_and_index(f,I):
             for a in quo:
                 if a.additive_order() == r:
                     O = K.order(naive_O.gens() + [Zk(a.lift())])
-                    if not O in orders:
-                        orders.append(O)
+                    if O.index_in(Zk) == I:
+                        if not O in orders:
+                            orders.append(O)
             return orders
     else:
         pass
