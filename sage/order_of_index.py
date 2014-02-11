@@ -26,24 +26,29 @@ def conductor(order):
     #print beta
     return K.ideal(list(beta))
 
-def order_of_index(O,I):
+def orders_of_index(O,I):
+    """
+    Returns a list of orders with the given index.
+    """
     K = O.fraction_field()
     ZK = K.maximal_order()
     R = Integers() # This may need to be different when relative orders are looked for.
 
-    # We find all ideals of norm I^2, which are all possibly conductors of O
-    possible_conductors = ideals_of_norm(K, I*I)
-    print [p.norm() for p in possible_conductors]
-
+    # We find all ideals of norm dividing I^2, which are all possibly conductors of our order.
+    possible_conductors = []
+    for d in divisors(I):
+        possible_conductors += ideals_of_norm(K, I*d)
+    
+    print possible_conductors
+    
     orders = []
     for f in possible_conductors:
-        print f
-        print f.basis()
+        #print f
+        #print f.basis()
         cur_orders = orders_with_conductor_and_index(f, I)
         if cur_orders:
             orders += cur_orders
-        else:
-            print "No orders found with right index for method"
+        print str(len(cur_orders)) + " order(s) found with right index."
     return orders
 
 def ideals_of_norm(K,N):
@@ -104,4 +109,36 @@ def orders_with_conductor_and_index(f,I):
     else:
         pass
         #raise Exception("AAAH")
+    return []
+
+def cocyclic_orders_of_index(O,I):
+    """
+    Returns a list of orders with the given index.
+    """
+    K = O.fraction_field()
+    ZK = K.maximal_order()
+    R = Integers() # This may need to be different when relative orders are looked for.
+
+    possible_conductors = ideals_of_norm(K, I*I)
+    
+    print possible_conductors
+    
+    orders = []
+    for f in possible_conductors:
+        q = ZK.free_module().quotient(f.free_module())
+        if q.ngens() == 2:
+            if q.gens()[0].order() == I: # ????
+                orders.append(cocyclic_order_with_conductor(f))
+        #print f
+        #print f.basis()
+    return orders
+
+def cocyclic_order_with_conductor(f):
+    K = f.number_field()
+    Zk = K.maximal_order()
+    O = K.order(f.basis()) # Use ring_generators here?!
+    if conductor(O) == f:
+        return O
+    else:
+        raise Exception("AAAH")
     return []
