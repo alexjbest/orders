@@ -2,29 +2,25 @@ def conductor(order):
     """
     Return the conductor of the order.
     """
+    
     K = order.fraction_field()
     R = Integers()
-    omega = K.maximal_order().basis()
-    n = len(omega) # K.degree()
+    ZK = K.maximal_order()
+    omega = ZK.basis()
+    n = order.rank()
     M = matrix(R.fraction_field(), nrows = n*n, ncols = n)
-
+    
     d = 1
     for i in range(n):
         for j in range(n):
-            coords = order.coordinates(omega[i]*omega[j])
+            coords = order.coordinates(ZK.gen(i)*ZK.gen(j))
             for k in range(n):
                 M[j*n + k, i] = coords[k]
-                d = lcm(d,coords[k].denominator())
-    #print M
-    #print d
+                d = lcm(d, coords[k].denominator())
     
-    H = M.hermite_form(include_zero_rows = False) # Paper defines this as dM hermite ?!
-    #print H
-    #print d*H.inverse()
+    H = (d * M).change_ring(R).hermite_form(include_zero_rows = False)
     
-    beta = vector(omega)*d*H.inverse()
-    #print beta
-    return K.ideal(list(beta))
+    return K.ideal(list(vector(omega) * d * H.inverse()))
 
 def orders_of_index(O,I):
     """
@@ -139,6 +135,5 @@ def cocyclic_order_with_conductor(f):
     O = K.order(f.basis()) # Use ring_generators here?!
     if conductor(O) == f:
         return O
-    else:
-        raise Exception("AAAH")
+    raise Exception("Order was not cocyclic.")
     return []
