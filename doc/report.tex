@@ -1,7 +1,22 @@
+% TODO list:
+% - Add sage and magma to refs.
+% - Include thanks?
+% - Fix ~ characters in magma code listing
+% - Consider sexifying report using something like tufte-latex/generally think about typography
+
+% Structure:
+% - Introduction
+% - Background
+% - Problem
+% - Applications to elliptics over Q
+% - Conclusion
+
+\documentclass[11pt,a4paper]{report}
+
 \author{Alex J. Best \\Supervised by Dr. Lassina Demb\'el\'e}
 \date{\today}
 \title{Finding orders with prescribed index in number fields}
-\documentclass[11pt,a4paper]{report}
+
 \usepackage{amsmath, amssymb, amsfonts, amsthm, hyperref, listings}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -37,21 +52,21 @@ breakatwhitespace=false,    % sets if automatic breaks should only happen at whi
 \maketitle
 \tableofcontents
 
-% TODO list:
-% - Add sage and magma to refs.
-% - Include thanks?
-% - Fix ~ characters in magma code listing
+\begin{abstract}
+We develop algorithms for performing computations within algebraic number theory.
+Specifically we give methods to obtain all orders in a given number field with a specified index.
+We also apply these techniques to problems relating to elliptic curves over the rational numbers.
 
-% Structure:
-% - Introduction
-% - Background
-% - Problem
-% - Applications to elliptics over Q
-% - Conclusion
+\smallskip
+\noindent \textbf{Keywords.} Number theory, algebraic number theory, elliptic curves, number fields.
+\end{abstract}
 
 \chapter{Introduction}
+This report details 
 
-This report details .
+We first go through the background material needed to motivate, define and work towards the goal of the project.
+Then we move on to the problems themselves and discuss the interest in studying them.
+After this we detail the techniques used to solve the problems considered.
 
 \chapter{Background material}
 
@@ -145,7 +160,12 @@ Also ???
 
 \chapter{Conclusion}
 
+
 \section{Further work}
+
+
+\section{Acknowledgements}
+First and foremost I would like to thank my supervisor Lassina for his excellent guidance while I undertook the project.
 
 \chapter{Appendix: Code}
 
