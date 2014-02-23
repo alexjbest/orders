@@ -3,6 +3,7 @@
 % - Include thanks?
 % - Fix ~ characters in magma code listing
 % - Consider sexifying report using something like tufte-latex/generally think about typography
+% - Be consistent with \colon and \mid
 
 % Structure:
 % - Introduction
@@ -11,7 +12,7 @@
 % - Applications to elliptics over Q
 % - Conclusion
 
-\documentclass[11pt,a4paper]{report}
+\documentclass[a4paper,abstracton]{scrreprt}
 
 \author{Alex J. Best \\Supervised by Dr. Lassina Demb\'el\'e}
 \date{\today}
@@ -48,13 +49,19 @@ breaklines=true,        % sets automatic line breaking
 breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
 }
 
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\renewcommand{\O}{\mathcal{O}}
+
 \begin{document}
 \maketitle
 \tableofcontents
 
 \begin{abstract}
 We develop algorithms for performing computations within algebraic number theory.
-Specifically we give methods to obtain all orders in a given number field with a specified index.
+Methods are developed to obtain all orders in a given number field with a specified index.
 We also apply these techniques to problems relating to elliptic curves over the rational numbers.
 
 \smallskip
@@ -62,7 +69,7 @@ We also apply these techniques to problems relating to elliptic curves over the 
 \end{abstract}
 
 \chapter{Introduction}
-This report details 
+This report focusses on the algorithmic solution of a problem from algebraic number theory and the interesting applications of such a solution.
 
 We first go through the background material needed to motivate, define and work towards the goal of the project.
 Then we move on to the problems themselves and discuss the interest in studying them.
@@ -72,17 +79,18 @@ After this we detail the techniques used to solve the problems considered.
 
 In this section we fix several definitions and important results from algebraic number theory and commutative algebra.
 These results are well known and are used throughout the rest of the report.
-There is also some necessary background for the applications to elliptic curves, this is introduced as we need it in section~\ref{sec:ell} however in order to keep this section as brief as possible.
+%There is also some necessary background for the applications to elliptic curves, this is introduced as we need it in section~\ref{sec:ell} however in order to keep this section as brief as possible.
 
 \section{Commutative algebra}
 
 
 \section{Algebraic number theory}
 
-Algebraic number theory can be thought of as beginning with the study of \emph{algebraic numbers}.
+Algebraic number theory begins with the study of \emph{algebraic numbers}.
 The subject as a whole now encompasses a huge amount of related mathematics, all involving the use of algebraic techniques to tackle number theoretic problems. %TODO ????
 
 \begin{defn}[Number field]
+A number field $K$ is a field that is also a finite dimensional $\QQ$-vector space.
 \end{defn}
 
 \begin{defn}[Order]
@@ -101,18 +109,18 @@ The aim of the project was to find a solution to the following problem, and more
 
 \begin{prob}
 Given an order $R$ of an absolute number field $K$ and an integer $I$ find the set
-\[\left\{ \mathcal{O}\subseteq R \mid \mathcal{O}\text{ is a suborder},\ [R:\mathcal{O}] = I\right\}.\]
+\[\left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R\colon\O] = I\right\}.\]
 \end{prob}
 
-To find a suborder we really mean compute a $\mathbb{Z}$ basis for the order, as such a basis defines an order completely.
+To find a suborder we really mean compute a $\ZZ$ basis for the order, as such a basis defines an order completely.
 
 \paragraph{}
 One very natural extension of the above problem is to consider relative extensions of number fields.
 More precisely we wish to study the following problem.
 
 \begin{prob} % TODO check this is really what I mean
-Given an extension of number fields $L|K$, a $\mathbb{Z}_K$-order $R$ of $\mathbb{Z}_L$ and an integer $I$ find the set
-\[\left\{ \mathcal{O}\subseteq R \mid \mathcal{O}\text{ is a $\mathbb{Z}_K$-suborder},\ [R:\mathcal{O}] = I\right\}.\]
+Given an extension of number fields $L|K$, a $\ZZ_K$-order $R$ of $\ZZ_L$ and an integer $I$ find the set
+\[\left\{ \O\subseteq R \mid \O\text{ is a $\ZZ_K$-suborder},\ [R\colon\O] = I\right\}.\]
 \end{prob}
 
 We now detail the steps leading up to a solution of the problem in increasing generality.
@@ -120,8 +128,8 @@ The solution is presented this way in order to motivate the ideas used in the mo
 
 \section{Quadratic number fields}
 
-It is well known \cite{} that the ring of integers of a quadratic field $K = \mathbb{Q}(\sqrt{d})$ for $d$ non-square always takes the form
-\[\mathbb{Z}_K = \mathbb{Z} + \mathbb{Z}\alpha,\text{ with } \alpha =\begin{cases}
+It is well known \cite{} that the ring of integers of a quadratic field $K = \QQ(\sqrt{d})$ for $d$ non-square always takes the form
+\[\ZZ_K = \ZZ + \ZZ\alpha,\text{ with } \alpha =\begin{cases}
 \sqrt{d}&\text{ if $d\equiv 2,3\pmod{4}$},\\
 \frac{1+\sqrt{d}}{2}&\text{ if $d\equiv 1\pmod{4}$}.
 \end{cases}\]
@@ -129,9 +137,9 @@ It is well known \cite{} that the ring of integers of a quadratic field $K = \ma
 Indeed there is so little room for manoeuvre here that we obtain the following result on the structure of an order in this case.
 
 \begin{prop}
-Every $\mathcal{O}$ of a quadratic number field is given by 
-\[\mathcal{O} = \mathbb{Z} + \mathbb{Z}m\alpha\]
-for some $m\in \mathbb{Z}$, $\alpha$ as above.
+Every order $\O$ of a quadratic number field is given by 
+\[\O = \ZZ + \ZZ m\alpha\]
+for some $m\in \ZZ$, $\alpha$ as above.
 \end{prop}
 
 
