@@ -1,4 +1,4 @@
-def conductor(order):
+def conductor(order): # Seems correct now
     """
     Return the conductor of the order.
     """
@@ -30,7 +30,7 @@ def orders_of_index(O,I):
     ZK = K.maximal_order()
     R = Integers() # This may need to be different when relative orders are looked for.
 
-    # We find all ideals of norm dividing I^2, which are all possibly conductors of our order.
+    # We find all ideals of norm dividing I^2 and divisible by I, which are all possibly conductors of our order.
     possible_conductors = []
     for d in divisors(I):
         possible_conductors += ideals_of_norm(K, I*d)
@@ -40,16 +40,16 @@ def orders_of_index(O,I):
     orders = []
     for f in possible_conductors:
         #print f
-        #print f.basis()
         cur_orders = orders_with_conductor_and_index(f, I)
         if cur_orders:
             orders += cur_orders
         print str(len(cur_orders)) + " order(s) found with right index."
     return orders
 
-def ideals_of_norm(K,N):
+def ideals_of_norm(K,N): # Correct?, could use less memory?
     # We use the factorisation of prime ideals to find all ideals with given norm N
     primes = dict() # primes[p][i] will contain all prime ideals with norm p^i.
+    ideals = [K.ideal(1)]
     for (p,e) in N.factor():
         #print str(p)+"^"+str(e)
         primes[p] = dict()
@@ -62,9 +62,6 @@ def ideals_of_norm(K,N):
             if v in primes[p]: # Otherwise the ideal is too small to be of use to us.
                 primes[p][v].append(P)
 
-    #print primes
-    ideals = [K.ideal(1)]
-    for (p,e) in N.factor():
         possible_factorisations = []
         for partition in Partitions(e, parts_in = primes[p].keys()):
             #print partition
@@ -117,7 +114,7 @@ def cocyclic_orders_of_index(O,I):
 
     possible_conductors = ideals_of_norm(K, I*I)
     
-    print possible_conductors
+    #print possible_conductors
     
     orders = []
     for f in possible_conductors:
