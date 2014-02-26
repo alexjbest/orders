@@ -2,13 +2,19 @@
 % - Add sage and magma to refs.
 % - Include thanks?
 % - Fix ~ characters in magma code listing
-% - Consider sexifying report using something like tufte-latex/generally think about typography
+% - Think about typography
 % - Be consistent with \colon and \mid
 
 % Structure:
 % - Introduction
 % - Background
 % - Problem
+% -- Statements
+% -- Quadratics
+% -- Cocyclics
+% -- Monogenics
+% -- General absolute
+% -- General relatives
 % - Applications to elliptics over Q
 % - Conclusion
 
@@ -65,47 +71,150 @@ Methods are developed to obtain all orders in a given number field with a specif
 We also apply these techniques to problems relating to elliptic curves over the rational numbers.
 
 \smallskip
-\noindent \textbf{Keywords.} Number theory, algebraic number theory, elliptic curves, number fields.
+\noindent \textbf{Keywords.} Number theory, algebraic number theory, elliptic curves, number fields, algorithms.
 \end{abstract}
 
 \chapter{Introduction}
-This report focusses on the algorithmic solution of a problem from algebraic number theory and the interesting applications of such a solution.
+This report focusses on the algorithmic solution of a problem arising from algebraic number theory and the other interesting situations to which this algorithm can be applied.
 
-We first go through the background material needed to motivate, define and work towards the goal of the project.
-Then we move on to the problems themselves and discuss the interest in studying them.
-After this we detail the techniques used to solve the problems considered.
+We first go through the background material needed to motivate, define and describe the solution of our problems in chapter~\ref{chap:background}.
+Then in section~\ref{sec:statements} we move on to the problems themselves and discuss the interest in studying them.
+After this in the rest of chapter~\ref{chap:prob} we detail the techniques used to solve the problems considered, starting with some special cases before moving onto more general results.
+Finally in section~\ref{sec:ell} we move on to some interesting applications of these methods to the study of elliptic curves.
 
 \chapter{Background material}
+\label{chap:background}
 
 In this section we fix several definitions and important results from algebraic number theory and commutative algebra.
-These results are well known and are used throughout the rest of the report.
+We assume only fairly basic knowledge of abstract algebra, such as the notions of groups, rings and fields.
+
+The results given here are well known and are used throughout the rest of the report.
 %There is also some necessary background for the applications to elliptic curves, this is introduced as we need it in section~\ref{sec:ell} however in order to keep this section as brief as possible.
 
 \section{Commutative algebra}
+We introduce several notions and results that will be useful to us throughout the report, proofs for those results not proved here can be found in many textbooks on commutative algebra, such as \cite{am} or \cite{matsumura}.
 
+All rings here are commutative with an identity element.
+\begin{defn}[Module]
+Given a ring $R$ we define an \emph{$R$-module} $M$ to be an abelian group under addition, with a scalar multiplication map $\cdot \colon R\times M \to M$ satisfying
+\begin{align*}
+1\cdot m &= m \; \forall m\in M \\
+r_1\cdot(r_2 \cdot m) &= (r_1r_2)\cdot m \; \forall r_1,r_2\in R,\; m\in M \\
+r\cdot(m_1 + m_2) &= r\cdot m_1 + r\cdot m_2 \; \forall r\in R, \; m_1,m_2\in M \\
+(r_1 + r_2)\cdot m &= r_1\cdot m + r_2\cdot m \; \forall r_1,r_2\in R, \; m_1\in M
+\end{align*}
+\end{defn}
+
+We often refer to elements of the ring $R$ as \emph{scalars}.
+
+From now on we will omit the notation $\cdot$ for scalar multiplication as it will be clear from context when the multiplication is taking place in the ring $R$ or on a module $M$.
+
+The most common modules we will use here will be $\ZZ$-modules such as:
+\begin{ex}
+
+\end{ex}
+In fact every abelian group can be given a $\ZZ$-module structure so of course they are ubiquitous in all commutative algebra, nevertheless it is useful to think of the modules used here in terms of $\ZZ$ rather than as abstract abelian groups.
+
+% TODO define submodule, product/sum
+
+We now define a property of modules that makes them easier to work with and importantly easier to do computations with.
+
+\begin{defn}[Finitely generated]
+An $R$-module $M$ is \emph{finitely} generated if there is a \emph{finite} set $B\subset M$ such that any $m\in M$ can be written as
+\[m = \sum_{b\in B} \alpha_b b\]
+for some coefficients $\alpha_b \in R$.
+\end{defn}
+
+\begin{defn}[Torsion submodule]
+The \emph{torsion submodule} $M_\text{tors}$ of an $R$-module $M$ is the set
+\[
+\{m\in M \mid \exists r \in R\setminus 0 \text{ s.t. } rm = 0\}.
+\]
+This is the set of elements that can be killed by a non-zero scalar.
+As implied by the name this is always submodule of $M$.
+\end{defn}
+
+A module $M$ is called a torsion module if $M_\text{tors} = M$, and torsion-free if $M_\text{tors} = 0$.
+
+% TODO generalise to module over PID
+% TODO direct sum/prod
+
+\begin{defn}[Rank of a $\ZZ$-module]
+Given a $\ZZ$-module $M$ we can always write $M = M_\text{tors} + \ZZ^r$ for some unique $r\in \ZZ_{\ge 0}$.
+This $r$ is called the \emph{rank} of the $\ZZ$-module.
+\end{defn}
+
+\begin{ex}
+\[M = \ZZ^2 = \{(a,b)\mid a,b\in \ZZ\}\]
+is a torsion free $\ZZ$ module with submodule
+\[N = 2\ZZ\times \ZZ = \{(2c,d) \mid c,d\in\ZZ\}.\]
+The quotient module
+\[M/N \cong (\ZZ/2\ZZ)\times \ZZ\]
+has torsion submodule equal to $\ZZ/2\ZZ$ and is of rank 1.
+\end{ex}
 
 \section{Algebraic number theory}
 
-Algebraic number theory begins with the study of \emph{algebraic numbers}.
-The subject as a whole now encompasses a huge amount of related mathematics, all involving the use of algebraic techniques to tackle number theoretic problems. %TODO ????
+Algebraic number began with the study of \emph{algebraic numbers} but has since expanded to encompass a huge amount of mathematics involving the use of algebraic techniques to tackle number theoretic problems. %TODO ????
+As above, more details about anything not proved here can be found in any of the many texts on algebraic number theory, for example \cite{neukirch}, \cite{lang}.
 
 \begin{defn}[Number field]
-A number field $K$ is a field that is also a finite dimensional $\QQ$-vector space.
+A \emph{number field} $K$ is a field that is also a finite dimensional $\QQ$-vector space.
 \end{defn}
+
+\begin{ex}\label{ex:quad}
+We write $\QQ(\sqrt{3})$ for the smallest field containing both $\QQ$ and $\sqrt{3}$, it is clear that the set
+\[
+\{a + b\sqrt{3}\colon a,b \in \QQ\}
+\]
+must be contained in such a field.
+But we can also see that this set is closed under addition, subtraction, multiplication and non-zero division, and hence this set is the field $\QQ(\sqrt{3})$.
+
+Here we see that $\QQ(\sqrt{3})$ has dimension 2 as a vector space over $\QQ$.
+\end{ex}
+
+\begin{defn}
+The dimension of a number field $K$ as a $\QQ$ vector space is called the \emph{degree} of $K$.
+
+We say that number fields of degree 2, such as in example~\ref{ex:quad} above are \emph{quadratic}.
+Similarly degree 3 number fields are called \emph{cubic}.
+\end{defn}
+
+The following few definitions are central to the whole problem.
+
+We can see that a number field will often have a large number of subrings, which may be of interest to us, however not all subrings are as nice as we would like them to be.
+So we distinguish some subrings that have desirable properties and single them out for study.
 
 \begin{defn}[Order]
+An \emph{order} of a number field $K$ is a subring of $K$ that is finitely generated as a $\ZZ$-module, and of rank equal to the degree of $K$ (this is the maximal rank).
 \end{defn}
+
+%TODO finite basis
 
 \begin{defn}[Ring of integers]
+The \emph{ring of integers}, denoted $\ZZ_K$, of a number field $K$ is the unique maximal order.
 \end{defn}
 
+The terminology for this ring comes from the fact that its behaviour is analogous to the way $\ZZ$ behaves inside $\QQ$.
+
+\begin{defn}[Index]
+Given two $R$-modules $M \subset N$ the index of $M$ in $N$, denoted $[N\colon M]$ is the size of the quotient abelian group, ignoring the module structure.
+\end{defn}
+
+We can use the notion of index in a variety of situations.
+
+\begin{ex}
+\[[\ZZ\cdot 1 + \ZZ\cdot \sqrt{2} \colon \ZZ \cdot 1 + \ZZ \cdot 2\sqrt{2}] = 2.\]
+\end{ex}
 
 We are now ready to state in precise terms the project aimed to solve and to detail the methods used in its solution.
 
 \chapter{The problem}
+\label{chap:prob}
 \section{Statement}
+\label{sec:statements}
 
-The aim of the project was to find a solution to the following problem, and moreover to find an algorithmic solution that works efficiently.
+The aim of the project was to find a general method to solve the following problem, and moreover to find efficient algorithms that can solve the problem on any given inputs.
 
 \begin{prob}
 Given an order $R$ of an absolute number field $K$ and an integer $I$ find the set
@@ -123,29 +232,48 @@ Given an extension of number fields $L|K$, a $\ZZ_K$-order $R$ of $\ZZ_L$ and an
 \[\left\{ \O\subseteq R \mid \O\text{ is a $\ZZ_K$-suborder},\ [R\colon\O] = I\right\}.\]
 \end{prob}
 
-We now detail the steps leading up to a solution of the problem in increasing generality.
-The solution is presented this way in order to motivate the ideas used in the more general cases
+We now detail some methods to solve this problem in increasing generality.
 
 \section{Quadratic number fields}
 
-It is well known \cite{} that the ring of integers of a quadratic field $K = \QQ(\sqrt{d})$ for $d$ non-square always takes the form
+Quadratic number fields are the simplest non-trivial number fields and they have a large amount of structure which can often make them easier to work with than more general number fields.
+
+It is well known \cite{lang} that the ring of integers of a quadratic field $K = \QQ(\sqrt{d})$ for $d$ non-square always takes the form
 \[\ZZ_K = \ZZ + \ZZ\alpha,\text{ with } \alpha =\begin{cases}
 \sqrt{d}&\text{ if $d\equiv 2,3\pmod{4}$},\\
 \frac{1+\sqrt{d}}{2}&\text{ if $d\equiv 1\pmod{4}$}.
 \end{cases}\]
 
-Indeed there is so little room for manoeuvre here that we obtain the following result on the structure of an order in this case.
+Indeed there is so little room for manoeuvre here that the following result on the structure of an order holds in this case.
 
 \begin{prop}
-Every order $\O$ of a quadratic number field is given by 
-\[\O = \ZZ + \ZZ m\alpha\]
-for some $m\in \ZZ$, $\alpha$ as above.
+Every order $\O$ of a quadratic number field can be expressed as
+\[\O = \ZZ + \ZZ f\alpha\]
+for some $f\in \ZZ$, $\alpha$ as above.
 \end{prop}
+
+For a proof see \cite[pp. 133--134]{cox}.
+
+\begin{defn}
+The $f$ appearing in the above proposition is called the \emph{conductor} of the order $\O$.
+Later we shall abuse this definition slightly by redefining the conductor to generalise this concept.
+\end{defn}
+
+Now it is clear that
+\[
+[\ZZ + \ZZ\alpha \colon \ZZ + \ZZ f \alpha] = |\ZZ/f\ZZ| = |f|.
+\]
+So we have an incredibly simple solution for quadratic number fields, there is only one order of %TODO make sure we get the solution to match the problem statement! arbitrary starting order!
+
+\section{Monogenic orders}
+
+
+\section{Cocyclic orders}
 
 
 \section{Absolute number fields}
 
-We originally hoped that the correspondence between suborders and their conductors that exists in the quadratic case (Theorem \ref{thm:corr}) could be generalised to higher degree number fields.
+We originally hoped that the correspondence between suborders and their conductors that exists in the quadratic case (theorem \ref{thm:coresp}) could be generalised to higher degree number fields.
 However the direct generalisations of this result fail to hold even in degree 3 number fields.
 We now give examples of some results that would be good for our purposes if true and explicit counter examples for each of them.
 % TODO list some generalisations here
@@ -173,7 +301,8 @@ Also ???
 
 
 \section{Acknowledgements}
-First and foremost I would like to thank my supervisor Lassina for his excellent guidance while I undertook the project.
+First and foremost I would like to thank Lassina Demb\'el\'e for his excellent guidance while I undertook the project.
+%I am also grateful
 
 \chapter{Appendix: Code}
 
