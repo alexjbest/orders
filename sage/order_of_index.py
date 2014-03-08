@@ -134,3 +134,50 @@ def cocyclic_order_with_conductor(f):
         return O
     raise Exception("Order was not cocyclic.")
     return []
+
+def expressions_as_product(n,k):
+    if k == 1:
+        return [[n]]
+    exps = []
+    for d in divisors(n):
+        for se in expressions_as_product(n/d,k-1):
+            exps.append(se + [d])
+    return exps
+
+def hnf_matrices_with_det(I,n):
+    matrices = []
+    for exp in expressions_as_product(I,n):
+        mats_for_exp = [diagonal_matrix(ZZ,n,exp)]
+        for i in range(1,n):
+            d = exp[i]
+            cur_matrices = []
+            for j in range(d**i):
+                if d == 1:
+                    digi = [0 for l in range(i)]
+                else:
+                    digi = Integer(j).digits(base=d,padto=i)
+                for m in mats_for_exp:
+                    cur_matrices.append(copy(m))
+                    for k in range(i):
+                        cur_matrices[-1][k,i] = digi[k]
+            mats_for_exp = cur_matrices
+        matrices += mats_for_exp
+    return matrices
+
+def orders_of_index_via_hnf(O,I):
+    n = O.rank()
+    K = O.fraction_field()
+    orders = []
+    for h in hnf_matrices_with_det(I,n):
+        #if not h.row(0).list() == [1] + [0 for i in range(n-1)]:
+        #    continue
+        try:
+            o = sage.rings.number_field.order.absolute_order_from_module_generators([sum([r[i]*O.gen(i) for i in range(n)]) for r in h.rows()])
+            #o = sage.rings.number_field.order.absolute_order_from_module_generators([O(r) for r in h.rows()])
+            if o.index_in(O) == I:
+                orders.append(o)
+            else:
+                print "hmm"
+        except:
+            pass
+    return orders
