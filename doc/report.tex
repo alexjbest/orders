@@ -21,7 +21,7 @@
 \documentclass[a4paper,abstracton]{scrreprt}
 
 \author{Alex J. Best \\Supervised by Dr. Lassina Demb\'el\'e}
-\date{\today}
+\date{2014}
 \title{Finding orders with prescribed index in number fields}
 
 \usepackage{amsmath, amssymb, amsfonts, amsthm, hyperref, listings}
@@ -63,7 +63,6 @@ breakatwhitespace=false,    % sets if automatic breaks should only happen at whi
 
 \begin{document}
 \maketitle
-\tableofcontents
 
 \begin{abstract}
 We develop algorithms for performing computations within algebraic number theory.
@@ -74,8 +73,11 @@ We also apply these techniques to problems relating to elliptic curves over the 
 \noindent \textbf{Keywords.} Number theory, algebraic number theory, elliptic curves, number fields, algorithms.
 \end{abstract}
 
+\tableofcontents
+
 \chapter{Introduction}
-This report focusses on the algorithmic solution of a problem arising from algebraic number theory and the other interesting situations to which this algorithm can be applied.
+This report deals with the algorithmic solution of a problem arising from algebraic number theory. 
+Other interesting situations to which this algorithm can be applied are also discussed.
 
 We first go through the background material needed to motivate, define and describe the solution of our problems in chapter~\ref{chap:background}.
 Then in section~\ref{sec:statements} we move on to the problems themselves and discuss the interest in studying them.
@@ -113,8 +115,12 @@ The most common modules we will use here will be $\ZZ$-modules such as:
 \begin{ex}
 
 \end{ex}
-In fact every abelian group can be given a $\ZZ$-module structure so of course they are ubiquitous in all commutative algebra, nevertheless it is useful to think of the modules used here in terms of $\ZZ$ rather than as abstract abelian groups.
+In fact every abelian group can be given a $\ZZ$-module structure so of course they are ubiquitous in all commutative algebra, nevertheless it is useful to think of the modules used here in terms of $\ZZ$ rather than as abstract abelian groups.\\
 
+\begin{defn}
+A \emph{submodule} $N$ of a module $M$ is a module whose elements all belong to $M$ and whose operations are the same as those from $M$ on the elements on $N$.\\
+Given two $R$-modules $M_1$ and $M_2$ we define their direct sum (denoted $\oplus$) to be the module with element set $M_1 \times M_2$ and operations given by the operations of $M_1$ and $M_2$ performed elementwise.
+\end{defn}
 % TODO define submodule, product/sum
 
 We now define a property of modules that makes them easier to work with and importantly easier to do computations with.
@@ -140,7 +146,7 @@ A module $M$ is called a torsion module if $M_\text{tors} = M$, and torsion-free
 % TODO direct sum/prod
 
 \begin{defn}[Rank of a $\ZZ$-module]
-Given a $\ZZ$-module $M$ we can always write $M = M_\text{tors} + \ZZ^r$ for some unique $r\in \ZZ_{\ge 0}$.
+Given a $\ZZ$-module $M$ we can always write $M = M_\text{tors} \oplus \ZZ^r$ for some unique $r\in \ZZ_{\ge 0}$.
 This $r$ is called the \emph{rank} of the $\ZZ$-module.
 \end{defn}
 
@@ -201,12 +207,17 @@ The terminology for this ring comes from the fact that its behaviour is analogou
 Given two $R$-modules $M \subset N$ the index of $M$ in $N$, denoted $[N\colon M]$ is the size of the quotient abelian group, ignoring the module structure.
 \end{defn}
 
-We can use the notion of index in a variety of situations.
+We can use the notion of index in a variety of situations, such as considering the index of a module in another, the index of a module in a ring, etc.
 
 \begin{ex}
 \[[\ZZ\cdot 1 + \ZZ\cdot \sqrt{2} \colon \ZZ \cdot 1 + \ZZ \cdot 2\sqrt{2}] = 2.\]
 \end{ex}
 
+\section{Elliptic curves}
+We now introduce the background material relevant to elliptic curves, one of the intended applications of these methods.
+This is not required for chapter~\ref{chap:prob}, but section~\ref{sec:ell} uses these ideas heavily.
+
+~\\
 We are now ready to state in precise terms the project aimed to solve and to detail the methods used in its solution.
 
 \chapter{The problem}
@@ -221,9 +232,8 @@ Given an order $R$ of an absolute number field $K$ and an integer $I$ find the s
 \[\left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R\colon\O] = I\right\}.\]
 \end{prob}
 
-To find a suborder we really mean compute a $\ZZ$ basis for the order, as such a basis defines an order completely.
+To find a suborder we really mean compute a $\ZZ$ basis for the order, as such a basis defines an order completely.\\
 
-\paragraph{}
 One very natural extension of the above problem is to consider relative extensions of number fields.
 More precisely we wish to study the following problem.
 
@@ -263,12 +273,15 @@ Now it is clear that
 \[
 [\ZZ + \ZZ\alpha \colon \ZZ + \ZZ f \alpha] = |\ZZ/f\ZZ| = |f|.
 \]
-So we have an incredibly simple solution for quadratic number fields, there is only one order of %TODO make sure we get the solution to match the problem statement! arbitrary starting order!
+So we have an incredibly simple solution for quadratic number fields, there is only one order of a given index.%TODO make sure we get the solution to match the problem statement! arbitrary starting order!
 
 \section{Monogenic orders}
 
 
 \section{Cocyclic orders}
+\begin{thm}
+\label{thm:coresp}
+\end{thm}
 
 
 \section{Absolute number fields}
@@ -282,6 +295,13 @@ We now give examples of some results that would be good for our purposes if true
 \section{Relative number fields}
 
 
+\section{Practical speed-ups}
+Though the methods described above are the best we have been able to obtain so far from a theoretical perspective, when it comes down to computing examples in the real world there are a number of ideas and techniques we can use to reduce the time taken.
+
+\subsection{Parallelisation}
+Several stages of the algorithm for general orders can be naturally parallelised reducing the total time taken linearly with the number of threads used.
+For example once the set of potential conductors has been computed the orders to which they correspond can all be computed in parallel.
+
 
 \chapter{Applications}
 
@@ -293,6 +313,29 @@ Also ???
 
 \section{Elliptic curves}
 \label{sec:ell}
+Given an elliptic curve over the rationals in long Weierstrass form such as
+\[E_l \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_1x + a_0\text{ with }a_i \in \QQ\]
+we can find an isomorphic curve $E \colon y^2 = x^3 + $.
+
+Given such a curve we can define a number field to help us study the torsion points of $E$.
+\begin{defn}
+For a prime $p$ the $p$-division field of $E$, denoted $\QQ(E[p])$ is obtained by taking all points $(x,y) \in E[p]\setminus 0\subset \QQ^2$ and adjoining each of their coordinates $x$ and $y$ to $\QQ$.
+\end{defn}
+As the torsion subgroup $E_\text{tors}$ is always finite there are at most finitely many elements that need adjoining to $\QQ$, so this field is fairly nice.
+
+\minisec{}
+Assuming that the curve $E$ has no rational 2-torsion points we must have no rational solution to $f = x^3 + ??$ and hence the polynomial is irreducible over $\QQ$.
+We can then see that we have
+\[
+\QQ(E[2]) \cong \QQ[x]/(f).
+\]
+Letting $\alpha$ be the image of $x$ in the above quotient, we can see that
+\[
+\ZZ[\alpha]\subset \QQ(\alpha)
+\]
+is an order of $\QQ(\alpha)$.
+
+
 
 \chapter{Conclusion}
 
@@ -302,7 +345,7 @@ Also ???
 
 \section{Acknowledgements}
 First and foremost I would like to thank Lassina Demb\'el\'e for his excellent guidance while I undertook the project.
-%I am also grateful
+I am also grateful to John Cremona for allowing me access to one of the Warwick number theory group's servers to run computations on.
 
 \chapter{Appendix: Code}
 
