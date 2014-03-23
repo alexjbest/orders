@@ -1,9 +1,9 @@
 % TODO list:
 % - Add sage and magma to refs.
-% - Include thanks?
-% - Fix ~ characters in magma code listing
+% - Include thanks? anyone else?
+% - Fix ~ characters in magma code listing/don't have a code listing
 % - Think about typography
-% - Be consistent with \colon and \mid
+% - Be consistent with \colon and \mid, use mid too many colons already
 
 % Structure:
 % - Introduction
@@ -11,6 +11,7 @@
 % - Problem
 % -- Statements
 % -- Quadratics
+% -- Cubics?
 % -- Cocyclics
 % -- Monogenics
 % -- General absolute
@@ -29,11 +30,11 @@
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
 
+\theoremstyle{definition}
 \newtheorem{thm}{Theorem}
 \newtheorem{lem}{Lemma}
 \newtheorem{cor}{Corollary}
 \newtheorem{prop}{Proposition}
-\theoremstyle{definition}
 \newtheorem{defn}{Definition}
 \newtheorem{defns}{Definitions}
 \newtheorem{prob}{Problem}
@@ -55,11 +56,13 @@ breaklines=true,        % sets automatic line breaking
 breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
 }
 
-\newcommand{\QQ}{\mathbb{Q}}
-\newcommand{\RR}{\mathbb{R}}
-\newcommand{\CC}{\mathbb{C}}
-\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbf{Q}}
+\newcommand{\RR}{\mathbf{R}}
+\newcommand{\CC}{\mathbf{C}}
+\newcommand{\ZZ}{\mathbf{Z}}
 \renewcommand{\O}{\mathcal{O}}
+
+\DeclareMathOperator{\Orders}{Orders}
 
 \begin{document}
 \maketitle
@@ -91,7 +94,6 @@ In this section we fix several definitions and important results from algebraic 
 We assume only fairly basic knowledge of abstract algebra, such as the notions of groups, rings and fields.
 
 The results given here are well known and are used throughout the rest of the report.
-%There is also some necessary background for the applications to elliptic curves, this is introduced as we need it in section~\ref{sec:ell} however in order to keep this section as brief as possible.
 
 \section{Commutative algebra}
 We introduce several notions and results that will be useful to us throughout the report, proofs for those results not proved here can be found in many textbooks on commutative algebra, such as \cite{am} or \cite{matsumura}.
@@ -100,10 +102,10 @@ All rings here are commutative with an identity element.
 \begin{defn}[Module]
 Given a ring $R$ we define an \emph{$R$-module} $M$ to be an abelian group under addition, with a scalar multiplication map $\cdot \colon R\times M \to M$ satisfying
 \begin{align*}
-1\cdot m &= m \; \forall m\in M \\
-r_1\cdot(r_2 \cdot m) &= (r_1r_2)\cdot m \; \forall r_1,r_2\in R,\; m\in M \\
-r\cdot(m_1 + m_2) &= r\cdot m_1 + r\cdot m_2 \; \forall r\in R, \; m_1,m_2\in M \\
-(r_1 + r_2)\cdot m &= r_1\cdot m + r_2\cdot m \; \forall r_1,r_2\in R, \; m_1\in M
+1\cdot m &= m \; &&\forall m\in M \\
+r_1\cdot(r_2 \cdot m) &= (r_1r_2)\cdot m \; &&\forall r_1,r_2\in R,\; m\in M \\
+r\cdot(m_1 + m_2) &= r\cdot m_1 + r\cdot m_2 \; &&\forall r\in R, \; m_1,m_2\in M \\
+(r_1 + r_2)\cdot m &= r_1\cdot m + r_2\cdot m \; &&\forall r_1,r_2\in R, \; m_1\in M
 \end{align*}
 \end{defn}
 
@@ -121,7 +123,11 @@ In fact every abelian group can be given a $\ZZ$-module structure so of course t
 A \emph{submodule} $N$ of a module $M$ is a module whose elements all belong to $M$ and whose operations are the same as those from $M$ on the elements on $N$.\\
 Given two $R$-modules $M_1$ and $M_2$ we define their direct sum (denoted $\oplus$) to be the module with element set $M_1 \times M_2$ and operations given by the operations of $M_1$ and $M_2$ performed elementwise.
 \end{defn}
-% TODO define submodule, product/sum
+% TODO define submodule, product/sum, quotient
+
+\begin{defn}[Index]
+Given two $R$-modules $M \subset N$ the index of $M$ in $N$, denoted $[N\colon M]$ is the size of the quotient abelian group, ignoring the module structure.
+\end{defn}
 
 We now define a property of modules that makes them easier to work with and importantly easier to do computations with.
 
@@ -171,7 +177,7 @@ A \emph{number field} $K$ is a field that is also a finite dimensional $\QQ$-vec
 \begin{ex}\label{ex:quad}
 We write $\QQ(\sqrt{3})$ for the smallest field containing both $\QQ$ and $\sqrt{3}$, it is clear that the set
 \[
-\{a + b\sqrt{3}\colon a,b \in \QQ\}
+\{a + b\sqrt{3}\mid a,b \in \QQ\}
 \]
 must be contained in such a field.
 But we can also see that this set is closed under addition, subtraction, multiplication and non-zero division, and hence this set is the field $\QQ(\sqrt{3})$.
@@ -186,9 +192,10 @@ We say that number fields of degree 2, such as in example~\ref{ex:quad} above ar
 Similarly degree 3 number fields are called \emph{cubic}.
 \end{defn}
 
+\minisec{}
 The following few definitions are central to the whole problem.
 
-We can see that a number field will often have a large number of subrings, which may be of interest to us, however not all subrings are as nice as we would like them to be.
+A number field will often have a large number of subrings, which may be of interest to us, however not all subrings are as nice as we would like them to be.
 So we distinguish some subrings that have desirable properties and single them out for study.
 
 \begin{defn}[Order]
@@ -203,11 +210,7 @@ The \emph{ring of integers}, denoted $\ZZ_K$, of a number field $K$ is the uniqu
 
 The terminology for this ring comes from the fact that its behaviour is analogous to the way $\ZZ$ behaves inside $\QQ$.
 
-\begin{defn}[Index]
-Given two $R$-modules $M \subset N$ the index of $M$ in $N$, denoted $[N\colon M]$ is the size of the quotient abelian group, ignoring the module structure.
-\end{defn}
-
-We can use the notion of index in a variety of situations, such as considering the index of a module in another, the index of a module in a ring, etc.
+We can use the notion of index in a variety of situations here, such as considering the index of a module in another, the index of a module in a ring, etc.
 
 \begin{ex}
 \[[\ZZ\cdot 1 + \ZZ\cdot \sqrt{2} \colon \ZZ \cdot 1 + \ZZ \cdot 2\sqrt{2}] = 2.\]
@@ -215,9 +218,41 @@ We can use the notion of index in a variety of situations, such as considering t
 
 \section{Elliptic curves}
 We now introduce the background material relevant to elliptic curves, one of the intended applications of these methods.
-This is not required for chapter~\ref{chap:prob}, but section~\ref{sec:ell} uses these ideas heavily.
+This is not required for the main problem discussed in chapter~\ref{chap:prob}, but section~\ref{sec:ell} uses these ideas heavily.
 
-~\\
+\begin{defn}[Group law]
+\end{defn}
+With this definition of addition the set of points of $E$ over some field $K$ is a group, and moreover this group is abelian.
+
+As remarked above any abelian group can be regarded as a $\ZZ$-module $M$ in a natural way by letting 
+\[n\cdot z = \underbrace{z + z + \cdots + z}_\text{$n$ times},\text{ for } n\in\ZZ_{\ge 0},\ z\in M\]
+and letting $n\cdot z = (-n)\cdot(-z)$ for negative $n\in \ZZ$.
+With this idea in mind $E(K)_\text{tors}$ is the set of points of $E$ defined over $K$ that can be added to themselves some finite number of times to get the point at infinity.
+This is often called the \emph{torsion subgroup} of $E$.
+It turns out that when $K = \QQ$ there are only a finite number of groups that $E(\QQ)_\text{tors}$ can be.
+
+\begin{thm}[Mazur's torsion theorem]
+\label{thm:tors}
+Given an elliptic curve $E$ defined over the rationals $E(\QQ)_\text{tors}$ is one of:
+\[
+\ZZ/i\ZZ,\text{ for } i \in\{1,2,\ldots,9,10,12\}\text{ or }
+\ZZ/2\ZZ \times \ZZ/2i\ZZ,\text{ for } i \in\{1,2,3,4\}.
+\]
+\end{thm}
+
+In fact similar results have been obtained for quadratic fields too, for more detail on what is known about the torsion subgroup of an elliptic curve over a number field see \cite{sutherland}.
+
+Sometimes it is necessary to talk about smaller subgroups of this group whose elements have order dividing some fixed $n$ and so we introduce the following definition.
+\begin{defn}[$n$-division points]
+For some $n\in\ZZ$ the set of \emph{$n$-division points} of $E$ over $K$ is
+\[
+E(K)[n] = \{P\in E(K) \mid nP = 0\}.
+\]
+\end{defn}
+%If $K = \QQ$ we can see from theorem~\ref{thm:tors} that $E(\QQ)[n]$ is likely to be interesting for $n\in\{2,3,4\}$.
+
+
+\minisec{}
 We are now ready to state in precise terms the project aimed to solve and to detail the methods used in its solution.
 
 \chapter{The problem}
@@ -232,8 +267,14 @@ Given an order $R$ of an absolute number field $K$ and an integer $I$ find the s
 \[\left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R\colon\O] = I\right\}.\]
 \end{prob}
 
-To find a suborder we really mean compute a $\ZZ$ basis for the order, as such a basis defines an order completely.\\
+To find a suborder we really mean compute a $\ZZ$ basis for the order, as such a basis defines an order completely.
+With $R$ and $I$ as in the proposition we introduce the following notation to refer to the set we are looking for.
 
+\begin{nota}
+\[\Orders(R,I) = \left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R\colon\O] = I\right\}.\]
+\end{nota}
+
+\minisec{}
 One very natural extension of the above problem is to consider relative extensions of number fields.
 More precisely we wish to study the following problem.
 
@@ -242,11 +283,12 @@ Given an extension of number fields $L|K$, a $\ZZ_K$-order $R$ of $\ZZ_L$ and an
 \[\left\{ \O\subseteq R \mid \O\text{ is a $\ZZ_K$-suborder},\ [R\colon\O] = I\right\}.\]
 \end{prob}
 
-We now detail some methods to solve this problem in increasing generality.
+We now detail some methods to solve this problem in varying generality.
 
 \section{Quadratic number fields}
 
 Quadratic number fields are the simplest non-trivial number fields and they have a large amount of structure which can often make them easier to work with than more general number fields.
+As we will see, in this case the solution of our problem is very simple.
 
 It is well known \cite{lang} that the ring of integers of a quadratic field $K = \QQ(\sqrt{d})$ for $d$ non-square always takes the form
 \[\ZZ_K = \ZZ + \ZZ\alpha,\text{ with } \alpha =\begin{cases}
@@ -257,6 +299,7 @@ It is well known \cite{lang} that the ring of integers of a quadratic field $K =
 Indeed there is so little room for manoeuvre here that the following result on the structure of an order holds in this case.
 
 \begin{prop}
+\label{prop:quadord}
 Every order $\O$ of a quadratic number field can be expressed as
 \[\O = \ZZ + \ZZ f\alpha\]
 for some $f\in \ZZ$, $\alpha$ as above.
@@ -271,20 +314,74 @@ Later we shall abuse this definition slightly by redefining the conductor to gen
 
 Now it is clear that
 \[
-[\ZZ + \ZZ\alpha \colon \ZZ + \ZZ f \alpha] = |\ZZ/f\ZZ| = |f|.
+[\ZZ + \ZZ\alpha\; \colon \ZZ + \ZZ f \alpha] = |\ZZ/f\ZZ| = |f|.
 \]
-So we have an incredibly simple solution for quadratic number fields, there is only one order of a given index.%TODO make sure we get the solution to match the problem statement! arbitrary starting order!
+So we have an incredibly simple solution for quadratic number fields, there is exactly one order of a given index in $\ZZ_K$.
+Hence in the quadratic case can say the following.
+
+\begin{prop}
+If $\ZZ_K = \ZZ + \ZZ\alpha$ and $R = \ZZ + \ZZ m\alpha$ then
+\[
+\Orders(R, I) = \{\ZZ + \ZZ Im\alpha\}.
+\]
+\end{prop}
+\begin{proof}
+This follows immediately from the above description of orders of $K$ (proposition~\ref{prop:quadord}).
+\end{proof}
+%TODO make sure we get the solution to match the problem statement! arbitrary starting order!
+
+%TODO cubic????
 
 \section{Monogenic orders}
 
+We now look at a special class of orders that have been studied extensively by other authors.
+
+\begin{defn}[Monogenic order]
+An order of the form $\ZZ[\alpha]$ for some algebraic integer $\alpha$ is called \emph{monogenic}.
+\end{defn}
+
+%TODO explain niceness of monogenic orders etc
 
 \section{Cocyclic orders}
+
+We recall some definitions and results given by Johannes Brakenhoff in his thesis \cite{brakenhoff}.
+These will be helpful when considering the class of cocyclic orders, defined as follows.
+
+\begin{defn}[Cocyclic order]
+An order $\O$ of a number field $K$ is called \emph{cocyclic} if
+\[
+\ZZ_K/\O \cong \ZZ/m\ZZ,
+\]
+that is the set of cosets of $\O$ in the maximal order is a cyclic group.
+\end{defn}
+
+The following theorem which is a specialisation of \cite[Thm. 4.1]{brakenhoff} will allow us to find cocyclic orders very easily.
+
 \begin{thm}
 \label{thm:coresp}
+Let $K$ be a number field and fix some $m\in\ZZ$ then let
+\[
+W = \{\O \text{ an order of } K\mid \ZZ_K/\O \cong \ZZ/m\ZZ\}
+\]
+and
+\[
+V = \{ I \text{ an ideal of }\ZZ_K \mid \ZZ_K/I \cong (\ZZ/m\ZZ)^2 \}.
+\]
+Then there is a bijection between $V$ and $W$ given by
+\begin{align*}
+f\colon W &\to V\\
+\O &\mapsto (\ZZ_K\colon \O)
+\end{align*}
+and
+\begin{align*}
+g\colon V&\to W\\
+I&\mapsto \ZZ + I.
+\end{align*}
 \end{thm}
 
+The set $W$ above is the set of cocyclic orders of index $m$ and so we can find them by finding the corresponding ideals of $V$ and then simply adding in $\ZZ$.
 
-\section{Absolute number fields}
+\section{General orders in absolute number fields}
 
 We originally hoped that the correspondence between suborders and their conductors that exists in the quadratic case (theorem \ref{thm:coresp}) could be generalised to higher degree number fields.
 However the direct generalisations of this result fail to hold even in degree 3 number fields.
@@ -318,10 +415,10 @@ Given an elliptic curve over the rationals in long Weierstrass form such as
 we can find an isomorphic curve $E \colon y^2 = x^3 + $.
 
 Given such a curve we can define a number field to help us study the torsion points of $E$.
-\begin{defn}
-For a prime $p$ the $p$-division field of $E$, denoted $\QQ(E[p])$ is obtained by taking all points $(x,y) \in E[p]\setminus 0\subset \QQ^2$ and adjoining each of their coordinates $x$ and $y$ to $\QQ$.
+\begin{defn}[$p$-division field]
+For a prime $p$ the $p$-division field of $E$, denoted $\QQ(E[p])$ is obtained by taking all points $(x,y) \in E(\QQ)[p]\setminus 0\subset \QQ^2$ and adjoining each of their coordinates $x$ and $y$ to $\QQ$.
 \end{defn}
-As the torsion subgroup $E_\text{tors}$ is always finite there are at most finitely many elements that need adjoining to $\QQ$, so this field is fairly nice.
+As the torsion subgroup $E(\QQ)_\text{tors}$ is always finite there are at most finitely many elements that need adjoining to $\QQ$, so this field is fairly nice.
 
 \minisec{}
 Assuming that the curve $E$ has no rational 2-torsion points we must have no rational solution to $f = x^3 + ??$ and hence the polynomial is irreducible over $\QQ$.
@@ -341,21 +438,22 @@ is an order of $\QQ(\alpha)$.
 
 
 \section{Further work}
-
+It seems fairly likely that other properties of the orders we are looking for could be used to speed up the algorithms given above and so further investigations into both special cases and the general cases could yield results.
+Further applications of these methods are certainly possible and it would be interesting to see what other areas these methods can be used in.
 
 \section{Acknowledgements}
 First and foremost I would like to thank Lassina Demb\'el\'e for his excellent guidance while I undertook the project.
 I am also grateful to John Cremona for allowing me access to one of the Warwick number theory group's servers to run computations on.
 
-\chapter{Appendix: Code}
+%\chapter{Appendix: Code}
 
-Much of what was done has been implemented in both the Sage and Magma and so we provide annotated source code listings for the algorithms in both languages below.
+%Much of what was done has been implemented in both the Sage and Magma and so we provide annotated source code listings for the algorithms in both languages below.
  
-\section{Sage}
-\lstinputlisting[language=Python]{../sage/order_of_index.py}
+%\section{Sage}
+%\lstinputlisting[language=Python]{../sage/order_of_index.py}
 
-\section{Magma}
-\lstinputlisting[language=Pascal]{../magma/orderofindex.m}
+%\section{Magma}
+%\lstinputlisting[language=Pascal]{../magma/orderofindex.m}
 
 
 \nocite{*}
