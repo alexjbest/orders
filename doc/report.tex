@@ -117,9 +117,9 @@ The most common modules we will use here will be $\ZZ$-modules such as:
 \begin{ex}
 
 \end{ex}
-In fact every abelian group can be given a $\ZZ$-module structure so of course they are ubiquitous in all commutative algebra, nevertheless it is useful to think of the modules used here in terms of $\ZZ$ rather than as abstract abelian groups.\\
+In fact every abelian group can be given a $\ZZ$-module structure so of course they are ubiquitous in all commutative algebra, nevertheless it is useful to think of the modules used here in terms of $\ZZ$ rather than as abstract abelian groups.
 
-\begin{defn}
+\begin{defn}[Submodule]
 A \emph{submodule} $N$ of a module $M$ is a module whose elements all belong to $M$ and whose operations are the same as those from $M$ on the elements on $N$.\\
 Given two $R$-modules $M_1$ and $M_2$ we define their direct sum (denoted $\oplus$) to be the module with element set $M_1 \times M_2$ and operations given by the operations of $M_1$ and $M_2$ performed elementwise.
 \end{defn}
@@ -159,7 +159,7 @@ This $r$ is called the \emph{rank} of the $\ZZ$-module.
 \begin{ex}
 \[M = \ZZ^2 = \{(a,b)\mid a,b\in \ZZ\}\]
 is a torsion free $\ZZ$ module with submodule
-\[N = 2\ZZ\times \ZZ = \{(2c,d) \mid c,d\in\ZZ\}.\]
+\[N = 2\ZZ\times \ZZ = \{(2c,0) \mid c\in\ZZ\}.\]
 The quotient module
 \[M/N \cong (\ZZ/2\ZZ)\times \ZZ\]
 has torsion submodule equal to $\ZZ/2\ZZ$ and is of rank 1.
@@ -167,7 +167,7 @@ has torsion submodule equal to $\ZZ/2\ZZ$ and is of rank 1.
 
 \section{Algebraic number theory}
 
-Algebraic number began with the study of \emph{algebraic numbers} but has since expanded to encompass a huge amount of mathematics involving the use of algebraic techniques to tackle number theoretic problems. %TODO ????
+Algebraic number began with the study of algebraic numbers and their uses in solving diophantine equations but has since expanded to encompass a huge amount of mathematics involving the use of algebraic techniques to tackle number theoretic problems. %TODO ????
 As above, more details about anything not proved here can be found in any of the many texts on algebraic number theory, for example \cite{neukirch}, \cite{lang}.
 
 \begin{defn}[Number field]
@@ -185,7 +185,7 @@ But we can also see that this set is closed under addition, subtraction, multipl
 Here we see that $\QQ(\sqrt{3})$ has dimension 2 as a vector space over $\QQ$.
 \end{ex}
 
-\begin{defn}
+\begin{defn}[Degree of a number field]
 The dimension of a number field $K$ as a $\QQ$ vector space is called the \emph{degree} of $K$.
 
 We say that number fields of degree 2, such as in example~\ref{ex:quad} above are \emph{quadratic}.
@@ -249,8 +249,8 @@ For some $n\in\ZZ$ the set of \emph{$n$-division points} of $E$ over $K$ is
 E(K)[n] = \{P\in E(K) \mid nP = 0\}.
 \]
 \end{defn}
+Although by theorem~\ref{thm:tors} $E(\QQ)_\text{tors}$ cannot be very large it is still useful to consider the $n$-division points of a curve and we will use this group later.
 %If $K = \QQ$ we can see from theorem~\ref{thm:tors} that $E(\QQ)[n]$ is likely to be interesting for $n\in\{2,3,4\}$.
-
 
 \minisec{}
 We are now ready to state in precise terms the project aimed to solve and to detail the methods used in its solution.
@@ -340,10 +340,21 @@ We now look at a special class of orders that have been studied extensively by o
 An order of the form $\ZZ[\alpha]$ for some algebraic integer $\alpha$ is called \emph{monogenic}.
 \end{defn}
 
+Monogenic orders are easier to work with and are fairly common in algebraic number theory.
+The ease of computing with them comes from the fact that
+\[
+\ZZ[\alpha] = \ZZ + \ZZ\alpha + \ZZ\alpha^2 + \cdots + \ZZ\alpha^{n-1}
+\]
+and so $\{1,\alpha,\ldots,\alpha^{n-1}\}$ is a basis for $\ZZ[\alpha]$ as a $\ZZ$ module (here $n$ is $[K\colon \QQ]$).
+
 %TODO explain niceness of monogenic orders etc
 
-\section{Cocyclic orders}
+%TODO give examples of non-monogenic orders, orders with n-1 ring gens for any n??
 
+%TODO explain that in some ways idea was to generalise this to arbitrary orders
+
+\section{Cocyclic orders}
+\label{sec:cocyc}
 We recall some definitions and results given by Johannes Brakenhoff in his thesis \cite{brakenhoff}.
 These will be helpful when considering the class of cocyclic orders, defined as follows.
 
@@ -352,8 +363,21 @@ An order $\O$ of a number field $K$ is called \emph{cocyclic} if
 \[
 \ZZ_K/\O \cong \ZZ/m\ZZ,
 \]
-that is the set of cosets of $\O$ in the maximal order is a cyclic group.
+that is the quotient of the maximal order of the $K$ by $\O$ is a cyclic group.
 \end{defn}
+
+\begin{ex}
+\label{ex:cocyc}
+Let $K = \QQ[x]/(x^4 ) = \QQ(\alpha)$ be a number field and take
+\[
+\O = \ZZ + \ZZ3\alpha + \ZZ9\alpha^2 + \ZZ3\alpha^3.
+\]
+Then as $\ZZ_K = \ZZ[\alpha]$ we have
+\[
+\ZZ_K/\O \cong 
+\]
+and so $\O$ is cocyclic.
+\end{ex}
 
 The following theorem which is a specialisation of \cite[Thm. 4.1]{brakenhoff} will allow us to find cocyclic orders very easily.
 
@@ -379,7 +403,22 @@ I&\mapsto \ZZ + I.
 \end{align*}
 \end{thm}
 
+\begin{proof}\cite[Thm. 4.1, pp.???]{brakenhoff} %TODO 
+
+\end{proof}
+
 The set $W$ above is the set of cocyclic orders of index $m$ and so we can find them by finding the corresponding ideals of $V$ and then simply adding in $\ZZ$.
+
+However this is not a complete solution of the problem we wish to solve as not all orders of number fields are cocyclic. 
+
+\begin{ex}
+\label{ex:noncocyc}
+With $K = $ (as in \ref{ex:cocyc}) and $\O = \ZZ + 9\ZZ_K$ we have
+\[
+\ZZ_K/\O = 
+\]
+and so $\O$ is not cocyclic.
+\end{ex}
 
 \section{General orders in absolute number fields}
 
@@ -388,6 +427,13 @@ However the direct generalisations of this result fail to hold even in degree 3 
 We now give examples of some results that would be good for our purposes if true and explicit counter examples for each of them.
 % TODO list some generalisations here
 
+
+\subsection{The Hermite normal form}
+
+\subsection{The basic algorithm}
+
+\subsection{Making use of less general methods}
+Given the results discussed in \ref{sec:cocyc} we can improve the performance of the above algorithm.
 
 \section{Relative number fields}
 
@@ -398,20 +444,19 @@ Though the methods described above are the best we have been able to obtain so f
 \subsection{Parallelisation}
 Several stages of the algorithm for general orders can be naturally parallelised reducing the total time taken linearly with the number of threads used.
 For example once the set of potential conductors has been computed the orders to which they correspond can all be computed in parallel.
-
+Similarly the set of HNF matrices used can be computed in parallel and whether the modules they generate form rings or not can be checked simultaneously too.
 
 \chapter{Applications}
 
 Through the main problem itself is an interesting one which is worth studying in its own right we were also motivated to look at it by the potential applications to other questions within the same areas of mathematics.
 % TODO are there more apps?
 One of the most prominent areas in which a solution to the problem can be used is to answer questions about elliptic curves.
-How a solution to the problem considered above can be applied in this case is detailed below, along with results obtain from the application of our methods there.
-Also ???
+How a solution to the problem considered above can be applied in this case is detailed below, along with results obtained from the application of our methods there.
 
 \section{Elliptic curves}
 \label{sec:ell}
-Given an elliptic curve over the rationals in long Weierstrass form such as
-\[E_l \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_1x + a_0\text{ with }a_i \in \QQ\]
+Given an elliptic curve defined over the rationals in long Weierstrass form, for example
+\[E_l \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_5\text{ with }a_i \in \QQ,\]
 we can find an isomorphic curve $E \colon y^2 = x^3 + $.
 
 Given such a curve we can define a number field to help us study the torsion points of $E$.
@@ -431,7 +476,6 @@ Letting $\alpha$ be the image of $x$ in the above quotient, we can see that
 \ZZ[\alpha]\subset \QQ(\alpha)
 \]
 is an order of $\QQ(\alpha)$.
-
 
 
 \chapter{Conclusion}
