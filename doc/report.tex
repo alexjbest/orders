@@ -25,7 +25,7 @@
 \date{2014}
 \title{Finding orders with prescribed index in number fields}
 
-\usepackage{amsmath, amssymb, amsfonts, amsthm, hyperref, listings}
+\usepackage{amsmath, amssymb, amsfonts, amsthm, hyperref, listings, tikz}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
@@ -186,7 +186,7 @@ Here we see that $\QQ(\sqrt{3})$ has dimension 2 as a vector space over $\QQ$.
 \end{ex}
 
 \begin{defn}[Degree of a number field]
-The dimension of a number field $K$ as a $\QQ$ vector space is called the \emph{degree} of $K$.
+The dimension of a number field $K$ as a $\QQ$ vector space is called the \emph{degree} of $K$, denoted $[K:\QQ]$.
 
 We say that number fields of degree 2, such as in example~\ref{ex:quad} above are \emph{quadratic}.
 Similarly degree 3 number fields are called \emph{cubic}.
@@ -220,8 +220,29 @@ We can use the notion of index in a variety of situations here, such as consider
 We now introduce the background material relevant to elliptic curves, one of the intended applications of these methods.
 This is not required for the main problem discussed in chapter~\ref{chap:prob}, but section~\ref{sec:ell} uses these ideas heavily.
 
+Given an elliptic curve $E$ and a field $K$ we let $E(K)$ be the set of points in $K^2$ satisfying the equation defining $E$, along with an extra point $\infty$.
+This extra point is called the point at infinity, the reasons for its inclusion in the set should become clear later.
+
+\begin{ex}
+Let 
+\[
+E \colon y^2 + 2xy + y = x^3 - 2x + 3.
+\]
+Then we can see for example that $(1,(\sqrt{17}-3)/2)\in E(\RR) \subset E(\CC)$ as the coordinates satisfy the equation defining the curve.
+
+We can plot the real points of this curve:
+\begin{figure}
+\centering
+\includegraphics[scale=0.6]{sageec}
+\caption{\label{fig:ec}$E(\RR)$}
+\end{figure}
+\end{ex}
+
+One of the things that makes elliptic curves so interesting to study is the fact that we can define a natural way of adding points of the curve over some field, and if this is done properly the set of points on the curve becomes a group.
+
 \begin{defn}[Group law]
 \end{defn}
+
 With this definition of addition the set of points of $E$ over some field $K$ is a group, and moreover this group is abelian.
 
 As remarked above any abelian group can be regarded as a $\ZZ$-module $M$ in a natural way by letting 
