@@ -3,7 +3,7 @@
 % - Include thanks? anyone else?
 % - Fix ~ characters in magma code listing/don't have a code listing
 % - Think about typography
-% - Be consistent with \colon and \mid, use mid too many colons already
+% - Be consistent with \colon and \mid, use mid too many colons already. How to do index?? : or \;\colon?
 
 % Structure:
 % - Introduction
@@ -25,7 +25,7 @@
 \date{2014}
 \title{Finding orders with prescribed index in number fields}
 
-\usepackage{amsmath, amssymb, amsfonts, amsthm, hyperref, listings, tikz}
+\usepackage{amsmath, amssymb, amsfonts, amsthm, hyperref, listings, tikz, algorithm2e}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
@@ -63,12 +63,14 @@ breakatwhitespace=false,    % sets if automatic breaks should only happen at whi
 \renewcommand{\O}{\mathcal{O}}
 
 \DeclareMathOperator{\Orders}{Orders}
+\DeclareMathOperator{\Ann}{Ann}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We develop algorithms for performing computations within algebraic number theory.
+%TODO insert very small backstory, orders are objects in ant here ..
+We explain algorithms for performing computations within algebraic number theory.
 Methods are developed to obtain all orders in a given number field with a specified index.
 We also apply these techniques to problems relating to elliptic curves over the rational numbers.
 
@@ -142,7 +144,7 @@ The \emph{torsion submodule} $M_\text{tors}$ of an $R$-module $M$ is the set
 \[
 \{m\in M \mid \exists r \in R\setminus 0 \text{ s.t. } rm = 0\}.
 \]
-This is the set of elements that can be killed by a non-zero scalar.
+This is the set of elements that are killed by some non-zero scalar.
 As implied by the name this is always submodule of $M$.
 \end{defn}
 
@@ -232,7 +234,8 @@ E \colon y^2 + 2xy + y = x^3 - 2x + 3.
 \]
 Then we can see for example that $(1,(\sqrt{17}-3)/2)\in E(\RR) \subset E(\CC)$ as the coordinates satisfy the equation defining the curve.
 
-We can plot the real points of this curve:
+We can plot the real points of this curve, such a plot is shown in figure~\ref{fig:ec}.
+This plot of the real points is typical for an elliptic curves though there can easily be two connected components.
 \begin{figure}
 \centering
 \includegraphics[scale=0.6]{sageec}
@@ -240,12 +243,13 @@ We can plot the real points of this curve:
 \end{figure}
 \end{ex}
 
-One of the things that makes elliptic curves so interesting to study is the fact that we can define a natural way of adding points of the curve over some field, and if this is done properly the set of points on the curve becomes a group.
+One of the things that makes elliptic curves so interesting to study is the fact that we can define a natural way of adding points of the curve over some field, with this definition the set of points on the curve becomes a group.
 
 \begin{defn}[Group law]
 \end{defn}
 
 With this definition of addition the set of points of $E$ over some field $K$ is a group, and moreover this group is abelian.
+From now on we will denote the point $\infty\in E(K)$ as $0$, but still refer to it as \emph{at infinity}.
 
 As remarked above any abelian group can be regarded as a $\ZZ$-module $M$ in a natural way by letting 
 \[n\cdot z = \underbrace{z + z + \cdots + z}_\text{$n$ times},\text{ for } n\in\ZZ_{\ge 0},\ z\in M\]
@@ -272,7 +276,7 @@ For some $n\in\ZZ$ the set of \emph{$n$-division points} of $E$ over $K$ is
 E(K)[n] = \{P\in E(K) \mid nP = 0\}.
 \]
 \end{defn}
-Although by theorem~\ref{thm:tors} $E(\QQ)_\text{tors}$ cannot be very large it is still useful to consider the $n$-division points of a curve and we will use this group later.
+Although by theorem~\ref{thm:tors} $E(\QQ)_\text{tors}$ cannot be large it is still useful to consider the $n$-division points of a curve and we will use this group later.
 %If $K = \QQ$ we can see from theorem~\ref{thm:tors} that $E(\QQ)[n]$ is likely to be interesting for $n\in\{2,3,4\}$.
 
 \minisec{}
@@ -293,9 +297,7 @@ Given an order $R$ of an absolute number field $K$ and an integer $I$ find the s
 To find a suborder we really mean compute a $\ZZ$ basis for the order, as such a basis defines an order completely.
 With $R$ and $I$ as in the proposition we introduce the following notation to refer to the set we are looking for.
 
-\begin{nota}
 \[\Orders(R,I) = \left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R\colon\O] = I\right\}.\]
-\end{nota}
 
 \minisec{}
 One very natural extension of the above problem is to consider relative extensions of number fields.
@@ -363,7 +365,7 @@ We now look at a special class of orders that have been studied extensively by o
 An order of the form $\ZZ[\alpha]$ for some algebraic integer $\alpha$ is called \emph{monogenic}.
 \end{defn}
 
-Monogenic orders are easier to work with and are fairly common in algebraic number theory.
+Monogenic orders are easier to work with and are common in algebraic number theory.
 The ease of computing with them comes from the fact that
 \[
 \ZZ[\alpha] = \ZZ + \ZZ\alpha + \ZZ\alpha^2 + \cdots + \ZZ\alpha^{n-1}
@@ -386,12 +388,12 @@ An order $\O$ of a number field $K$ is called \emph{cocyclic} if
 \[
 \ZZ_K/\O \cong \ZZ/m\ZZ,
 \]
-that is the quotient of the maximal order of the $K$ by $\O$ is a cyclic group.
+i.e. the quotient of the maximal order of the $K$ by $\O$ is a cyclic group.
 \end{defn}
 
 \begin{ex}
 \label{ex:cocyc}
-Let $K = \QQ[x]/(x^4 ) = \QQ(\alpha)$ be a number field and take
+Let $K = \QQ[x]/(x^4 ) = \QQ(\alpha)$ be a number field and take %TODO fill in
 \[
 \O = \ZZ + \ZZ3\alpha + \ZZ9\alpha^2 + \ZZ3\alpha^3.
 \]
@@ -403,6 +405,7 @@ and so $\O$ is cocyclic.
 \end{ex}
 
 The following theorem which is a specialisation of \cite[Thm. 4.1]{brakenhoff} will allow us to find cocyclic orders very easily.
+We include the proof here as it is quite instructive. %TODO generalise to all starting orders???
 
 \begin{thm}
 \label{thm:coresp}
@@ -412,31 +415,51 @@ W = \{\O \text{ an order of } K\mid \ZZ_K/\O \cong \ZZ/m\ZZ\}
 \]
 and
 \[
-V = \{ I \text{ an ideal of }\ZZ_K \mid \ZZ_K/I \cong (\ZZ/m\ZZ)^2 \}.
+V = \{ J \text{ an ideal of }\ZZ_K \mid \ZZ_K/J \cong (\ZZ/m\ZZ)^2 \}.
 \]
 Then there is a bijection between $V$ and $W$ given by
 \begin{align*}
 f\colon W &\to V\\
-\O &\mapsto (\ZZ_K\colon \O)
+\O &\mapsto \{a\in\ZZ_K \mid a\ZZ_K \subseteq \O \}
 \end{align*}
 and
 \begin{align*}
 g\colon V&\to W\\
-I&\mapsto \ZZ + I.
+J&\mapsto \ZZ + J.
 \end{align*}
 \end{thm}
 
-\begin{proof}\cite[Thm. 4.1, pp.???]{brakenhoff} %TODO 
+\begin{proof}\cite[Thm. 4.1, pp. 35]{brakenhoff} %TODO 
+We first show the maps are well defined.
+$f(\O) = \Ann_{\ZZ_K}(\ZZ_K/\O)$ which is an ideal of $\ZZ_K$.
+%As $\ZZ_K$ and $\O$ are rings we have that $f(\O)\ZZ_K \subset f(\O)$ and $f(\O) + f(\O) \subset f(O)$, hence $f(\O)$ is an ideal of $\ZZ_K$ and so in $W$.
 
 \end{proof}
 
+The image of $f$ above is still well defined for non-cocyclic orders and this ideal is known as the \emph{conductor} of $\O$.%TODO just defined for maximal?
+
 The set $W$ above is the set of cocyclic orders of index $m$ and so we can find them by finding the corresponding ideals of $V$ and then simply adding in $\ZZ$.
 
-However this is not a complete solution of the problem we wish to solve as not all orders of number fields are cocyclic. 
+\begin{alg}
+\label{alg:cocyc}~\\
+\begin{algorithm}[H] %TODO fix this, do we need to check if order?
+Factor the ideals $p_i\O$ into prime ideals for the primes $p_i$ dividing $I^2$.\\
+Using all possible factorisations of $I^2$ in $\ZZ$ and the norms of the prime ideals found above find all ideals in $\O$ of index $I^2$.\\
+\For{all ideals $I$ found above}{
+Let $M = \ZZ + I$.\\
+\If{$M$ is of index}
+{
+add $M$ to the output.
+}
+}
+\end{algorithm}
+\end{alg}
+
+However this is not a full solution of our problem as not all orders of number fields are cocyclic.
 
 \begin{ex}
 \label{ex:noncocyc}
-With $K = $ (as in \ref{ex:cocyc}) and $\O = \ZZ + 9\ZZ_K$ we have
+With $K = $ (as in example~\ref{ex:cocyc}) and $\O = \ZZ + 9\ZZ_K$ we have
 \[
 \ZZ_K/\O = 
 \]
@@ -452,11 +475,43 @@ We now give examples of some results that would be good for our purposes if true
 
 
 \subsection{The Hermite normal form}
+The Hermite normal form of a matrix is ..
+
+So in order 
 
 \subsection{The basic algorithm}
+%TODO how to check subring
+\begin{alg}~\\
+\begin{algorithm}[H]
+\For{all HNF matrices $H$ of determinant $I$}{
+Find the submodule $M$ of $\mathcal O$ corresponding to $H$.\\
+\If{$M$ is a subring}
+{
+add $M$ to the output.
+}
+}
+\end{algorithm}
+\end{alg}
+%TODO speed up icnluding 1
 
-\subsection{Making use of less general methods}
-Given the results discussed in \ref{sec:cocyc} we can improve the performance of the above algorithm.
+\subsection{Making use of less general methods} %TODO cut this section :( / reduce as speedup is small
+Given the results discussed in \ref{sec:cocyc} we can improve the performance of the above algorithm as follows.
+\begin{alg}~\\
+\begin{algorithm}[H]
+Find cocyclic orders of index $I$ in $\mathcal{O}$ using algorithm~\ref{alg:cocyc}.\\
+\For{all HNF matrices $H$ of determinant $I$}{
+\If{$H$ is the matrix of a cocyclic order already found}
+{
+Move to the next matrix.
+}
+Find the submodule $M$ of $\mathcal O$ corresponding to $H$.\\
+\If{$M$ is a subring}
+{
+add $M$ to the output.
+}
+}
+\end{algorithm}
+\end{alg}
 
 \section{Relative number fields}
 
@@ -479,8 +534,8 @@ How a solution to the problem considered above can be applied in this case is de
 \section{Elliptic curves}
 \label{sec:ell}
 Given an elliptic curve defined over the rationals in long Weierstrass form, for example
-\[E_l \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_5\text{ with }a_i \in \QQ,\]
-we can find an isomorphic curve $E \colon y^2 = x^3 + $.
+\[E_l \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6\text{ with }a_i \in \QQ,\]
+we can find an isomorphic curve $E \colon y^2 = x^3 + a_2'x^2 + a_4'x + a_6'$, such a curve is said to be in \emph{short Weierstrass form}.
 
 Given such a curve we can define a number field to help us study the torsion points of $E$.
 \begin{defn}[$p$-division field]
@@ -494,18 +549,14 @@ We can then see that we have
 \[
 \QQ(E[2]) \cong \QQ[x]/(f).
 \]
-Letting $\alpha$ be the image of $x$ in the above quotient, we can see that
-\[
-\ZZ[\alpha]\subset \QQ(\alpha)
-\]
-is an order of $\QQ(\alpha)$.
+Letting $\alpha$ be the image of $x$ in the above quotient, we can see that $ \ZZ[\alpha]$ is an order of $\QQ(\alpha)\cong \QQ(E[2])$.
 
 
 \chapter{Conclusion}
 
 
 \section{Further work}
-It seems fairly likely that other properties of the orders we are looking for could be used to speed up the algorithms given above and so further investigations into both special cases and the general cases could yield results.
+It seems likely that other properties of the orders we are looking for could be used to speed up the algorithms given above and so further investigations into both special cases and the general cases could yield results.
 Further applications of these methods are certainly possible and it would be interesting to see what other areas these methods can be used in.
 
 \section{Acknowledgements}
