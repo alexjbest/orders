@@ -38,12 +38,15 @@ def orders_of_index(O,I):
     print possible_conductors
     
     orders = []
+    c = 1
     for f in possible_conductors:
         #print f
         cur_orders = orders_with_conductor_and_index(f, I)
-        if cur_orders:
-            orders += cur_orders
-        print str(len(cur_orders)) + " order(s) found with right index."
+        for o in cur_orders:
+            if not o in orders:
+                orders.append(o)
+        print "[" + str(c) + "/" + str(len(possible_conductors)) + "] " + str(len(cur_orders)) + " order(s) found with right index."
+        c += 1
     return orders
 
 def ideals_of_norm(K,N): # Correct?, could use less memory?
@@ -147,7 +150,8 @@ def expressions_as_product(n,k):
 def hnf_matrices_with_det(I,n):
     matrices = []
     for exp in expressions_as_product(I,n):
-        mats_for_exp = [diagonal_matrix(ZZ,n,exp)]
+        plain = [[(i == j)*exp[i] for i in range(n)] for j in range(n)]
+        mats_for_exp = [plain]
         for i in range(1,n):
             d = exp[i]
             cur_matrices = []
@@ -157,9 +161,9 @@ def hnf_matrices_with_det(I,n):
                 else:
                     digi = Integer(j).digits(base=d,padto=i)
                 for m in mats_for_exp:
-                    cur_matrices.append(copy(m))
+                    cur_matrices.append(deepcopy(m))
                     for k in range(i):
-                        cur_matrices[-1][k,i] = digi[k]
+                        cur_matrices[-1][k][i] = digi[k]
             mats_for_exp = cur_matrices
         matrices += mats_for_exp
     return matrices
@@ -168,11 +172,12 @@ def orders_of_index_via_hnf(O,I):
     n = O.rank()
     K = O.fraction_field()
     orders = []
-    for h in hnf_matrices_with_det(I,n):
+    for h in hnf_matrices_with_det(I,n-1):
         #if not h.row(0).list() == [1] + [0 for i in range(n-1)]:
         #    continue
+        assert O.gen(0) == O(1)
         try:
-            o = sage.rings.number_field.order.absolute_order_from_module_generators([sum([r[i]*O.gen(i) for i in range(n)]) for r in h.rows()])
+            o = sage.rings.number_field.order.absolute_order_from_module_generators([O.gen(0)] + [sum([r[i]*O.gen(i+1) for i in range(n-1)]) for r in h],check_integral=False, check_rank=False) # TODO check the checks
             #o = sage.rings.number_field.order.absolute_order_from_module_generators([O(r) for r in h.rows()])
             if o.index_in(O) == I:
                 orders.append(o)
