@@ -9,6 +9,7 @@
 % - Introduction
 % - Background
 % - Problem
+% -  History??
 % -- Statements
 % -- Quadratics
 % -- Cubics?
@@ -19,9 +20,12 @@
 % - Applications to elliptics over Q
 % - Conclusion
 
+% Include project managementy bits
+% Practical considerations, lines of code, sage vs magma python etc.
+
 \documentclass[a4paper,abstracton,bibtotoc]{scrreprt}
 
-\author{Alex J. Best \\Supervised by Dr. Lassina Demb\'el\'e}
+\author{Alex J. Best \\ Supervised by Dr. Lassina Demb\'el\'e}
 \date{2014}
 \title{Finding orders with prescribed index in number fields}
 
@@ -235,7 +239,7 @@ E \colon y^2 + 2xy + y = x^3 - 2x + 3.
 Then we can see for example that $(1,(\sqrt{17}-3)/2)\in E(\RR) \subset E(\CC)$ as the coordinates satisfy the equation defining the curve.
 
 We can plot the real points of this curve, such a plot is shown in figure~\ref{fig:ec}.
-This plot of the real points is typical for an elliptic curves though there can easily be two connected components.
+This plot of the real points is typical for an elliptic curves though there can easily be two connected components rather than one as in this case.
 \begin{figure}
 \centering
 \includegraphics[scale=0.6]{sageec}
@@ -492,7 +496,7 @@ add $M$ to the output.
 }
 \end{algorithm}
 \end{alg}
-%TODO speed up icnluding 1
+%TODO speed up including 1
 
 \subsection{Making use of less general methods} %TODO cut this section :( / reduce as speedup is small
 Given the results discussed in \ref{sec:cocyc} we can improve the performance of the above algorithm as follows.
@@ -516,13 +520,15 @@ add $M$ to the output.
 \section{Relative number fields}
 
 
-\section{Practical speed-ups}
+\section{Practical considerations}
 Though the methods described above are the best we have been able to obtain so far from a theoretical perspective, when it comes down to computing examples in the real world there are a number of ideas and techniques we can use to reduce the time taken.
 
 \subsection{Parallelisation}
 Several stages of the algorithm for general orders can be naturally parallelised reducing the total time taken linearly with the number of threads used.
 For example once the set of potential conductors has been computed the orders to which they correspond can all be computed in parallel.
 Similarly the set of HNF matrices used can be computed in parallel and whether the modules they generate form rings or not can be checked simultaneously too.
+
+\subsection{Timings}
 
 \chapter{Applications}
 
@@ -553,7 +559,7 @@ Letting $\alpha$ be the image of $x$ in the above quotient, we can see that $ \Z
 
 
 \chapter{Conclusion}
-
+%TODO conclude, several variants developed all with advantages disadvantages
 
 \section{Further work}
 It seems likely that other properties of the orders we are looking for could be used to speed up the algorithms given above and so further investigations into both special cases and the general cases could yield results.
@@ -572,7 +578,6 @@ I am also grateful to John Cremona for allowing me access to one of the Warwick 
 
 %\section{Magma}
 %\lstinputlisting[language=Pascal]{../magma/orderofindex.m}
-
 
 \nocite{*}
 \bibliographystyle{alpha}
