@@ -250,13 +250,41 @@ The \emph{ring of integers}, denoted $\ZZ_K$, of a number field $K$ is the uniqu
 
 The terminology for this ring comes from the fact that its behaviour is analogous to the way $\ZZ$ behaves inside $\QQ$.
 
-We can use the notion of index in a variety of situations here, such as considering the index of a module in another, the index of a module in a ring, etc.
+We can use the notion of index in a variety of situations here, such as considering the index of a module in another, the index of a module in a ring, etc. %TODO ????
 
 \begin{ex}
 \[
 [\ZZ\cdot 1 + \ZZ\cdot \sqrt{2} : \ZZ \cdot 1 + \ZZ \cdot 2\sqrt{2}] = 2.
 \]
 \end{ex}
+
+\begin{ex}
+As we will see later the maximal order of a quadratic number field is easy to determine.
+For example in figure~\ref{fig:sageord} one embedding into the complex plane of the ring of integers of $\QQ[x]/(x^2 + 19)\cong \QQ(\sqrt{-19})$ is shown.
+Highlighted in black is a suborder of index 3 in this order.
+\begin{figure}
+\centering
+\includegraphics[scale=0.6]{sageord}
+\caption{\label{fig:sageord} An embedding in $\CC$ of the ring of integers of $\QQ(\sqrt{-19})$.}
+\end{figure}
+\end{ex}
+
+%P.<x> = QQ[]
+%K = NumberField(x^2 + 19, 'a')
+%ZK = K.maximal_order()
+%OK = K.order(3*ZK.0)
+%print ZK.basis()
+%f = K.embeddings(CC)[0]
+%pts = []
+%pts2 = []
+%for x in range(-10,10):
+%    for y in range(-10,10):
+%        if f(x*ZK.0 + y*ZK.1).imag().abs() < 15: 
+%            pts.append(f(x*ZK.0 + y*ZK.1))
+%        if f(x*OK.0 + y*OK.1).imag().abs() < 15: 
+%            pts2.append(f(x*OK.0 + y*OK.1))
+%
+%list_plot(pts,color="gray",size=12) + list_plot(pts2,color="black",size=20)
 
 \section{Elliptic curves}
 We now introduce the background material relevant to elliptic curves, one of the intended applications of these methods.
@@ -279,7 +307,7 @@ This plot of the real points is typical for an elliptic curves though there can 
 \begin{figure}
 \centering
 \includegraphics[scale=0.6]{sageec}
-\caption{\label{fig:ec}$E(\RR)$}
+\caption{\label{fig:ec}$E(\RR)$.}
 \end{figure}
 \end{ex}
 
