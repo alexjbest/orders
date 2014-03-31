@@ -1,9 +1,8 @@
 % TODO list:
 % - Add sage and magma to refs.
 % - Include thanks? anyone else?
-% - Fix ~ characters in magma code listing/don't have a code listing
+% - How will code be included, snippets or on disk??
 % - Think about typography
-% - Be consistent with \colon and \mid, use mid too many colons already. How to do index?? : or \;\colon?
 
 % Structure:
 % - Introduction
@@ -74,8 +73,9 @@ breakatwhitespace=false,    % sets if automatic breaks should only happen at whi
 
 \begin{abstract}
 %TODO insert very small backstory, orders are objects in ant here ..
-We explain algorithms for performing computations within algebraic number theory.
-Methods are developed to obtain all orders in a given number field with a specified index.
+Orders in number fields are common objects of study in algebraic number theory.
+Here we develop methods to obtain all orders with a specified index inside another given one.
+The performance, both theoretically and in implementations of these methods is discussed.
 We also apply these techniques to problems relating to elliptic curves over the rational numbers.
 
 \smallskip
@@ -86,7 +86,7 @@ We also apply these techniques to problems relating to elliptic curves over the 
 
 \chapter{Introduction}
 This report deals with the algorithmic solution of a problem arising from algebraic number theory. 
-Other interesting situations to which this algorithm can be applied are also discussed.
+Other interesting situations to which this algorithm can be applied are also looked at.
 
 We first go through the background material needed to motivate, define and describe the solution of our problems in chapter~\ref{chap:background}.
 Then in section~\ref{sec:statements} we move on to the problems themselves and discuss the interest in studying them.
@@ -131,8 +131,11 @@ Given two $R$-modules $M_1$ and $M_2$ we define their direct sum (denoted $\oplu
 \end{defn}
 % TODO define submodule, product/sum, quotient
 
+\begin{defn}[Quotient module]
+\end{defn}
+
 \begin{defn}[Index]
-Given two $R$-modules $M \subset N$ the index of $M$ in $N$, denoted $[N\colon M]$ is the size of the quotient abelian group, ignoring the module structure.
+Given two $R$-modules $M \subset N$ the index of $M$ in $N$, denoted $[N:M]$ is the size of the quotient module $N / M$.
 \end{defn}
 
 We now define a property of modules that makes them easier to work with and importantly easier to do computations with.
@@ -219,7 +222,9 @@ The terminology for this ring comes from the fact that its behaviour is analogou
 We can use the notion of index in a variety of situations here, such as considering the index of a module in another, the index of a module in a ring, etc.
 
 \begin{ex}
-\[[\ZZ\cdot 1 + \ZZ\cdot \sqrt{2} \colon \ZZ \cdot 1 + \ZZ \cdot 2\sqrt{2}] = 2.\]
+\[
+[\ZZ\cdot 1 + \ZZ\cdot \sqrt{2} : \ZZ \cdot 1 + \ZZ \cdot 2\sqrt{2}] = 2.
+\]
 \end{ex}
 
 \section{Elliptic curves}
@@ -295,13 +300,13 @@ The aim of the project was to find a general method to solve the following probl
 
 \begin{prob}
 Given an order $R$ of an absolute number field $K$ and an integer $I$ find the set
-\[\left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R\colon\O] = I\right\}.\]
+\[\left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R:\O] = I\right\}.\]
 \end{prob}
 
 To find a suborder we really mean compute a $\ZZ$ basis for the order, as such a basis defines an order completely.
 With $R$ and $I$ as in the proposition we introduce the following notation to refer to the set we are looking for.
 
-\[\Orders(R,I) = \left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R\colon\O] = I\right\}.\]
+\[\Orders(R,I) = \left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R:\O] = I\right\}.\]
 
 \minisec{}
 One very natural extension of the above problem is to consider relative extensions of number fields.
@@ -309,7 +314,7 @@ More precisely we wish to study the following problem.
 
 \begin{prob} % TODO check this is really what I mean
 Given an extension of number fields $L|K$, a $\ZZ_K$-order $R$ of $\ZZ_L$ and an integer $I$ find the set
-\[\left\{ \O\subseteq R \mid \O\text{ is a $\ZZ_K$-suborder},\ [R\colon\O] = I\right\}.\]
+\[\left\{ \O\subseteq R \mid \O\text{ is a $\ZZ_K$-suborder},\ [R:\O] = I\right\}.\]
 \end{prob}
 
 We now detail some methods to solve this problem in varying generality.
@@ -343,7 +348,7 @@ Later we shall abuse this definition slightly by redefining the conductor to gen
 
 Now it is clear that
 \[
-[\ZZ + \ZZ\alpha\; \colon \ZZ + \ZZ f \alpha] = |\ZZ/f\ZZ| = |f|.
+[\ZZ + \ZZ\alpha : \ZZ + \ZZ f \alpha] = |\ZZ/f\ZZ| = |f|.
 \]
 So we have an incredibly simple solution for quadratic number fields, there is exactly one order of a given index in $\ZZ_K$.
 Hence in the quadratic case can say the following.
@@ -374,7 +379,7 @@ The ease of computing with them comes from the fact that
 \[
 \ZZ[\alpha] = \ZZ + \ZZ\alpha + \ZZ\alpha^2 + \cdots + \ZZ\alpha^{n-1}
 \]
-and so $\{1,\alpha,\ldots,\alpha^{n-1}\}$ is a basis for $\ZZ[\alpha]$ as a $\ZZ$ module (here $n$ is $[K\colon \QQ]$).
+and so $\{1,\alpha,\ldots,\alpha^{n-1}\}$ is a basis for $\ZZ[\alpha]$ as a $\ZZ$ module (here $n$ is $[K : \QQ]$).
 
 %TODO explain niceness of monogenic orders etc
 
