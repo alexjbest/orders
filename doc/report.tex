@@ -118,26 +118,57 @@ r\cdot(m_1 + m_2) &= r\cdot m_1 + r\cdot m_2 \; &&\forall r\in R, \; m_1,m_2\in 
 We often refer to elements of the ring $R$ as \emph{scalars}.
 
 From now on we will omit the notation $\cdot$ for scalar multiplication as it will be clear from context when the multiplication is taking place in the ring $R$ or on a module $M$.
+We will also not make explicit the ring $R$ involved if it is not relevant to the discussion at hand, instead referring simply to a \emph{module}.
 
 The most common modules we will use here will be $\ZZ$-modules such as:
 \begin{ex}
 
 \end{ex}
 In fact every abelian group can be given a $\ZZ$-module structure so of course they are ubiquitous in all commutative algebra, nevertheless it is useful to think of the modules used here in terms of $\ZZ$ rather than as abstract abelian groups.
+We now list some standard definitions that are used to talk about how different modules relate to one another and describe ways of constructing new modules from old.
+
+\begin{defn}[Isomorphism of modules]
+Two $R$-modules $M_1$ and $M_2$ are said to be \emph{isomorphic} is there exists a bijective map $f\colon M_1 \to M_2$ satisfying
+\begin{align*}
+f(rm) &= rf(m) &&\text{ for all $r\in R$, $m\in M_1$}\\
+f(m + m') &= f(m) + f(m')&&\text{ for all $m,m'\in M_1$}.
+\end{align*}
+In this case we write $M_1\cong M_2$.
+\end{defn}
+
+Module isomorphism is an equivalence relation on the class of all modules and so we often think of two isomorphic modules as being the same, just written in a different manner.
 
 \begin{defn}[Submodule]
-A \emph{submodule} $N$ of a module $M$ is a module whose elements all belong to $M$ and whose operations are the same as those from $M$ on the elements on $N$.\\
-Given two $R$-modules $M_1$ and $M_2$ we define their direct sum (denoted $\oplus$) to be the module with element set $M_1 \times M_2$ and operations given by the operations of $M_1$ and $M_2$ performed elementwise.
+A \emph{submodule} $N$ of a module $M$ is a module whose elements all belong to $M$ and whose operations are the same as those from $M$ on the elements on $N$.
 \end{defn}
-% TODO define submodule, product/sum, quotient
 
 \begin{defn}[Quotient module]
+The \emph{quotient module} of two $R$-modules $M$ and $N$ with $M$ a submodule of $N$ is defined to be the quotient abelian group under addition $N/
+M$ with scalar multiplication given by
+\[
+r\cdot(m + N) = rm + N\text{ for all $r\in R$, $m\in M$}.
+\]
 \end{defn}
 
 \begin{defn}[Index]
-Given two $R$-modules $M \subset N$ the index of $M$ in $N$, denoted $[N:M]$ is the size of the quotient module $N / M$.
+Given a module $M$ that is a submodule of a module $N$ the \emph{index} of $M$ in $N$, denoted $[N:M]$ is the size of the quotient module $N / M$.
 \end{defn}
 
+\begin{defn}[Direct sum]
+Given two $R$-modules $M_1$ and $M_2$ we define their \emph{direct sum} (denoted $\oplus$) to be the module with element set $M_1 \times M_2$ and operations given by the operations of $M_1$ and $M_2$ performed elementwise. i.e.
+\begin{align*}
+r\cdot(m_1,m_2) &= (r\cdot m_1, r\cdot m_2)\\
+(m_1,m_2) + (m_1',m_2') &= (m_1 + m_1',m_2+m_2').
+\end{align*}
+\end{defn}
+
+Not that this is in general distinct from when we have $M_1$ and $M_2$ submodules of some module $N$ and write
+\[
+M_1 + M_2 = \{m_1 + m_2 \mid m_1\in M_1,\ m_2\in M_2\}.
+\]
+For example with this elementwise addition we have $M + M = M$ for any module $M$, whereas $M\oplus M$ is not isomorphic to $M$ unless $M$ is the trivial module containing only a zero element and no others.
+
+\minisec{}
 We now define a property of modules that makes them easier to work with and importantly easier to do computations with.
 
 \begin{defn}[Finitely generated]
@@ -149,7 +180,7 @@ for some coefficients $\alpha_b \in R$.
 \begin{defn}[Torsion submodule]
 The \emph{torsion submodule} $M_\text{tors}$ of an $R$-module $M$ is the set
 \[
-\{m\in M \mid \exists r \in R\setminus 0 \text{ s.t. } rm = 0\}.
+\{m\in M \mid \exists r \in R\setminus 0 \text{ such that } rm = 0\}.
 \]
 This is the set of elements that are killed by some non-zero scalar.
 As implied by the name this is always submodule of $M$.
