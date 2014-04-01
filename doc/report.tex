@@ -200,9 +200,10 @@ This $r$ is called the \emph{rank} of the $\ZZ$-module.
 
 \begin{ex}
 \[M = \ZZ^2 = \{(a,b)\mid a,b\in \ZZ\}\]
-is a torsion free $\ZZ$ module with submodule
-\[N = 2\ZZ\times \ZZ = \{(2c,0) \mid c\in\ZZ\}.\]
-The quotient module
+is a torsion free $\ZZ$ module. Let
+\[N = \{(2c,0) \mid c\in\ZZ\} \cong \ZZ\]
+be a submodule of $M$.
+Then the quotient module
 \[M/N \cong (\ZZ/2\ZZ)\times \ZZ\]
 has torsion submodule equal to $\ZZ/2\ZZ$ and is of rank 1.
 \end{ex}
@@ -611,7 +612,7 @@ we can find an isomorphic curve $E \colon y^2 = x^3 + a_2'x^2 + a_4'x + a_6'$, s
 
 Given such a curve we can define a number field to help us study the torsion points of $E$.
 \begin{defn}[$p$-division field]
-For a prime $p$ the $p$-division field of $E$, denoted $\QQ(E[p])$ is obtained by taking all points $(x,y) \in E(\QQ)[p]\setminus 0\subset \QQ^2$ and adjoining each of their coordinates $x$ and $y$ to $\QQ$.
+For a prime $p$ the $p$-division field of $E$, denoted $\QQ(E[p])$ is obtained by taking all points $(x,y) \in E(\QQ)[p]\setminus 0\subset \QQ^2$ and adjoining the collection of each of their coordinates $x$ and $y$ to $\QQ$.
 \end{defn}
 As the torsion subgroup $E(\QQ)_\text{tors}$ is always finite there are at most finitely many elements that need adjoining to $\QQ$, so this field is fairly nice.
 
