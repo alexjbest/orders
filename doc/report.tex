@@ -586,7 +586,7 @@ So in order
 \begin{alg}~\\
 \begin{algorithm}[H]
 \For{all HNF matrices $H$ of determinant $I$}{
-Find the submodule $M$ of $\mathcal O$ corresponding to $H$.\\
+Find the submodule $M$ of $\O$ corresponding to $H$.\\
 \If{$M$ is a subring}
 {
 add $M$ to the output.
@@ -600,13 +600,13 @@ add $M$ to the output.
 Given the results discussed in \ref{sec:cocyc} we can improve the performance of the above algorithm as follows.
 \begin{alg}~\\
 \begin{algorithm}[H]
-Find cocyclic orders of index $I$ in $\mathcal{O}$ using algorithm~\ref{alg:cocyc}.\\
+Find cocyclic orders of index $I$ in $\O$ using algorithm~\ref{alg:cocyc}.\\
 \For{all HNF matrices $H$ of determinant $I$}{
 \If{$H$ is the matrix of a cocyclic order already found}
 {
 Move to the next matrix.
 }
-Find the submodule $M$ of $\mathcal O$ corresponding to $H$.\\
+Find the submodule $M$ of $\O$ corresponding to $H$.\\
 \If{$M$ is a subring}
 {
 add $M$ to the output.
