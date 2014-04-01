@@ -129,12 +129,17 @@ The most common modules we will use here will be $\ZZ$-modules such as:
 In fact every abelian group can be given a $\ZZ$-module structure so of course they are ubiquitous in all commutative algebra, nevertheless it is useful to think of the modules used here in terms of $\ZZ$ rather than as abstract abelian groups.
 We now list some standard definitions that are used to talk about how different modules relate to one another and describe ways of constructing new modules from old.
 
-\begin{defn}[Isomorphism of modules]
-Two $R$-modules $M_1$ and $M_2$ are said to be \emph{isomorphic} is there exists a bijective map $f\colon M_1 \to M_2$ satisfying
+\begin{defn}[Module homomorphism]
+Given $R$-modules $M_1$ and $M_2$ a map $f\colon M_1 \to M_2$ satisfying
 \begin{align*}
 f(rm) &= rf(m) &&\text{ for all $r\in R$, $m\in M_1$}\\
-f(m + m') &= f(m) + f(m')&&\text{ for all $m,m'\in M_1$}.
+f(m + m') &= f(m) + f(m')&&\text{ for all $m,m'\in M_1$}
 \end{align*}
+is called an \emph{$R$-module homomorphism} or simply a \emph{module homomorphism} when the ring is clear.
+\end{defn}
+
+\begin{defn}[Isomorphism of modules]
+Two $R$-modules $M_1$ and $M_2$ are said to be \emph{isomorphic} is there exists a bijective module homomorphism between them. 
 In this case we write $M_1\cong M_2$.
 \end{defn}
 
@@ -170,6 +175,32 @@ M_1 + M_2 = \{m_1 + m_2 \mid m_1\in M_1,\ m_2\in M_2\}.
 \]
 For example with this elementwise addition we have $M + M = M$ for any module $M$, whereas $M\oplus M$ is not isomorphic to $M$ unless $M$ is the trivial module containing only a zero element and no others.
 
+The well known isomorphism theorems also hold for modules, we require only two.
+
+\begin{thm}[First isomorphism theorem for modules]
+Given a surjective module homomorphism $f\colon M \to N$ the kernel of $f$ is a submodule of $M$ and
+\[
+M/\ker(f) \cong N.
+\]
+\end{thm}
+
+\begin{thm}[Third isomorphism theorem for modules]
+Given a chain of submodules $M_1 \subseteq M_2 \subseteq M_3$ the quotient module $M_2/M_1$ is a submodule of $M_3/M_1$ and we have an isomorphism
+\[
+(M_3/M_1)/(M_2/M_1) \cong (M_3/M_2).
+\]
+\end{thm}
+
+An easy consequence of this relating the indices of submodules is worth noting.
+
+\begin{cor}
+\label{cor:indexmult}
+Given a chain of submodules $M_1 \subseteq M_2 \subseteq M_3$ we have
+\[
+[M_3:M_1] = [M_3:M_2][M_2:M_1].
+\]
+\end{cor}
+
 \minisec{}
 We now define a property of modules that makes them easier to work with and importantly easier to do computations with.
 
@@ -182,7 +213,7 @@ for some coefficients $\alpha_b \in R$.
 \begin{defn}[Torsion submodule]
 The \emph{torsion submodule} $M_\text{tors}$ of an $R$-module $M$ is the set
 \[
-\{m\in M \mid \exists r \in R\setminus 0 \text{ such that } rm = 0\}.
+\{m\in M \mid \exists\; r \in R\setminus 0 \text{ such that } rm = 0\}.
 \]
 This is the set of elements that are killed by some non-zero scalar.
 As implied by the name this is always submodule of $M$.
@@ -422,7 +453,7 @@ If $\ZZ_K = \ZZ + \ZZ\alpha$ and $R = \ZZ + \ZZ m\alpha$ then
 \]
 \end{prop}
 \begin{proof}
-This follows immediately from the above description of orders of $K$ (proposition~\ref{prop:quadord}).
+This follows immediately from the above description of orders of $K$ (proposition~\ref{prop:quadord}) and the fact that the index is multiplicative (corollary \ref{cor:indexmult}).
 \end{proof}
 %TODO make sure we get the solution to match the problem statement! arbitrary starting order!
 
