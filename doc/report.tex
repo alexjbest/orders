@@ -634,11 +634,24 @@ add $M$ to the output.
 Though the methods described above are the best we have been able to obtain so far from a theoretical perspective, when it comes down to computing examples in the real world there are a number of ideas and techniques we can use to reduce the time taken.
 
 \subsection{Parallelisation}
-Several stages of the algorithm for general orders can be naturally parallelised reducing the total time taken linearly with the number of threads used.
+Several stages of the algorithms for general orders can be naturally parallelised reducing the total time taken linearly with the number of threads used.
 For example once the set of potential conductors has been computed the orders to which they correspond can all be computed in parallel.
 Similarly the set of HNF matrices used can be computed in parallel and whether the modules they generate form rings or not can be checked simultaneously too.
 
 \subsection{Timings}
+In order to get an idea for how these algorithms behave in practice we have timed the different methods on several large input sets.
+The algorithms were run on ...
+\begin{table}[h]
+\begin{tabular}{|p{14em}|l|l|l|}
+\hline
+Input & HNF algorithm & Conductor algorithm & Hybrid \\
+\hline
+Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
+\hline
+\end{tabular}
+\caption{\label{tab:timings} Timings for different algorithms for several input sets}
+\end{table}
+
 
 \chapter{Applications}
 
@@ -674,6 +687,12 @@ Letting $\alpha$ be the image of $x$ in the above quotient, we can see that $ \Z
 \section{Further work}
 It seems likely that other properties of the orders we are looking for could be used to speed up the algorithms given above and so further investigations into both special cases and the general cases could yield results.
 Further applications of these methods are certainly possible and it would be interesting to see what other areas these methods can be used in.
+
+%Low-degree optimisations.
+%Conditions on ideals to be conductors and modules to be rings can be taken into account.
+%Generalising to relative number fields would be interesting.
+%There are likely more applications of these methods that we aren't aware of.
+%There are possibly completely different methods to find these orders.
 
 \section{Acknowledgements}
 First and foremost I would like to thank Lassina Demb\'el\'e for his excellent guidance while I undertook the project.
