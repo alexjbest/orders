@@ -91,9 +91,14 @@ This report deals with the algorithmic solution of a problem arising from algebr
 Other interesting situations to which this algorithm can be applied are also looked at.
 
 We first go through the background material needed to motivate, define and describe the solution of our problems in chapter~\ref{chap:background}.
-Then in section~\ref{sec:statements} we move on to the problems themselves and discuss the interest in studying them.
+In section~\ref{sec:ca} we cover some commutative algebra dealing with the basic properties of modules over rings, after this in section~\ref{sec:ant} we move into algebraic number theory defining the key notions needed to study orders and considering the reasons such ideas were introduced.
+We finish up the background material in section~\ref{sec:ell} with an introduction to the theory of elliptic curves, which will be one of the interesting areas we will apply our methods to.
+
+Chapter~\ref{chap:prob} is where we consider our main problem and solutions to it.
+In section~\ref{sec:statements} we define the problems themselves and discuss the interest in studying them.
 After this in the rest of chapter~\ref{chap:prob} we detail the techniques used to solve the problems considered, starting with some special cases before moving onto more general results.
-Finally in section~\ref{sec:ell} we move on to some interesting applications of these methods to the study of elliptic curves.
+
+Finally in section~\ref{sec:ellapp} we move on to some interesting applications of these methods to the study of elliptic curves.
 
 \chapter{Background material}
 \label{chap:background}
@@ -104,6 +109,7 @@ We assume only fairly basic knowledge of abstract algebra, such as the notions o
 The results given here are well known and are used throughout the rest of the report.
 
 \section{Commutative algebra}
+\label{sec:ca}
 We introduce several notions and results that will be useful to us throughout the report, proofs for those results not proved here can be found in many textbooks on commutative algebra, such as \cite{am} or \cite{matsumura}.
 
 All rings here are commutative with an identity element.
@@ -236,10 +242,11 @@ is a torsion free $\ZZ$ module. Let
 be a submodule of $M$.
 Then the quotient module
 \[M/N \cong (\ZZ/2\ZZ)\times \ZZ\]
-has torsion submodule equal to $\ZZ/2\ZZ$ and is of rank 1.
+has torsion submodule $(M/N)_\text{tors}$ equal to $\ZZ/2\ZZ$ and is of rank 1.
 \end{ex}
 
 \section{Algebraic number theory}
+\label{sec:ant}
 
 Algebraic number began with the study of algebraic numbers and their uses in solving Diophantine equations but has since expanded to encompass a huge amount of mathematics involving the use of algebraic techniques to tackle number theoretic problems. %TODO ????
 As above, more details about anything not proved here can be found in any of the many texts on algebraic number theory, for example \cite{neukirch}, \cite{lang}.
@@ -292,7 +299,7 @@ We can use the notion of index in a variety of situations here, such as consider
 \]
 \end{ex}
 
-\begin{ex}
+\begin{ex}%TODO make this more exampley, or not an example??
 As we will see later the maximal order of a quadratic number field is easy to determine.
 For example in figure~\ref{fig:sageord} one embedding into the complex plane of the ring of integers of $\QQ[x]/(x^2 + 19)\cong \QQ(\sqrt{-19})$ is shown.
 Highlighted in bold is a suborder of index 3 in this order.
@@ -320,9 +327,12 @@ Highlighted in bold is a suborder of index 3 in this order.
 %
 %list_plot(pts,color="gray",size=12) + list_plot(pts2,color="black",size=20)
 
+
 \section{Elliptic curves}
+\label{sec:ell}
+
 We now introduce the background material relevant to elliptic curves, one of the intended applications of these methods.
-This is not required for the main problem discussed in chapter~\ref{chap:prob}, but section~\ref{sec:ell} uses these ideas heavily.
+This is not required for the main problem discussed in chapter~\ref{chap:prob}, but section~\ref{sec:ellapp} uses these ideas heavily.
 As with the above sections everything here can be found in textbooks on elliptic curves (such as \cite{knapp}), we just move quickly to the parts relevant to us in this section.
 %TODO more refs
 
@@ -456,6 +466,8 @@ If $\ZZ_K = \ZZ + \ZZ\alpha$ and $R = \ZZ + \ZZ m\alpha$ then
 This follows immediately from the above description of orders of $K$ (proposition~\ref{prop:quadord}) and the fact that the index is multiplicative (corollary \ref{cor:indexmult}).
 \end{proof}
 %TODO make sure we get the solution to match the problem statement! arbitrary starting order!
+
+Orders in quadratic fields appear in the theory of elliptic curves with complex multiplication. %TODO explain this lots, why our methods aren't really useful here. Conceivable that a solution to this problem could be useful in generalisations of this theory to other abelian varieties?
 
 %TODO cubic????
 
@@ -636,7 +648,7 @@ One of the most prominent areas in which a solution to the problem can be used i
 How a solution to the problem considered above can be applied in this case is detailed below, along with results obtained from the application of our methods there.
 
 \section{Elliptic curves}
-\label{sec:ell}
+\label{sec:ellapp}
 Given an elliptic curve defined over the rationals in long Weierstrass form, for example
 \[E_l \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6\text{ with }a_i \in \QQ,\]
 we can find an isomorphic curve $E \colon y^2 = x^3 + a_2'x^2 + a_4'x + a_6'$, such a curve is said to be in \emph{short Weierstrass form}.
