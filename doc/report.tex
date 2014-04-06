@@ -69,6 +69,7 @@ breakatwhitespace=false,    % sets if automatic breaks should only happen at whi
 
 \DeclareMathOperator{\Orders}{Orders}
 \DeclareMathOperator{\Ann}{Ann}
+\DeclareMathOperator{\Mat}{Mat}
 
 \begin{document}
 \maketitle
@@ -587,11 +588,23 @@ However the direct generalisations of this result fail to hold even in degree 3 
 We now give examples of some results that would be good for our purposes if true and explicit counter examples for each of them.
 % TODO list some generalisations here
 
+Here we now give some positive results leading to methods that can be used to find general orders in number fields.
 
 \subsection{The Hermite normal form}
-The Hermite normal form of a matrix is ..
+The Hermite normal form of a matrix is a unique matrix that a given matrix of integers can be brought into by unimodular row operations.
+Using this form will allow us to find additive subgroups of orders which will provide one approach to finding all suborders.
+There are varying definitions of the Hermite normal form (HNF) the one we use here is fairly common and is used in the Sage mathematical software system \cite{sage}, though others exist such as the one given in \cite{cohen93}.
+
+\begin{defn}[Hermite normal form]
+A matrix $H\in\Mat_{m\times n}(\ZZ)$ is said to be in \emph{Hermite normal form} if there f.
+
+Given a matrix $A$, the unique matrix in Hermite normal form that can be obtained from $A$ by unimodular row and column operations is called \emph{the} Hermite normal form of $A$.
+\end{defn}
+
+Fast algorithms for computing Hermite normal forms is an interesting area of study \cite{pernetstein} and many basic operations such as checking equality of orders can be performed effectively using Hermite normal forms \cite{cohen93}. 
 
 So in order 
+
 
 \subsection{The basic algorithm}
 %TODO how to check subring
