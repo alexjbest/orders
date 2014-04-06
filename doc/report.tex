@@ -292,7 +292,7 @@ The \emph{ring of integers}, denoted $\ZZ_K$, of a number field $K$ is the uniqu
 
 The terminology for this ring comes from the fact that its behaviour is analogous to the way $\ZZ$ behaves inside $\QQ$.
 
-We can use the notion of index in a variety of situations here, such as considering the index of a module in another, the index of a module in a ring, etc. %TODO ????
+The notion of index introduced earlier applies here and as all orders lie inside the ring of integers we can 
 
 \begin{ex}
 \[
@@ -300,7 +300,7 @@ We can use the notion of index in a variety of situations here, such as consider
 \]
 \end{ex}
 
-\begin{ex}%TODO make this more exampley, or not an example??
+%TODO make this more exampley, or not an example??
 As we will see later the maximal order of a quadratic number field is easy to determine.
 For example in figure~\ref{fig:sageord} one embedding into the complex plane of the ring of integers of $\QQ[x]/(x^2 + 19)\cong \QQ(\sqrt{-19})$ is shown.
 Highlighted in bold is a suborder of index 3 in this order.
@@ -309,7 +309,6 @@ Highlighted in bold is a suborder of index 3 in this order.
 \includegraphics[scale=0.6]{sageord}
 \caption{\label{fig:sageord} An embedding in $\CC$ of the ring of integers of $\QQ(\sqrt{-19})$.}
 \end{figure}
-\end{ex}
 
 %P.<x> = QQ[]
 %K = NumberField(x^2 + 19, 'a')
@@ -677,7 +676,7 @@ How a solution to the problem considered above can be applied in this case is de
 \label{sec:ellapp}
 Given an elliptic curve defined over the rationals in long Weierstrass form, for example
 \[E_l \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6\text{ with }a_i \in \QQ,\]
-we can find an isomorphic curve $E \colon y^2 = x^3 + a_2'x^2 + a_4'x + a_6'$, such a curve is said to be in \emph{short Weierstrass form}.
+we can find an isomorphic curve $E \colon y^2 = x^3 + a_2'x^2 + a_4'x + a_6'$, such a curve is said to be in \emph{medium Weierstrass form}.
 
 Given such a curve we can define a number field to help us study the torsion points of $E$.
 \begin{defn}[$p$-division field] %TODO find ref for this
@@ -686,11 +685,12 @@ For a prime $p$ the $p$-division field of $E$, denoted $\QQ(E[p])$ is obtained b
 As the torsion subgroup $E(\QQ)_\text{tors}$ is always finite there are at most finitely many elements that need adjoining to $\QQ$, so this field is fairly nice.
 
 \minisec{}
-Assuming that the curve $E$ has no rational 2-torsion points we must have no rational solution to $f = x^3 + ??$ and hence the polynomial is irreducible over $\QQ$.
+Assuming that the curve $E$ has no rational 2-torsion points we must have no rational solution to $f = x^3 + a_2x^2 + a_4x + a_6$ and hence this polynomial is irreducible over $\QQ$.
 We can then see that we have
 \[
-\QQ(E[2]) \cong \QQ[x]/(f).
+\QQ(E[2]) \cong \QQ[x]/(f)
 \]
+as $\QQ(E[2])$ is the splitting field of $f$ and $f$ is irreducible.
 Letting $\alpha$ be the image of $x$ in the above quotient, we can see that $ \ZZ[\alpha]$ is an order of $\QQ(\alpha)\cong \QQ(E[2])$.
 
 
