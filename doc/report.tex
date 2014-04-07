@@ -70,6 +70,7 @@ breakatwhitespace=false,    % sets if automatic breaks should only happen at whi
 \DeclareMathOperator{\Orders}{Orders}
 \DeclareMathOperator{\Ann}{Ann}
 \DeclareMathOperator{\Mat}{Mat}
+\DeclareMathOperator{\im}{im}
 
 \begin{document}
 \maketitle
@@ -143,6 +144,7 @@ f(rm) &= rf(m) &&\text{ for all $r\in R$, $m\in M_1$}\\
 f(m + m') &= f(m) + f(m')&&\text{ for all $m,m'\in M_1$}
 \end{align*}
 is called an \emph{$R$-module homomorphism} or simply a \emph{module homomorphism} when the ring is clear.
+We also use the term map for this concept.
 \end{defn}
 
 \begin{defn}[Isomorphism of modules]
@@ -246,6 +248,18 @@ Then the quotient module
 has torsion submodule $(M/N)_\text{tors}$ equal to $\ZZ/2\ZZ$ and is of rank 1.
 \end{ex}
 
+\begin{defn}
+A \emph{short exact sequence of $R$-modules} is a sequence of $R$-modules and maps between them, drawn as
+\[
+0 \to M_1 \xrightarrow{f_1} M_2 \xrightarrow{f_2} M_3 \to 0
+\]
+such that for every occurrence of a triple $N_1 \xrightarrow{g_1} N_2 \xrightarrow{g_2} N_3$ we have $\im(g_1) = \ker(g_2)$.
+\end{defn}
+
+In any short exact sequence we therefore have $f_1$ injective and $f_2$ surjective.
+
+%TODO split
+
 \section{Algebraic number theory}
 \label{sec:ant}
 
@@ -291,8 +305,10 @@ The \emph{ring of integers}, denoted $\ZZ_K$, of a number field $K$ is the uniqu
 \end{defn}
 
 The terminology for this ring comes from the fact that its behaviour is analogous to the way $\ZZ$ behaves inside $\QQ$.
+As we will see later the maximal order of a quadratic number field is easy to determine but the complexity of such calculations increases with the degree.
 
-The notion of index introduced earlier applies here and as all orders lie inside the ring of integers we can 
+The notion of index introduced earlier applies here and as all orders lie inside the ring of integers we can always find the index of an order $\O$ inside $\ZZ_K$.
+If we just use the term index of an order we will mean exactly this, the index inside the maximal order.
 
 \begin{ex}
 \[
@@ -300,14 +316,12 @@ The notion of index introduced earlier applies here and as all orders lie inside
 \]
 \end{ex}
 
-%TODO make this more exampley, or not an example??
-As we will see later the maximal order of a quadratic number field is easy to determine.
-For example in figure~\ref{fig:sageord} one embedding into the complex plane of the ring of integers of $\QQ[x]/(x^2 + 19)\cong \QQ(\sqrt{-19})$ is shown.
+In figure~\ref{fig:sageord} one embedding into the complex plane of the ring of integers of $\QQ[x]/(x^2 + 19)\cong \QQ(\sqrt{-19})$ is shown.
 Highlighted in bold is a suborder of index 3 in this order.
 \begin{figure}
 \centering
 \includegraphics[scale=0.6]{sageord}
-\caption{\label{fig:sageord} An embedding in $\CC$ of the ring of integers of $\QQ(\sqrt{-19})$.}
+\caption{\label{fig:sageord} An embedding in $\CC$ of the ring of integers of $\QQ(\sqrt{-19})$ and an index 3 suborder.}
 \end{figure}
 
 %P.<x> = QQ[]
@@ -351,13 +365,13 @@ This plot of the real points is typical for an elliptic curves though there can 
 \begin{figure}
 \centering
 \includegraphics[scale=0.6]{sageec}
-\caption{\label{fig:ec}$E(\RR)$.}
+\caption{\label{fig:ec}The real points of $E \colon y^2 + 2xy + y = x^3 - 2x + 3$.}
 \end{figure}
 \end{ex}
 
 One of the things that makes elliptic curves so interesting to study is the fact that we can define a natural way of adding points of the curve over some field, with this definition the set of points on the curve becomes a group.
 
-\begin{defn}[Group law]
+\begin{defn}[Group law] %TODO dates to Jacobi??
 \end{defn}
 
 With this definition of addition the set of points of $E$ over some field $K$ is a group, and moreover this group is abelian.
@@ -392,7 +406,7 @@ Although by theorem~\ref{thm:tors} $E(\QQ)_\text{tors}$ cannot be large it is st
 %If $K = \QQ$ we can see from theorem~\ref{thm:tors} that $E(\QQ)[n]$ is likely to be interesting for $n\in\{2,3,4\}$.
 
 \minisec{}
-We are now ready to state in precise terms the project aimed to solve and to detail the methods used in its solution.
+We are now ready to state in precise terms the problem we aimed to solve and to detail the methods used in its solution.
 
 \chapter{The problem}
 \label{chap:prob}
@@ -524,20 +538,16 @@ We include the proof here as it is quite instructive. %TODO generalise to all st
 \begin{thm}
 \label{thm:coresp}
 Let $K$ be a number field and fix some $m\in\ZZ$ then let
-\[
-W = \{\O \text{ an order of } K\mid \ZZ_K/\O \cong \ZZ/m\ZZ\}
-\]
-and
-\[
-V = \{ J \text{ an ideal of }\ZZ_K \mid \ZZ_K/J \cong (\ZZ/m\ZZ)^2 \}.
-\]
+\begin{align*}
+W &= \{\O \text{ an order of } K\mid \ZZ_K/\O \cong \ZZ/m\ZZ\}
+\intertext{and}
+V &= \{ J \text{ an ideal of }\ZZ_K \mid \ZZ_K/J \cong (\ZZ/m\ZZ)^2 \}.
+\end{align*}
 Then there is a bijection between $V$ and $W$ given by
 \begin{align*}
 f\colon W &\to V\\
 \O &\mapsto \{a\in\ZZ_K \mid a\ZZ_K \subseteq \O \}
-\end{align*}
-and
-\begin{align*}
+\intertext{and}
 g\colon V&\to W\\
 J&\mapsto \ZZ + J.
 \end{align*}
@@ -582,7 +592,7 @@ and so $\O$ is not cocyclic.
 
 \section{General orders in absolute number fields}
 
-We originally hoped that the correspondence between suborders and their conductors that exists in the quadratic case (theorem \ref{thm:coresp}) could be generalised to higher degree number fields.
+We originally hoped that the correspondence between suborders and their conductors that exists in the quadratic case (theorem~\ref{thm:coresp}) could be generalised to higher degree number fields.
 However the direct generalisations of this result fail to hold even in degree 3 number fields.
 We now give examples of some results that would be good for our purposes if true and explicit counter examples for each of them.
 % TODO list some generalisations here
