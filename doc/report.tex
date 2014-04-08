@@ -353,15 +353,37 @@ This is not required for the main problem discussed in chapter~\ref{chap:prob}, 
 As with the above sections everything here can be found in textbooks on elliptic curves (such as \cite{knapp}), we just move quickly to the parts relevant to us in this section.
 %TODO more refs
 
-Given an elliptic curve $E$ and a field $K$ we let $E(K)$ be the set of points in $K^2$ satisfying the equation defining $E$, along with an extra point $\infty$.
-This extra point is called the point at infinity, the reasons for its inclusion in the set should become clear later.
+\begin{defn}[Elliptic curve]
+For us an \emph{elliptic curve} $E$ defined over a field $K$ will be given by a binary cubic equation of the form
+\[
+y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6\text{ with }a_i\in K.
+\]
+To such a curve we assign several $b$ invariants based on the coefficients in the definition as follows
+\begin{align*}
+b_2 &= a_1^2 + 4a_2\\
+b_4 &= 2a_4 + a_1a_3\\
+b_6 &= a_3^2 + 4a_6\\
+b_8 &= a_1^2a_6 + 4a_2a_6 - a_1a_3a_4 + a_2a_3^2 -a_4^2.
+\end{align*}
+We then also require that the \emph{discriminant} $\Delta$ of $E$, given by
+\[
+\Delta = -b_2^2b_8 -8b_4^3 -27b_6^2 +9b_2b_4b_6
+\]
+is not zero for $E$ to really be an elliptic curve.
+
+Given an elliptic curve $E$ defined over a field $K \subset K'$ another field, we let $E(K')$ be the set of points in $K'\times K'$ satisfying the equation defining $E$, along with an extra point $\infty$.
+This additional point is called the point at infinity, the reasons for its inclusion in the set should become clear later.
+\end{defn}
+
+The condition on $\Delta$ given above is to ensure that our curve does not have any points where both the derivatives with respect to $x$ and $y$ vanish, such a point is called a singular point and their existence causes the behaviour of the curve to differ highly from what we would normally expect.
 
 \begin{ex}
 Let 
 \[
-E \colon y^2 + 2xy + y = x^3 - 2x + 3.
+E \colon y^2 + 2xy + y = x^3 - 2x + 3
 \]
-Then we can see for example that $(1,(\sqrt{17}-3)/2)\in E(\RR) \subset E(\CC)$ as the coordinates satisfy the equation defining the curve.
+be an elliptic curve.
+Then we can see that $(1,(\sqrt{17}-3)/2)\in E(\RR) \subset E(\CC)$ as the coordinates satisfy the equation defining the curve.
 
 We can plot the real points of this curve, such a plot is shown in figure~\ref{fig:ec}.
 This plot of the real points is typical for an elliptic curves though there can easily be two connected components rather than one as in this case.
@@ -375,9 +397,12 @@ This plot of the real points is typical for an elliptic curves though there can 
 One of the things that makes elliptic curves so interesting to study is the fact that we can define a natural way of adding points of the curve over some field, with this definition the set of points on the curve becomes a group.
 
 \begin{defn}[Group law] %TODO dates to Jacobi??
+We define the sum of two points $P,Q\in E(K)$ as follows, let $L$ be the line joining $P$ and $Q$ (take $L$ to be the tangent at $P$ if $P=Q$).
+Then $L$ intersects $E$ in three points (with multiplicity) so there is one point in addition to $P$ and $Q$ on both $L$ and $E$, call this point $R$.
+Now there is at most one other point with the same $x$ coordinate as $R$ that lies on $E$, this is our sum $P+Q$.
 \end{defn}
 
-With this definition of addition the set of points of $E$ over some field $K$ is a group, and moreover this group is abelian.
+With this definition of addition the set of points of $E$ over some field $K$ is a group, and moreover this group is abelian (as the line through $P$ and $Q$ is the same as the line through $Q$ and $P$).
 From now on we will denote the point $\infty\in E(K)$ as $0$, but still refer to it as \emph{at infinity}.
 
 As remarked above any abelian group can be regarded as a $\ZZ$-module $M$ in a natural way by letting 
@@ -485,7 +510,9 @@ This follows immediately from the above description of orders of $K$ (propositio
 \end{proof}
 %TODO make sure we get the solution to match the problem statement! arbitrary starting order!
 
-Orders in quadratic fields appear in the theory of elliptic curves with complex multiplication. %TODO explain this lots, why our methods aren't really useful here. Conceivable that a solution to this problem could be useful in generalisations of this theory to other abelian varieties?
+Orders in quadratic fields appear in the theory of elliptic curves with complex multiplication.
+While the solution to our problem in this special case is not useful here as the theory is so simple, it is maybe conceivable that our methods could find application in generalisations of the theory of complex multiplication (to higher dimensional abelian varieties).
+%TODO explain this lots, why our methods aren't really useful here. Conceivable that a solution to this problem could be useful in generalisations of this theory to other abelian varieties?
 
 %TODO cubic????
 
