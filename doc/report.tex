@@ -386,7 +386,7 @@ be an elliptic curve.
 Then we can see that $(1,(\sqrt{17}-3)/2)\in E(\RR) \subset E(\CC)$ as the coordinates satisfy the equation defining the curve.
 
 We can plot the real points of this curve, such a plot is shown in figure~\ref{fig:ec}.
-This plot of the real points is typical for an elliptic curves though there can easily be two connected components rather than one as in this case.
+This plot of the real points is typical for an elliptic curve, though there can easily be two connected components rather than one as in this case.
 \begin{figure}
 \centering
 \includegraphics[scale=0.6]{sageec}
@@ -430,8 +430,7 @@ For some $n\in\ZZ$ the set of \emph{$n$-division points} of $E$ over $K$ is
 E(K)[n] = \{P\in E(K) \mid nP = 0\}.
 \]
 \end{defn}
-Although by theorem~\ref{thm:tors} $E(\QQ)_\text{tors}$ cannot be large it is still useful to consider the $n$-division points of a curve over the rationals and we will use this group later.
-%If $K = \QQ$ we can see from theorem~\ref{thm:tors} that $E(\QQ)[n]$ is likely to be interesting for $n\in\{2,3,4\}$.
+Although $E(\QQ)_\text{tors}$ cannot be large by theorem~\ref{thm:tors} it is still useful to consider the $n$-division points of a curve over the rationals and we will use this group later.
 
 \minisec{}
 We are now ready to state in precise terms the problem we aimed to solve and to detail the methods used in its solution.
@@ -530,6 +529,7 @@ The ease of computing with them comes from the fact that
 \ZZ[\alpha] = \ZZ + \ZZ\alpha + \ZZ\alpha^2 + \cdots + \ZZ\alpha^{n-1}
 \]
 and so $\{1,\alpha,\ldots,\alpha^{n-1}\}$ is a basis for $\ZZ[\alpha]$ as a $\ZZ$ module (here $n$ is $[K : \QQ]$).
+With this basis computing products of elements with a computer is simpler to do than in general.
 
 %TODO explain niceness of monogenic orders etc
 
@@ -552,27 +552,27 @@ i.e. the quotient of the maximal order of the $K$ by $\O$ is a cyclic group.
 
 \begin{ex}
 \label{ex:cocyc}
-Let $K = \QQ[x]/(x^4 ) = \QQ(\alpha)$ be a number field and take %TODO fill in
+Let $K = \QQ[x]/(x^4 + 5x + 1) = \QQ(\alpha)$ be a number field and take
 \[
-\O = \ZZ + \ZZ3\alpha + \ZZ9\alpha^2 + \ZZ3\alpha^3.
+\O = \ZZ + \ZZ(\alpha + 2\alpha^3) + \ZZ\alpha^2 + \ZZ5\alpha^3.
 \]
 Then as $\ZZ_K = \ZZ[\alpha]$ we have
 \[
-\ZZ_K/\O \cong 
+\ZZ_K/\O = \ZZ[\alpha]/\O \cong \ZZ/5\ZZ
 \]
 and so $\O$ is cocyclic.
 \end{ex}
 
-The following theorem which is a specialisation of \cite[Thm. 4.1]{brakenhoff} will allow us to find cocyclic orders very easily.
+The following theorem is given in \cite[Thm. 4.1]{brakenhoff}, it will allow us to find cocyclic orders very easily.
 We include the proof here as it is quite instructive. %TODO generalise to all starting orders???
 
 \begin{thm}
 \label{thm:coresp}
-Let $K$ be a number field and fix some $m\in\ZZ$ then let
+Let $Z$ be a commutative ring, $K$ a number field and fix some ideal $J$ of $Z$ then let
 \begin{align*}
-W &= \{\O \text{ an order of } K\mid \ZZ_K/\O \cong \ZZ/m\ZZ\}
+W &= \{\O \text{ an order of } K\mid \ZZ_K/\O \cong Z/J\}
 \intertext{and}
-V &= \{ J \text{ an ideal of }\ZZ_K \mid \ZZ_K/J \cong (\ZZ/m\ZZ)^2 \}.
+V &= \{ I \text{ an ideal of }\ZZ_K \mid \ZZ_K/I \cong (Z/J)^2 \}.
 \end{align*}
 Then there is a bijection between $V$ and $W$ given by
 \begin{align*}
@@ -580,7 +580,7 @@ f\colon W &\to V\\
 \O &\mapsto \{a\in\ZZ_K \mid a\ZZ_K \subseteq \O \}
 \intertext{and}
 g\colon V&\to W\\
-J&\mapsto \ZZ + J.
+I&\mapsto \ZZ + I.
 \end{align*}
 \end{thm}
 
@@ -590,6 +590,25 @@ $f(\O) = \Ann_{\ZZ_K}(\ZZ_K/\O)$ which is an ideal of $\ZZ_K$.
 %As $\ZZ_K$ and $\O$ are rings we have that $f(\O)\ZZ_K \subset f(\O)$ and $f(\O) + f(\O) \subset f(O)$, hence $f(\O)$ is an ideal of $\ZZ_K$ and so in $W$.
 
 \end{proof}
+
+In the situation we are interested in this reads.
+
+\begin{cor}
+Let $K$ be a number field, $R$ an order of $K$ and fix some $m\in\ZZ$ then let
+\begin{align*}
+W &= \{\O \text{ an order of } K\mid R/\O \cong \ZZ/m\ZZ\}
+\intertext{and}
+V &= \{ I \text{ an ideal of }R \mid R/I \cong (\ZZ/m\ZZ)^2 \}.
+\end{align*}
+Then there is a bijection between $V$ and $W$ given by
+\begin{align*}
+f\colon W &\to V\\
+\O &\mapsto \{a\in\ZZ_K \mid a\ZZ_K \subseteq \O \}
+\intertext{and}
+g\colon V&\to W\\
+I&\mapsto \ZZ + I.
+\end{align*}
+\end{cor}
 
 The image of $f$ above is still well defined for non-cocyclic orders and this ideal is known as the \emph{conductor} of $\O$.%TODO just defined for maximal?
 
@@ -721,9 +740,10 @@ we can find an isomorphic curve $E \colon y^2 = x^3 + a_2'x^2 + a_4'x + a_6'$, s
 
 Given such a curve we can define a number field to help us study the torsion points of $E$.
 \begin{defn}[$p$-division field] %TODO find ref for this
-For a prime $p$ the $p$-division field of $E$, denoted $\QQ(E[p])$ is obtained by taking all points $(x,y) \in E(\QQ)[p]\setminus 0\subset \QQ^2$ and adjoining the collection of each of their coordinates $x$ and $y$ to $\QQ$.
+For a prime $p$ the $p$-division field of $E$, denoted $\QQ(E[p])$ is obtained by taking all points $(x,y) \in E(\overline{\QQ})[p]\setminus 0\subset \QQ^2$ and adjoining the collection of each of their coordinates $x$ and $y$ to $\QQ$.
+Here $\overline{\QQ}$ denotes the algebraic closure of $\QQ$, the algebraic numbers.
 \end{defn}
-As the torsion subgroup $E(\QQ)_\text{tors}$ is always finite there are at most finitely many elements that need adjoining to $\QQ$, so this field is fairly nice.
+As the torsion subgroup $E(\QQ)_\text{tors}$ is always finite there are at most finitely many elements that need adjoining to $\QQ$, so this field is always a number field.
 
 \minisec{}
 Assuming that the curve $E$ has no rational 2-torsion points we must have no rational solution to $f = x^3 + a_2x^2 + a_4x + a_6$ and hence this polynomial is irreducible over $\QQ$.
