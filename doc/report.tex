@@ -138,7 +138,7 @@ In fact every abelian group can be given a $\ZZ$-module structure so of course t
 We now list some standard definitions that are used to talk about how different modules relate to one another and describe ways of constructing new modules from old.
 
 \begin{defn}[Module homomorphism]
-Given $R$-modules $M_1$ and $M_2$ a map $f\colon M_1 \to M_2$ satisfying
+Given $R$-modules $M_1$ and $M_2$, a function $f\colon M_1 \to M_2$ satisfying
 \begin{align*}
 f(rm) &= rf(m) &&\text{ for all $r\in R$, $m\in M_1$}\\
 f(m + m') &= f(m) + f(m')&&\text{ for all $m,m'\in M_1$}
@@ -231,7 +231,6 @@ As implied by the name this is always submodule of $M$.
 A module $M$ is called a torsion module if $M_\text{tors} = M$, and torsion-free if $M_\text{tors} = 0$.
 
 % TODO generalise to module over PID
-% TODO direct sum/prod
 
 \begin{defn}[Rank of a $\ZZ$-module]
 Given a $\ZZ$-module $M$ we can always write $M = M_\text{tors} \oplus \ZZ^r$ for some unique $r\in \ZZ_{\ge 0}$.
@@ -298,7 +297,11 @@ So we distinguish some subrings that have desirable properties and single them o
 An \emph{order} of a number field $K$ is a subring of $K$ that is finitely generated as a $\ZZ$-module, and of rank equal to the degree of $K$ (this is the maximal rank).
 \end{defn}
 
-%TODO finite basis
+By definition order's have finite bases over $\ZZ$ and so we will often represent orders by writing them as sums 
+\[
+\O = \ZZ\alpha_1 + \ZZ \alpha_2 + \cdots + \ZZ \alpha_n.
+\]
+We also use the notation $\ZZ[\alpha]$ to mean the ring of polynomials expressions in $\alpha$ with integer coefficients, provided $\alpha$ is an algebraic integer this will be an order.
 
 \begin{defn}[Ring of integers]
 The \emph{ring of integers}, denoted $\ZZ_K$, of a number field $K$ is the unique maximal order.
@@ -402,11 +405,12 @@ For some $n\in\ZZ$ the set of \emph{$n$-division points} of $E$ over $K$ is
 E(K)[n] = \{P\in E(K) \mid nP = 0\}.
 \]
 \end{defn}
-Although by theorem~\ref{thm:tors} $E(\QQ)_\text{tors}$ cannot be large it is still useful to consider the $n$-division points of a curve and we will use this group later.
+Although by theorem~\ref{thm:tors} $E(\QQ)_\text{tors}$ cannot be large it is still useful to consider the $n$-division points of a curve over the rationals and we will use this group later.
 %If $K = \QQ$ we can see from theorem~\ref{thm:tors} that $E(\QQ)[n]$ is likely to be interesting for $n\in\{2,3,4\}$.
 
 \minisec{}
 We are now ready to state in precise terms the problem we aimed to solve and to detail the methods used in its solution.
+
 
 \chapter{The problem}
 \label{chap:prob}
