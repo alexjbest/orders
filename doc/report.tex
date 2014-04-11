@@ -698,20 +698,54 @@ Fast algorithms for computing Hermite normal forms is an interesting area of stu
 So in order 
 
 
+\subsection{Generating matrices in Hermite normal form}
+
+
+\subsection{Determining if a module is a ring}
+
+
 \subsection{The basic algorithm}
 %TODO how to check subring
 \begin{alg}~\\
 \begin{algorithm}[H]
-\For{all HNF matrices $H$ of determinant $I$}{
-Find the submodule $M$ of $\O$ corresponding to $H$.\\
-\If{$M$ is a subring}
+\For{all $n\times n$ HNF matrices $H$ of determinant $I$}{
+Find the submodule $M$ of $R$ corresponding to $H$.\\
+\If{$M$ is a subring of $R$}
 {
 add $M$ to the output.
 }
 }
 \end{algorithm}
 \end{alg}
+
+
+In fact using the lemma~\ref{lem:onebasis} we can improve this algorithm slightly.
+As we know that we can always include 1 in the basis of an order and of course as all orders necessarily contain 1 we 
 %TODO speed up including 1
+
+\begin{alg}~\\
+\begin{algorithm}[H]
+\For{all $(n-1)\times (n-1)$ HNF matrices $H$ of determinant $I$}{
+Let 
+\[
+H' =
+\left(
+\begin{array}{c|c}
+  1 & 0 \cdots 0 \\ \hline
+  0 & \raisebox{-12pt}{{\Large\mbox{{$H$}}}} \\[-4ex]
+  \vdots & \\[-0.5ex]
+  0 &
+\end{array}
+\right).
+\]
+Find the submodule $M$ of $R$ corresponding to $H'$.\\
+\If{$M$ is a subring of $R$}
+{
+add $M$ to the output.
+}
+}
+\end{algorithm}
+\end{alg}
 
 \subsection{Making use of less general methods} %TODO cut this section :( / reduce as speedup is small
 Given the results discussed in \ref{sec:cocyc} we can improve the performance of the above algorithm as follows.
