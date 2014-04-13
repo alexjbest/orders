@@ -537,9 +537,25 @@ The ease of computing with them comes from the fact that
 \ZZ[\alpha] = \ZZ + \ZZ\alpha + \ZZ\alpha^2 + \cdots + \ZZ\alpha^{n-1}
 \]
 and so $\{1,\alpha,\ldots,\alpha^{n-1}\}$ is a basis for $\ZZ[\alpha]$ as a $\ZZ$ module (here $n$ is $[K : \QQ]$).
-With this basis computing products of elements with a computer is simpler to do than in general.
+With this basis computing products of elements with a computer (and by hand) is simpler to do than in general making them natural bases to work with.
 
 %TODO explain niceness of monogenic orders etc
+
+Unfortunately not all orders are monogenic and even rings of integers need not be in general.
+Dedekind was the first to give an example of a ring of integers that is not monogenic.
+His example lies inside a cubic field and it is easy to see that in the quadratic case all orders are monogenic, especially given the discussion in the above section.
+
+\begin{ex}[Dedekind, 1878]
+Let 
+\[
+K = \QQ(\alpha) = \QQ[x]/(x^3 -x^2 -2x-8)
+\]
+then
+\[
+\ZZ_K=\ZZ\left[ \alpha,\frac{\alpha + \alpha^2}{2}\right]
+\]
+and there is no $\beta\in \ZZ_K$ such that $\ZZ_K=\ZZ[\beta]$. %TODO check
+\end{ex}
 
 %TODO give examples of non-monogenic orders, orders with n-1 ring gens for any n??
 
@@ -718,8 +734,8 @@ A matrix $H\in\Mat_{m\times n}(\ZZ)$ is said to be in \emph{Hermite normal form}
 Given a matrix $A$, the unique matrix in Hermite normal form that can be obtained from $A$ by unimodular row and column operations is called \emph{the} Hermite normal form of $A$.
 \end{defn}
 
-Fast algorithms for computing Hermite normal forms is an interesting and useful area of study, for a practical discussion of some of the most effective ways of doing this see \cite{pernetstein}.
-There are also several algorithms for finding the Hermite normal form given in \cite{cohen93}, . %TODO what are these like?
+Fast algorithms for computing Hermite normal forms is an interesting and useful area of study, for a practical discussion of some of the most effective ways of doing this see Pernet and Stein \cite{pernetstein}.
+Cohen also gives several algorithms for finding the Hermite normal form in \cite{cohen93}, these are more classical methods that are conceptually simpler.
 Many basic operations such as checking equality of orders can be performed quickly using Hermite normal forms \cite{cohen93}.  %TODO more detail, this is important.
 
 One possible method of finding orders with a prescribed index is therefore to attempt to generate their HNF matrices.
