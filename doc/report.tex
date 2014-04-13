@@ -24,16 +24,18 @@
 % Include project managementy bits
 % Practical considerations, lines of code, sage vs magma python etc.
 
-\documentclass[a4paper,abstracton,bibtotoc]{scrreprt}
+\documentclass[12pt,a4paper,abstracton,bibtotoc]{scrreprt}
 
 \author{Alex J. Best \\ Supervised by Dr. Lassina Demb\'el\'e}
 \date{2014}
 \title{Finding orders with prescribed index in number fields}
 
-\usepackage{amsmath, amssymb, amsfonts, amsthm, hyperref, listings, tikz, algorithm2e, graphicx}
+\usepackage{amsmath, amssymb, amsfonts, amsthm, hyperref, listings, tikz, algorithm2e, graphicx, enumerate}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
+\usepackage{setspace}
+\onehalfspacing
 
 \theoremstyle{definition}
 \newtheorem{thm}{Theorem}
@@ -67,6 +69,7 @@ breakatwhitespace=false,    % sets if automatic breaks should only happen at whi
 \newcommand{\RR}{\mathbf{R}}
 \newcommand{\CC}{\mathbf{C}}
 \newcommand{\ZZ}{\mathbf{Z}}
+\newcommand{\p}{\mathfrak{p}}
 \renewcommand{\O}{\mathcal{O}}
 
 \DeclareMathOperator{\Orders}{Orders}
@@ -135,9 +138,11 @@ We will also not make explicit the ring $R$ involved if it is not relevant to th
 
 The most common modules we will use here will be $\ZZ$-modules such as:
 \begin{ex}
-
+\[
+\ZZ,\ \{(a,b)\mid a,b\in \ZZ\},\text{ or }\{a\sqrt{2} + b\sqrt[3]{2}\mid a,b\in \ZZ\}.
+\]
 \end{ex}
-In fact every abelian group can be given a $\ZZ$-module structure so of course they are ubiquitous in all commutative algebra, nevertheless it is useful to think of the modules used here in terms of $\ZZ$ rather than as abstract abelian groups.
+In fact every abelian group can be given a $\ZZ$-module structure so of course they are ubiquitous in commutative algebra, nevertheless it is useful to think of the modules used here in terms of $\ZZ$ rather than as abstract abelian groups.
 We now list some standard definitions that are used to talk about how different modules relate to one another and describe ways of constructing new modules from old.
 
 \begin{defn}[Module homomorphism]
@@ -185,7 +190,7 @@ Not that this is in general distinct from when we have $M_1$ and $M_2$ submodule
 \[
 M_1 + M_2 = \{m_1 + m_2 \mid m_1\in M_1,\ m_2\in M_2\}.
 \]
-For example with this elementwise addition we have $M + M = M$ for any module $M$, whereas $M\oplus M$ is not isomorphic to $M$ unless $M$ is the trivial module containing only a zero element and no others.
+For example with this elementwise addition we have $M + M = M$ for any module $M$, whereas $M\oplus M$ is not isomorphic to $M$ unless $M$ is the trivial module (i.e. the module containing only a zero element and no others).
 
 The well known isomorphism theorems also hold for modules, we require only two.
 
@@ -266,7 +271,7 @@ In any short exact sequence we therefore have $f_1$ injective and $f_2$ surjecti
 \label{sec:ant}
 
 Algebraic number began with the study of algebraic numbers and their uses in solving Diophantine equations but has since expanded to encompass a huge amount of mathematics involving the use of algebraic techniques to tackle number theoretic problems. %TODO ????
-As above, more details about anything not proved here can be found in any of the many texts on algebraic number theory, for example \cite{neukirch}, \cite{lang}.
+As above, more details about anything not proved here can be found in any of the many texts on algebraic number theory, for example \cite{neukirch}, \cite{lang} or \cite{narkiewicz}.
 
 \begin{defn}[Number field]
 A \emph{number field} $K$ is a field that is also a finite dimensional $\QQ$-vector space.
@@ -300,7 +305,7 @@ So we distinguish some subrings that have desirable properties and single them o
 An \emph{order} of a number field $K$ is a subring of $K$ that is finitely generated as a $\ZZ$-module, and of rank equal to the degree of $K$ (this is the maximal rank).
 \end{defn}
 
-By definition order's have finite bases over $\ZZ$ and so we will often represent orders by writing them as sums 
+By definition orders have finite bases over $\ZZ$ and so we will often represent orders by writing them as sums 
 \[
 \O = \ZZ\alpha_1 + \ZZ \alpha_2 + \cdots + \ZZ \alpha_n.
 \]
@@ -314,7 +319,7 @@ The terminology for this ring comes from the fact that its behaviour is analogou
 As we will see later the maximal order of a quadratic number field is easy to determine but the complexity of such calculations increases with the degree.
 
 The notion of index introduced earlier applies here and as all orders lie inside the ring of integers we can always find the index of an order $\O$ inside $\ZZ_K$.
-If we just use the term index of an order we will mean exactly this, the index inside the maximal order.
+If we just use the term index of an order, without specifying another containing it, we will mean exactly this, the index inside the maximal order.
 
 \begin{ex}
 \[
@@ -353,7 +358,7 @@ Highlighted in bold is a suborder of index 3 in this order.
 
 We now introduce the background material relevant to elliptic curves, one of the intended applications of these methods.
 This is not required for the main problem discussed in chapter~\ref{chap:prob}, but section~\ref{sec:ellapp} uses these ideas heavily.
-As with the above sections everything here can be found in textbooks on elliptic curves (such as \cite{knapp}), we just move quickly to the parts relevant to us in this section.
+As with the above sections everything here can be found in textbooks on elliptic curves (such as \cite{knapp}), we offer a rapid summary moving quickly to the notions relevant to the project in this overview.
 %TODO more refs
 
 \begin{defn}[Elliptic curve]
@@ -520,7 +525,7 @@ While the solution to our problem in this special case is not useful here as the
 
 \section{Monogenic orders}
 
-We now look at a special class of orders that have been studied extensively by other authors.
+We now look at a special class of orders that have, in effect, been studied extensively by other authors.
 
 \begin{defn}[Monogenic order]
 An order of the form $\ZZ[\alpha]$ for some algebraic integer $\alpha$ is called \emph{monogenic}.
@@ -606,6 +611,10 @@ We therefore have the short exact sequence of $Z$-modules
 \end{proof}
 
 The image of $f$ above is still well defined for non-cocyclic orders and this ideal is known as the \emph{conductor} of $\O$ in $R$. %TODO just defined for maximal?
+Earlier we called the order $\ZZ + f\ZZ_K$ of a quadratic number field the order of conductor $f$, note that with our new terminology the conductor of $\ZZ + f\ZZ_K$ in $\ZZ_K$ is the ideal $(f)$.
+Though it is not actually required for an algorithmic resolution of our problem (we go the other way, via $g$, in our approach) being able to find the conductor of an order is useful for experimentation.
+An algorithm for computing the conductor is given in \cite{klunerspauli}.
+
 In the situation we are interested in the proposition reads.
 
 \begin{cor}
@@ -651,9 +660,10 @@ So for rings of integers $\ZZ_K$ we can use the following to find ideals with a 
 \label{alg:idealnorm}~\\
 \begin{algorithm}[H]
 Input: Norm $I$\\
-Factor the ideals $p_i\ZZ_K$ into prime ideals for the primes $p_i$ dividing $I$.\\
-\For{}
+\For{All primes $p$ dividing $I$}
 {
+Factor the ideal $p\ZZ_K$ into prime ideals $\p_i$, store them by norm.\\
+
 Find all ideals in $\ZZ_K$ of index $I^2$.\\
 }
 \end{algorithm}
@@ -666,11 +676,21 @@ However this is not a full solution of our problem as not all orders of number f
 
 \begin{ex}
 \label{ex:noncocyc}
-With $K = $ (as in example~\ref{ex:cocyc}) and $\O = \ZZ + 9\ZZ_K$ we have
+With $K = \QQ[x]/(x^4 + 5x + 1) = \QQ(\alpha)$ (as in example~\ref{ex:cocyc}) and $\O = \ZZ + \ZZ3\alpha + \ZZ9\alpha^2 + \ZZ3\alpha^3$ we have
 \[
 \ZZ_K/\O = 
 \]
 and so $\O$ is not cocyclic.
+
+Indeed if we attempt to apply theorem~\ref{thm:coresp} anyway we find that 
+\[
+f(\O) = \{ a\in \ZZ_K \mid a\ZZ_K \subset \} = 9\ZZ_K.
+\]
+However 
+\[
+g(9\ZZ_K) = \ZZ + 9\ZZ_K \ne \O\text{ as } 3\alpha \in \O\setminus(\ZZ + 9\ZZ_K)
+\]
+and so the correspondence really does fail in this case.
 \end{ex}
 
 \section{General orders in absolute number fields}
@@ -685,32 +705,57 @@ Here we now give some positive results leading to methods that can be used to fi
 \subsection{The Hermite normal form}
 The Hermite normal form of a matrix is a unique matrix that a given matrix of integers can be brought into by unimodular row operations.
 Using this form will allow us to find additive subgroups of orders which will provide one approach to finding all suborders.
-There are varying definitions of the Hermite normal form (HNF) the one we use here is fairly common and is used in the Sage mathematical software system \cite{sage}, though others exist such as the one given in \cite{cohen93}.
+There are varying definitions of the Hermite normal form (HNF) the one we use here is fairly common and is used in the Sage mathematical software system \cite{sage}, though others exist such as the one given in \cite{cohen93}, they mostly differ by operations such as transposition and reordering of rows.
 
-\begin{defn}[Hermite normal form]
-A matrix $H\in\Mat_{m\times n}(\ZZ)$ is said to be in \emph{Hermite normal form} if there f.
+\begin{defn}[Hermite normal form] %TODO check this
+A matrix $H\in\Mat_{m\times n}(\ZZ)$ is said to be in \emph{Hermite normal form} if there is an increasing function $f\colon \{1, \ldots, m\} \to \{1,\ldots , n\}$ such that
+\begin{enumerate}[i)]
+\item if $n' < f(m)$ then $H_{m,n'} = 0$,
+\item if $n' = f(m)$ then $H_{m,n'} > 0$,
+\item and if $m' < m$ then $0\le H_{m',f(m)} < H_{m,f(m)}$.
+\end{enumerate}
 
 Given a matrix $A$, the unique matrix in Hermite normal form that can be obtained from $A$ by unimodular row and column operations is called \emph{the} Hermite normal form of $A$.
 \end{defn}
 
-Fast algorithms for computing Hermite normal forms is an interesting area of study \cite{pernetstein} and many basic operations such as checking equality of orders can be performed effectively using Hermite normal forms \cite{cohen93}. 
+Fast algorithms for computing Hermite normal forms is an interesting and useful area of study, for a practical discussion of some of the most effective ways of doing this see \cite{pernetstein}.
+There are also several algorithms for finding the Hermite normal form given in \cite{cohen93}, . %TODO what are these like?
+Many basic operations such as checking equality of orders can be performed quickly using Hermite normal forms \cite{cohen93}.  %TODO more detail, this is important.
 
-So in order 
-
+One possible method of finding orders with a prescribed index is therefore to attempt to generate their HNF matrices.
+In the next sections we look at the steps needed to do this in detail.
 
 \subsection{Generating matrices in Hermite normal form}
 
 
 \subsection{Determining if a module is a ring}
+Assuming that we are given a change of basis matrix $A$ from the basis of an order $R$ we wish to determine if the module spanned by the new basis is an order.
+
+For a full rank $\ZZ$-submodule to be a subring and hence an order we require that it contain 1 and be multiplicatively closed, determining the first of these properties quickly is relatively easy, whereas the second is a little harder.
+We'll consider them both below.
 
 
-\subsection{The basic algorithm}
-%TODO how to check subring
+
+In \cite{cohen93} Cohen gives the basic . %TODO lrn2sentence
+
+\begin{alg} 
+\begin{algorithm}[H]
+\label{alg:isring}
+Input: $H$.\\
+Check if $1\in M$.\\
+Find matrix.\\
+Compute HNF.\\
+Check equality.\\
+\end{algorithm}
+\end{alg} 
+%TODO local property?
+
+\subsection{The HNF algorithm}
 \begin{alg}~\\
 \begin{algorithm}[H]
 \For{all $n\times n$ HNF matrices $H$ of determinant $I$}{
 Find the submodule $M$ of $R$ corresponding to $H$.\\
-\If{$M$ is a subring of $R$}
+\If{$M$ is a ring (via algorithm~\ref{alg:isring})}
 {
 add $M$ to the output.
 }
@@ -732,14 +777,14 @@ H' =
 \left(
 \begin{array}{c|c}
   1 & 0 \cdots 0 \\ \hline
-  0 & \raisebox{-12pt}{{\Large\mbox{{$H$}}}} \\[-4ex]
+  0 & \raisebox{-18pt}{{\Large\mbox{{$H$}}}} \\[-4ex]
   \vdots & \\[-0.5ex]
   0 &
 \end{array}
 \right).
 \]
 Find the submodule $M$ of $R$ corresponding to $H'$.\\
-\If{$M$ is a subring of $R$}
+\If{$M$ is multiplicatively closed}
 {
 add $M$ to the output.
 }
