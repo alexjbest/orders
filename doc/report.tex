@@ -98,6 +98,7 @@ We also apply these techniques to problems relating to elliptic curves over the 
 This report deals with the algorithmic solution of a problem arising from algebraic number theory. 
 Other interesting situations to which this algorithm can be applied are also looked at.
 
+The report is organised as follows.
 We first go through the background material needed to motivate, define and describe the solution of our problems in chapter~\ref{chap:background}.
 In section~\ref{sec:ca} we cover some commutative algebra dealing with the basic properties of modules over rings, after this in section~\ref{sec:ant} we move into algebraic number theory defining the key notions needed to study orders and considering the reasons such ideas were introduced.
 We finish up the background material in section~\ref{sec:ell} with an introduction to the theory of elliptic curves, which will be one of the interesting areas we will apply our methods to.
@@ -105,8 +106,10 @@ We finish up the background material in section~\ref{sec:ell} with an introducti
 Chapter~\ref{chap:prob} is where we consider our main problem and solutions to it.
 In section~\ref{sec:statements} we define the problems themselves and discuss the interest in studying them.
 After this in the rest of chapter~\ref{chap:prob} we detail the techniques used to solve the problems considered, starting with some special cases before moving onto more general results.
+Next we discuss the advantages of the algorithms developed and their practial timings.
 
 Finally in section~\ref{sec:ellapp} we move on to some interesting applications of these methods to the study of elliptic curves.
+
 
 \chapter{Background material}
 \label{chap:background}
@@ -700,7 +703,7 @@ and so $\O$ is not cocyclic.
 
 Indeed if we attempt to apply theorem~\ref{thm:coresp} anyway we find that 
 \[
-f(\O) = \{ a\in \ZZ_K \mid a\ZZ_K \subset \} = 9\ZZ_K.
+f(\O) = \{ a\in \ZZ_K \mid a\ZZ_K \subset \O \} = 9\ZZ_K.
 \]
 However 
 \[
@@ -883,12 +886,18 @@ as $\QQ(E[2])$ is the splitting field of $f$ and $f$ is irreducible.
 Letting $\alpha$ be the image of $x$ in the above quotient, we can see that $ \ZZ[\alpha]$ is an order of $\QQ(\alpha)\cong \QQ(E[2])$.
 
 
+\begin{ex}
+\end{ex}
+
+\begin{ex}
+\end{ex}
+
 \chapter{Conclusion}
 %TODO conclude, several variants developed all with advantages disadvantages
 
 \section{Further work}
-It seems likely that other properties of the orders we are looking for could be used to speed up the algorithms given above and so further investigations into both special cases and the general cases could yield results.
-Further applications of these methods are certainly possible and it would be interesting to see what other areas these methods can be used in.
+It seems likely that other properties of the orders we are looking for could be used to speed up the algorithms given above and so further investigations into both special and general cases could yield interesting results.
+Further applications of these methods are certainly possible and it would be interesting to see what other areas these methods can be used in. %TODO find another word that isn't "interesting".
 
 %Low-degree optimisations.
 %Conditions on ideals to be conductors and modules to be rings can be taken into account.
