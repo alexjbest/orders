@@ -95,8 +95,11 @@ We also apply these techniques to problems relating to elliptic curves over the 
 \tableofcontents
 
 \chapter{Introduction}
-In this report we develop algorithmic methods for the solution of a problem arising from algebraic number theory. 
-We detail some interesting situations in which this algorithm can be applied at the end.
+In this report we develop algorithmic methods for the solution of a problem arising from algebraic number theory.
+Specifically we develop methods to find all orders of an algebraic number field with a given index inside another order.
+We detail some interesting situations in which these algorithms can be applied at the end.
+Though the problem is a natural one we do not know of any previous work with exactly the same aim as ours.
+Instead there is some existing work that relates to special cases of our problem, these are discussed in their relevant sections.
 
 The report is organised as follows.
 We first go through the background material needed to motivate, define and describe the solution of our problems in chapter~\ref{chap:background}.
@@ -390,7 +393,7 @@ We then also require that the \emph{discriminant} $\Delta$ of $E$, given by
 \]
 is not zero for $E$ to really be an elliptic curve.
 
-Given an elliptic curve $E$ defined over a field $K \subset K'$ another field, we let $E(K')$ be the set of points in $K'\times K'$ satisfying the equation defining $E$, along with an extra point $\infty$.
+Given an elliptic curve $E$ defined over a field $K$ with $K \subset K'$ another field, we let $E(K')$ be the set of points in $K'\times K'$ satisfying the equation defining $E$, along with an extra point $\infty$.
 This additional point is called the point at infinity, the reasons for its inclusion in the set should become clear later.
 \end{defn}
 
@@ -451,7 +454,7 @@ For some $n\in\ZZ$ the set of \emph{$n$-division points} (or \emph{$n$-torsion p
 E(K)[n] = \{P\in E(K) \mid nP = 0\}.
 \]
 \end{defn}
-Although $E(\QQ)_\text{tors}$ cannot be large by theorem~\ref{thm:tors} it is still useful to consider the $n$-division points of a curve over the rationals and we will use this group later.
+%Although $E(\QQ)_\text{tors}$ cannot be large by theorem~\ref{thm:tors} it is still useful to consider the $n$-division points of a curve over the rationals and we will use this group later.
 
 \minisec{}
 We are now ready to state in precise terms the problem we aimed to solve and to detail the methods used in its solution.
@@ -559,7 +562,12 @@ The ease of computing with them comes from the fact that
 and so $\{1,\alpha,\ldots,\alpha^{n-1}\}$ is a basis for $\ZZ[\alpha]$ as a $\ZZ$ module (here $n$ is $[K : \QQ]$).
 With this basis computing products of elements with a computer (and by hand) is simpler to do than in general making them natural bases to work with.
 
-%TODO explain niceness of monogenic orders etc
+Given an order $R$ of a number field $K$ of degree $n$ such that
+\[
+R = \ZZ + \ZZ\omega_2 + \cdots + \ZZ\omega_n.
+\]
+We can calculate the index of the order $\ZZ[\alpha]$ where $\alpha = x_1 + x_2\omega_2 + \cdots x_n\omega_n\in R$ as follows.
+First we let
 
 Unfortunately not all orders are monogenic and even rings of integers need not be in general.
 Dedekind was the first to give an example of a ring of integers that is not monogenic.
@@ -664,6 +672,7 @@ Now for $g$ we note that
 
 The image of $f$ above is still well defined for non-cocyclic orders and this ideal is known as the \emph{conductor} of $\O$ in $R$. %TODO just defined for maximal?
 Earlier we called the order $\ZZ + f\ZZ_K$ of a quadratic number field the order of conductor $f$, note that with our new terminology the conductor of $\ZZ + f\ZZ_K$ in $\ZZ_K$ is the ideal $(f)$.
+
 An equivalent definition for the conductor of an order $R$ in another $S$ is that it is the largest ideal of $S$ contained in $R$. %TODO check
 Though it is not actually required for an algorithmic resolution of our problem (we go the other way, via $g$, in our approach) being able to find the conductor of an order is useful for experimentation.
 An algorithm for computing the conductor is given in \cite{klunerspauli}.
