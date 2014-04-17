@@ -106,9 +106,9 @@ We finish up the background material in section~\ref{sec:ell} with an introducti
 Chapter~\ref{chap:prob} is where we consider our main problem and solutions to it.
 In section~\ref{sec:statements} we define the problems themselves and discuss the interest in studying them.
 After this in the rest of chapter~\ref{chap:prob} we detail the techniques used to solve the problems considered, starting with some special cases before moving onto more general results.
-Next we discuss the advantages of the algorithms developed and their practial timings.
+Next we discuss the advantages of the algorithms developed and their practical timings.
 
-Finally in section~\ref{sec:ellapp} we move on to some interesting applications of these methods to the study of elliptic curves.
+Finally in chapter~\ref{chap:ellapp} we move on to some interesting applications of these methods to finding elliptic curves with given properties.
 
 
 \chapter{Background material}
@@ -369,8 +369,8 @@ Highlighted in bold is a suborder of index 3 in this order.
 \label{sec:ell}
 
 We now introduce the background material relevant to elliptic curves, one of the intended applications of these methods.
-This is not required for the main problem discussed in chapter~\ref{chap:prob}, but section~\ref{sec:ellapp} uses these ideas heavily.
-As with the above sections everything here can be found in textbooks on elliptic curves (such as \cite{knapp} or \cite{cassels}), we offer a rapid summary, moving quickly to the notions relevant to the project in this overview.
+This is not required for the main problem discussed in chapter~\ref{chap:prob}, but chapter~\ref{chap:ellapp} uses these ideas heavily.
+As with the above sections everything here can be found in textbooks on elliptic curves (such as \cite{knapp} or \cite{cassels}), we offer a rapid summary, moving quickly to the notions relevant to this project.
 
 \begin{defn}[Elliptic curve]
 For us an \emph{elliptic curve} $E$ defined over a field $K$ will be given by a binary cubic equation of the form
@@ -455,7 +455,7 @@ Although $E(\QQ)_\text{tors}$ cannot be large by theorem~\ref{thm:tors} it is st
 We are now ready to state in precise terms the problem we aimed to solve and to detail the methods used in its solution.
 
 
-\chapter{The problem}
+\chapter{Finding orders with prescribed index}
 \label{chap:prob}
 \section{Statement}
 \label{sec:statements}
@@ -586,13 +586,15 @@ While our techniques differ from the ones developed for monogenic orders we orig
 We recall some definitions and results given by Johannes Brakenhoff in his thesis \cite{brakenhoff}.
 These will be helpful when considering the class of cocyclic orders, defined as follows.
 
-\begin{defn}[Cocyclic order]
-Given two orders $R$ and $S$ of a number field $K$ the order $R$ is called \emph{cocyclic} in $S$ if $R$ is a suborder of $S$ and
+\begin{defn}[Cocyclic subring]
+Given two rings $R$ and $S$ the ring $R$ is called a \emph{cocyclic} subring of $S$ if $R$ is a subring of $S$ and
 \[
 S/R \cong \ZZ/m\ZZ,
 \]
 i.e. the quotient of $S$ by $R$ is a cyclic group.
 \end{defn}
+
+We will refer to suborders that are cocyclic subrings as cocyclic suborders.
 
 \begin{ex}
 \label{ex:cocyc}
@@ -604,10 +606,10 @@ Then as $\ZZ_K = \ZZ[\alpha]$ we have
 \[
 \ZZ_K/\O = \ZZ[\alpha]/\O \cong \ZZ/5\ZZ
 \]
-and so $\O$ is cocyclic in $\ZZ_K$.
+and so $\O$ is cocyclic suborder of $\ZZ_K$.
 \end{ex}
 
-The following theorem is given in \cite[Thm. 4.1]{brakenhoff}, it will allow us to find cocyclic orders very easily.
+The following theorem is given in \cite[Thm. 4.1]{brakenhoff}, it will allow us to find cocyclic suborders very easily.
 We include the proof here as it is quite instructive. %TODO generalise to all starting orders???
 
 \begin{thm}
@@ -642,7 +644,19 @@ We therefore have the short exact sequence of $Z$-modules
 \[
 0\to f(R) \to R \to \End_Z(A/R) \to 0
 \]
-%As $\ZZ_K$ and $\O$ are rings we have that $f(\O)\ZZ_K \subset f(\O)$ and $f(\O) + f(\O) \subset f(O)$, hence $f(\O)$ is an ideal of $\ZZ_K$ and so in $W$.
+and so $R/f(R) \cong \End_Z(A/R) \cong Z/J$.
+As $A/R\cong Z/J$ we have that $JA\subseteq R$ which then gives that $JA \subseteq f(R)$.
+So we can view $A/f(R)$ as a $Z/J$-module and we have the following short exact sequence of $Z/J$-modules
+\[
+0\to R/f(R) \to A/f(R) \to Z/J \to 0.
+\]
+As $Z/J$ is a free module over itself this sequence splits and we obtain the isomorphism
+\[
+A/f(R) \cong R/f(R) \oplus Z/J \cong (Z/J)^2.
+\]
+So the map $f$ is indeed a map from $W$ to $V$.
+
+Now for $g$ we note that 
 
 \end{proof}
 
@@ -880,15 +894,13 @@ Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
 \end{table}
 
 
-\chapter{Applications}
-
+\chapter{Finding elliptic curves}
+\ref{chap:ellapp}
 Through the main problem itself is an interesting one which is worth studying in its own right we were also motivated to look at it by the potential applications to other questions within the same areas of mathematics.
-% TODO are there more apps?
+% TODO what you tryin to say?
 One of the most prominent areas in which a solution to the problem can be used is to answer questions about elliptic curves.
 How a solution to the problem considered above can be applied in this case is detailed below, along with results obtained from the application of our methods there.
 
-\section{Elliptic curves}
-\label{sec:ellapp}
 Given an elliptic curve defined over the rationals in long Weierstrass form, for example
 \[E_l \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6\text{ with }a_i \in \QQ,\]
 we can find an isomorphic curve $E \colon y^2 = x^3 + a_2'x^2 + a_4'x + a_6'$, such a curve is said to be in \emph{medium Weierstrass form}.
