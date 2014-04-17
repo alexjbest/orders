@@ -424,6 +424,8 @@ Now there is at most one other point with the same $x$ coordinate as $R$ that li
 With this definition of addition the set of points of $E$ over some field $K$ is a group, and moreover this group is abelian (as the line through $P$ and $Q$ is the same as the line through $Q$ and $P$).
 From now on we will denote the point $\infty\in E(K)$ as $0$, but still refer to it as \emph{at infinity}.
 
+%TODO isom of ell
+
 As remarked above any abelian group can be regarded as a $\ZZ$-module $M$ in a natural way by letting 
 \[n\cdot z = \underbrace{z + z + \cdots + z}_\text{$n$ times},\text{ for } n\in\ZZ_{\ge 0},\ z\in M\]
 and letting $n\cdot z = (-n)\cdot(-z)$ for negative $n\in \ZZ$.
@@ -444,7 +446,7 @@ In fact similar results have been obtained for quadratic fields too, for more de
 
 Sometimes it is necessary to talk about smaller subgroups of this group whose elements have order dividing some fixed $n$ and so we introduce the following definition.
 \begin{defn}[$n$-division points]
-For some $n\in\ZZ$ the set of \emph{$n$-division points} of $E$ over $K$ is
+For some $n\in\ZZ$ the set of \emph{$n$-division points} (or \emph{$n$-torsion points}) of $E$ over $K$ is
 \[
 E(K)[n] = \{P\in E(K) \mid nP = 0\}.
 \]
@@ -744,6 +746,18 @@ g(9\ZZ_K) = \ZZ + 9\ZZ_K \ne \O\text{ as } 3\alpha \in \O\setminus(\ZZ + 9\ZZ_K)
 and so the correspondence really does fail in this case.
 \end{ex}
 
+There is a simple sufficient condition on the index that we can use to our advantage when finding orders.
+
+\begin{prop}
+If $R$ is a suborder of an order $S$ such that $[S:R]$ is squarefree then $R$ is a cocyclic suborder.
+\end{prop}
+
+\begin{proof}
+In this case we have that $S/R$ is a finite abelian group of squarefree order $I$ and hence isomorphic to $\ZZ/I\ZZ$.
+\end{proof}
+
+So we want to find suborders with some squarefree index we can just search for cocyclic orders as we know no others can occur.
+
 \section{General orders in absolute number fields}
 
 We originally hoped that the correspondence between suborders and their conductors that exists in the quadratic case (theorem~\ref{thm:coresp}) could be generalised to higher degree number fields.
@@ -895,22 +909,30 @@ Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
 
 
 \chapter{Finding elliptic curves}
-\ref{chap:ellapp}
-Through the main problem itself is an interesting one which is worth studying in its own right we were also motivated to look at it by the potential applications to other questions within the same areas of mathematics.
+\label{chap:ellapp}
+Through the main problem itself is an interesting one which is worth studying in its own right we were also motivated to look at it by the potential applications to other questions within different areas of mathematics.
 % TODO what you tryin to say?
-One of the most prominent areas in which a solution to the problem can be used is to answer questions about elliptic curves.
-How a solution to the problem considered above can be applied in this case is detailed below, along with results obtained from the application of our methods there.
+One problem relating to elliptic curves where the methods developed above can be applied is detailed below.
+We also give a few examples solved using our techniques along with results obtained from the application of our methods.
 
-Given an elliptic curve defined over the rationals in long Weierstrass form, for example
-\[E_l \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6\text{ with }a_i \in \QQ,\]
-we can find an isomorphic curve $E \colon y^2 = x^3 + a_2'x^2 + a_4'x + a_6'$, such a curve is said to be in \emph{medium Weierstrass form}.
+Given an elliptic curve we can define a number field to help us study the torsion points of $E$.
 
-Given such a curve we can define a number field to help us study the torsion points of $E$.
-\begin{defn}[$p$-division field] %TODO find ref for this
-For a prime $p$ the $p$-division field of $E$, denoted $\QQ(E[p])$ is obtained by taking all points $(x,y) \in E(\overline{\QQ})[p]\setminus 0\subset \QQ^2$ and adjoining the collection of each of their coordinates $x$ and $y$ to $\QQ$.
+\begin{defn}[$n$-division field] %TODO find ref for this
+For a natural number $n$ the \emph{$n$-division field} (or \emph{$n$-torsion field}) of $E$, denoted $\QQ(E[n])$ is obtained by taking all points $(x,y) \in E(\overline{\QQ})[n]\setminus 0$ and adjoining the collections of each of the coordinates $x$ and $y$ to $\QQ$.
 Here $\overline{\QQ}$ denotes the algebraic closure of $\QQ$, the algebraic numbers. %TODO use CC instead?
 \end{defn}
-As the torsion subgroup $E(\QQ)_\text{tors}$ is always finite there are at most finitely many elements that need adjoining to $\QQ$, so this field is always a number field.
+As the $n$-torsion subgroup $E(\overline{\QQ})[n]$ is always finite there are at most finitely many elements (all of which are algebraic) that need adjoining to $\QQ$.
+So the $n$-division field is always a number field. %TODO ref
+
+For an elliptic curve defined over the rationals in long Weierstrass form such as
+\[
+E \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6\text{ with }a_i \in \QQ,
+\]
+we can always find an isomorphic curve of the form
+\[
+E' \colon y^2 = x^3 + a_2'x^2 + a_4'x + a_6',
+\]
+such a curve is said to be in \emph{medium Weierstrass form}.
 
 \minisec{}
 Assuming that the curve $E$ has no rational 2-torsion points we must have no rational solution to $f = x^3 + a_2x^2 + a_4x + a_6$ and hence this polynomial is irreducible over $\QQ$.
@@ -918,11 +940,18 @@ We can then see that we have
 \[
 \QQ(E[2]) \cong \QQ[x]/(f)
 \]
-as $\QQ(E[2])$ is the splitting field of $f$ and $f$ is irreducible.
+as $\QQ(E[2])$ is the splitting field of $f$ and $f$ is irreducible. %TODO checkeroo
 Letting $\alpha$ be the image of $x$ in the above quotient, we can see that $ \ZZ[\alpha]$ is an order of $\QQ(\alpha)\cong \QQ(E[2])$.
 
-
 \begin{ex}
+The elliptic curve
+\[
+E\colon y^2 + y = x^3 - x
+\]
+is isomorphic to
+\[
+E'\colon y^2 = x^3 - x + \frac{1}{4}
+\]
 \end{ex}
 
 \begin{ex}
