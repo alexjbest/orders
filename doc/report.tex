@@ -480,14 +480,15 @@ With $R$ and $I$ as in the proposition we introduce the following notation to re
 
 \minisec{}
 One very natural extension of the above problem is to consider relative extensions of number fields.
-More precisely we wish to study the following problem.
+More precisely we can generalise the above problem to the following one.
 
 \begin{prob} % TODO check this is really what I mean
 Given an extension of number fields $L|K$, a $\ZZ_K$-order $R$ of $\ZZ_L$ and an integer $I$ find the set
 \[\left\{ \O\subseteq R \mid \O\text{ is a $\ZZ_K$-suborder},\ [R:\O] = I\right\}.\]
 \end{prob}
 
-We now detail some methods to solve this problem in varying generality.
+We now detail some methods to solve the problem in the absolute setting in varying generality.
+Much of what follows should be extendible to relative orders fairly easily, however we do not consider this problem any further.
 
 \section{Quadratic number fields}
 
@@ -554,7 +555,7 @@ We now look at a special class of orders that have been studied extensively by o
 An order of the form $\ZZ[\alpha]$ for some algebraic integer $\alpha$ is called \emph{monogenic}.
 \end{defn}
 
-Monogenic orders are easier to work with and are common in algebraic number theory.
+Monogenic orders can be easier to work with than more general orders and are common in algebraic number theory.
 The ease of computing with them comes from the fact that
 \[
 \ZZ[\alpha] = \ZZ + \ZZ\alpha + \ZZ\alpha^2 + \cdots + \ZZ\alpha^{n-1}
@@ -673,7 +674,7 @@ Now for $g$ we note that
 The image of $f$ above is still well defined for non-cocyclic orders and this ideal is known as the \emph{conductor} of $\O$ in $R$. %TODO just defined for maximal?
 Earlier we called the order $\ZZ + f\ZZ_K$ of a quadratic number field the order of conductor $f$, note that with our new terminology the conductor of $\ZZ + f\ZZ_K$ in $\ZZ_K$ is the ideal $(f)$.
 
-An equivalent definition for the conductor of an order $R$ in another $S$ is that it is the largest ideal of $S$ contained in $R$. %TODO check
+An equivalent definition for the conductor of an order $R$ in another $S$ is that it is the largest ideal of $S$ that is contained in $R$. %TODO check
 Though it is not actually required for an algorithmic resolution of our problem (we go the other way, via $g$, in our approach) being able to find the conductor of an order is useful for experimentation.
 An algorithm for computing the conductor is given in \cite{klunerspauli}.
 
