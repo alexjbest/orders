@@ -1,28 +1,25 @@
 % TODO list:
-% - Add sage and magma to refs.
 % - Include thanks? anyone else?
 % - How will code be included, snippets or on disk??
-% - Think about typography
 % - Proofs/detailed arguments for correctness of algos.
 % - Add input output to algos
+% - Include project managementy bits
+% - Practical considerations, lines of code, sage vs magma python etc.
+% - Include more about ZZ bases
 
 % Structure:
 % - Introduction
 % - Background
 % - Problem
 % -  History??
-% -- Statements
 % -- Quadratics
 % -- Cubics?
 % -- Cocyclics
 % -- Monogenics
 % -- General absolute
-% -- General relatives
 % - Applications to elliptics over Q
 % - Conclusion
 
-% Include project managementy bits
-% Practical considerations, lines of code, sage vs magma python etc.
 
 \documentclass[12pt,a4paper,abstracton,bibtotoc]{scrreprt}
 
@@ -83,7 +80,7 @@ breakatwhitespace=false,    % sets if automatic breaks should only happen at whi
 
 \begin{abstract}
 %TODO insert very small backstory, orders are objects in ant here ..
-Orders in number fields are common objects of study in algebraic number theory.
+Orders of number fields are common objects of study in algebraic number theory.
 Here we develop methods to obtain all orders with a specified index inside another given one.
 The performance, both theoretically and in implementations of these methods is discussed.
 We also apply these techniques to problems relating to elliptic curves over the rational numbers.
@@ -107,7 +104,7 @@ In section~\ref{sec:ca} we cover some commutative algebra dealing with the basic
 We finish up the background material in section~\ref{sec:ell} with an introduction to the theory of elliptic curves, which will be one of the interesting areas we will apply our methods to.
 
 Chapter~\ref{chap:prob} is where we consider our main problem and solutions to it.
-In section~\ref{sec:statements} we define the problems themselves and discuss the interest in studying them.
+First we define the problems themselves and discuss the interest in studying them.
 After this in the rest of chapter~\ref{chap:prob} we detail the techniques used to solve the problems considered, starting with some special cases before moving onto more general results.
 Next we discuss the advantages of the algorithms developed and their practical timings.
 
@@ -389,7 +386,7 @@ b_8 &= a_1^2a_6 + 4a_2a_6 - a_1a_3a_4 + a_2a_3^2 -a_4^2.
 \end{align*}
 We then also require that the \emph{discriminant} $\Delta$ of $E$, given by
 \[
-\Delta = -b_2^2b_8 -8b_4^3 -27b_6^2 +9b_2b_4b_6
+\Delta = -b_2^2b_8 -8b_4^3 -27b_6^2 +9b_2b_4b_6,
 \]
 is not zero for $E$ to really be an elliptic curve.
 
@@ -462,21 +459,23 @@ We are now ready to state in precise terms the problem we aimed to solve and to 
 
 \chapter{Finding orders with prescribed index}
 \label{chap:prob}
-\section{Statement}
-\label{sec:statements}
 
 The aim of the project was to find a general method to solve the following problem, and moreover to find efficient algorithms that can solve the problem on any given inputs.
 
 \begin{prob}
 Given an order $R$ of an absolute number field $K$ and an integer $I$ find the set
-\[\left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R:\O] = I\right\}.\]
+\[
+\left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R:\O] = I\right\}.
+\]
 \end{prob}
 
 To find a suborder we really mean to compute a $\ZZ$ basis for the order in terms of the basis of the larger order.
 Such a basis defines an order completely.
 With $R$ and $I$ as in the proposition we introduce the following notation to refer to the set we are looking for.
 
-\[\Orders(R,I) = \left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R:\O] = I\right\}.\]
+\[
+\Orders(R,I) = \left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R:\O] = I\right\}.
+\]
 
 \minisec{}
 One very natural extension of the above problem is to consider relative extensions of number fields.
@@ -484,7 +483,9 @@ More precisely we can generalise the above problem to the following one.
 
 \begin{prob} % TODO check this is really what I mean
 Given an extension of number fields $L|K$, a $\ZZ_K$-order $R$ of $\ZZ_L$ and an integer $I$ find the set
-\[\left\{ \O\subseteq R \mid \O\text{ is a $\ZZ_K$-suborder},\ [R:\O] = I\right\}.\]
+\[
+\left\{ \O\subseteq R \mid \O\text{ is a $\ZZ_K$-suborder},\ [R:\O] = I\right\}.
+\]
 \end{prob}
 
 We now detail some methods to solve the problem in the absolute setting in varying generality.
@@ -506,7 +507,9 @@ Indeed there is so little room for manoeuvre here that the following result on t
 \begin{prop}
 \label{prop:quadord}
 Every order $\O$ of a quadratic number field can be expressed as
-\[\O = \ZZ + \ZZ f\alpha\]
+\[
+\O = \ZZ + \ZZ f\alpha
+\]
 for some $f\in \ZZ$, $\alpha$ as above.
 \end{prop}
 
@@ -703,6 +706,8 @@ This gives the following algorithm to find cocyclic suborders with index $I$ in 
 
 \begin{alg}
 \label{alg:cocyc}~\\
+Input: Natural number $I$ and an order $R$.\\
+Output: All cocyclic suborders of $R$ of index $I$ in $R$.\\
 \begin{algorithm}[H]
 \For{For all ideals $J$ of $R$ of index $I^2$}{
 Let $M = \ZZ + I$.\\
@@ -721,14 +726,14 @@ So for rings of integers $\ZZ_K$ we can use the following to find ideals with a 
 
 \begin{alg}
 \label{alg:idealnorm}~\\
+Input: Integer $I$.\\
+Output: All ideals in $\ZZ_K$ of norm $I$.\\
 \begin{algorithm}[H]
-Input: Norm $I$\\
 \For{All primes $p$ dividing $I$}
 {
 Factor the ideal $p\ZZ_K$ into prime ideals $\p_i$, store them by norm.\\
-
-Find all ideals in $\ZZ_K$ of index $I^2$.\\
 }
+Find all ideals in $\ZZ_K$ of index $I$.\\
 \end{algorithm}
 \end{alg}
 
@@ -759,6 +764,7 @@ and so the correspondence really does fail in this case.
 There is a simple sufficient condition on the index that we can use to our advantage when finding orders.
 
 \begin{prop}
+\label{prop:sqfree}
 If $R$ is a suborder of an order $S$ such that $[S:R]$ is squarefree then $R$ is a cocyclic suborder.
 \end{prop}
 
@@ -775,7 +781,8 @@ However the direct generalisations of this result fail to hold even in degree 3 
 We now give examples of some results that would be good for our purposes if true and explicit counter examples for each of them.
 % TODO list some generalisations here
 
-Here we now give some positive results leading to methods that can be used to find general orders in number fields.
+As noted above in proposition~\ref{prop:sqfree} if the index we are looking for is squarefree we know all orders of that index are cocyclic and we can use the conductor method described above.
+Of course there do exist non-squarefree numbers and so we now give some positive results leading to methods that can be used to find general orders in number fields.
 
 \subsection{The Hermite normal form}
 The Hermite normal form of a matrix is a unique matrix that a given matrix of integers can be brought into by unimodular row operations.
@@ -783,7 +790,7 @@ Using this form will allow us to find additive subgroups of orders which will pr
 There are varying definitions of the Hermite normal form (HNF) the one we use here is fairly common and is used in the Sage mathematical software system \cite{sage}, though others exist such as the one given in \cite{cohen93}, they mostly differ by operations such as transposition and reordering of rows.
 
 \begin{defn}[Hermite normal form] %TODO check this
-A matrix $H\in\Mat_{m\times n}(\ZZ)$ is said to be in \emph{Hermite normal form} if there is an increasing function $f\colon \{1, \ldots, m\} \to \{1,\ldots , n\}$ such that
+A matrix $H\in\Mat_{m\times n}(\ZZ)$ is said to be in \emph{Hermite normal form} if there is a strictly increasing function $f\colon \{1, \ldots, m\} \to \{1,\ldots , n\}$ such that
 \begin{enumerate}[i)]
 \item if $n' < f(m)$ then $H_{m,n'} = 0$,
 \item if $n' = f(m)$ then $H_{m,n'} > 0$,
@@ -797,11 +804,40 @@ Fast algorithms for computing Hermite normal forms is an interesting and useful 
 Cohen also gives several algorithms for finding the Hermite normal form in \cite{cohen93}, these are more classical methods that are conceptually simpler.
 Many basic operations such as checking equality of orders can be performed quickly using Hermite normal forms \cite{cohen93}.  %TODO more detail, this is important.
 
+%TODO det is index
+
 One possible method of finding orders with a prescribed index is therefore to attempt to generate their HNF matrices.
 In the next sections we look at the steps needed to do this in detail.
 
 \subsection{Generating matrices in Hermite normal form}
+For the remainder of this section we deal only with square matrices of full rank as this is all that is required for our purposes.
 
+For a square ($n\times n$) matrix of full rank the conditions for a matrix to be in Hermite normal form reduce to the following:
+\begin{enumerate}[i)]
+\item if $i < j$ then $H_{i,j} = 0$,
+\item if $i = j$ then $H_{i,j} > 0$,
+\item and if $j < i$ then $0\le H_{i,j} < H_{i,i}$.
+\end{enumerate}%TODO check
+So the matrix is upper triangular and all entries are positive and bounded above by the last non-zero entry of their column.
+The determinant of an upper triangular matrix is the product of the elements on the diagonal so we first look at ways of expressing our desired determinant as a product of $n$ positive integers.
+We can do this with a simple recursive algorithm as follows.
+
+\begin{alg}~\\
+Input: Integers $n$ and $D$.\\
+Output: A list of all possible factorisations with orderings of $D$ which have length $n$.\\
+\begin{algorithm}[H]
+\If{$n=1$}{return $[D]$}
+\For{each divisor $d$ of $D$}{
+Recurse on $n-1$ and $D/d$ appending $d$ to the end of each factorisation.\\
+Add each factorisation obtained to the output.
+}
+\end{algorithm}
+\end{alg}
+
+Now given the possible diagonal entries we need to consider ways of filling in the off diagonal elements.
+As mentioned above the only restriction is that we have each entry above the diagonal in column $i$ positive and strictly bounded by $A_{i,i}$ above.
+
+In order to generate matrices that are already in Hermite normal form
 
 \subsection{Determining if a module is a ring}
 Assuming that we are given a change of basis matrix $A$ from the basis of an order $R$ we wish to determine if the module spanned by the new basis is an order.
@@ -809,23 +845,26 @@ Assuming that we are given a change of basis matrix $A$ from the basis of an ord
 For a full rank $\ZZ$-submodule to be a subring and hence an order we require that it contain 1 and be multiplicatively closed, determining the first of these properties quickly is relatively easy, whereas the second is a little harder.
 We'll consider them both below.
 
-To determine if a submodule contains 1 
+To determine if a submodule contains 1 we just have to check that we can represent it by an integer vector in out new basis.
 
-\begin{alg}~\\
-\label{alg:hasone}
+\begin{alg}\label{alg:hasone}~\\
+Input: Change of basis matrix $H$.\\
+Output: Whether or not the submodule defined by $H$ contains 1.\\
 \begin{algorithm}[H]
 Check in mat zz.\\
 \end{algorithm}
-\end{alg} 
-%TODO local property?
+\end{alg}
+
+It is clear that with this approach we can determine if other elements lie in the submodule too, but 1 is the only one we care about.
 
 In \cite{cohen93} Cohen gives the general method for determining if a finitely generated submodule of a ring is closed under multiplication.
 The correctness of the method hinges on the fact that if the products of all pairs of basis elements lie inside the module, then the product of any two linear combinations of these elements lie inside the module too.
 
-\begin{alg}~\\
-\label{alg:multclose}
+\begin{alg}
+\label{alg:multclose}~\\
+Input: Change of basis matrix $H$.\\
+Output: Whether or not the submodule defined by $H$ is multiplicatively closed.\\
 \begin{algorithm}[H]
-Input: $H$.\\
 Find matrix.\\
 Compute HNF.\\
 Check equality.\\
@@ -835,6 +874,8 @@ Check equality.\\
 
 \subsection{The HNF algorithm}
 \begin{alg}~\\
+Input: Natural number $I$ and an order $R$.\\
+Output: All suborders of $R$ of index $I$ in $R$.\\
 \begin{algorithm}[H]
 \For{all $n\times n$ HNF matrices $H$ of determinant $I$}{
 Find the submodule $M$ of $R$ corresponding to $H$.\\
@@ -850,7 +891,10 @@ In fact using the lemma~\ref{lem:onebasis} we can improve this algorithm slightl
 As we know that we can always include 1 in the basis of an order and as all orders necessarily contain 1 we 
 
 \begin{alg}~\\
+Input: Natural number $I$ and an order $R$.\\
+Output: All suborders of $R$ of index $I$ in $R$.\\
 \begin{algorithm}[H]
+Ensure 1 is the first element of the $\ZZ$ basis of $R$.
 \For{all $(n-1)\times (n-1)$ HNF matrices $H$ of determinant $I$}{
 Let 
 \[
@@ -873,26 +917,26 @@ add $M$ to the output.
 \end{algorithm}
 \end{alg}
 
-\subsection{Making use of less general methods} %TODO cut this section :( / reduce as speedup is small
-Given the results discussed in \ref{sec:cocyc} we can improve the performance of the above algorithm as follows.
-\begin{alg}~\\
-\begin{algorithm}[H]
-Find cocyclic orders of index $I$ in $\O$ using algorithm~\ref{alg:cocyc}.\\
-\For{all HNF matrices $H$ of determinant $I$}{
-\If{$H$ is the matrix of a cocyclic order already found}
-{
-Move to the next matrix.
-}
-Find the submodule $M$ of $\O$ corresponding to $H$.\\
-\If{$M$ is a subring}
-{
-add $M$ to the output.
-}
-}
-\end{algorithm}
-\end{alg}
+%\subsection{Making use of less general methods} %TODO cut this section :( / reduce as speedup is small
+%Given the results discussed in \ref{sec:cocyc} we can improve the performance of the above algorithm as follows.
+%\begin{alg}~\\
+%\begin{algorithm}[H]
+%Find cocyclic orders of index $I$ in $\O$ using algorithm~\ref{alg:cocyc}.\\
+%\For{all HNF matrices $H$ of determinant $I$}{
+%\If{$H$ is the matrix of a cocyclic order already found}
+%{
+%Move to the next matrix.
+%}
+%Find the submodule $M$ of $\O$ corresponding to $H$.\\
+%\If{$M$ is a subring}
+%{
+%add $M$ to the output.
+%}
+%}
+%\end{algorithm}
+%\end{alg}
 
-\section{Relative number fields}
+%\section{Relative number fields}
 
 
 \section{Practical considerations}
@@ -952,6 +996,8 @@ We can then see that we have
 \]
 as $\QQ(E[2])$ is the splitting field of $f$ and $f$ is irreducible. %TODO checkeroo
 Letting $\alpha$ be the image of $x$ in the above quotient, we can see that $ \ZZ[\alpha]$ is an order of $\QQ(\alpha)\cong \QQ(E[2])$.
+
+%TODO explain, monogenic so seems like diophantine is good, try to find large example where cocyclic works better than monogenic
 
 \begin{ex}
 The elliptic curve
