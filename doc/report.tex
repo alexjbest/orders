@@ -73,10 +73,14 @@ breakatwhitespace=false,    % sets if automatic breaks should only happen at whi
 \DeclareMathOperator{\Ann}{Ann}
 \DeclareMathOperator{\End}{End}
 \DeclareMathOperator{\Mat}{Mat}
+\DeclareMathOperator{\ord}{ord}
 \DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\id}{id}
 
 \begin{document}
 \maketitle
+~\\
+\clearpage
 
 \begin{abstract}
 %TODO insert very small backstory, orders are objects in ant here ..
@@ -88,20 +92,22 @@ We also apply these techniques to problems relating to elliptic curves over the 
 \smallskip
 \noindent \textbf{Keywords.} Number theory, algebraic number theory, elliptic curves, number fields, algorithms.
 \end{abstract}
+~\\
+\clearpage
 
 \tableofcontents
 
 \chapter{Introduction}
 In this report we develop algorithmic methods for the solution of a problem arising from algebraic number theory.
 Specifically we develop methods to find all orders of an algebraic number field with a given index inside another order.
-We detail some interesting situations in which these algorithms can be applied at the end.
+We detail some situations in which these algorithms can be applied at the end.
 Though the problem is a natural one we do not know of any previous work with exactly the same aim as ours.
 Instead there is some existing work that relates to special cases of our problem, these are discussed in their relevant sections.
 
 The report is organised as follows.
 We first go through the background material needed to motivate, define and describe the solution of our problems in chapter~\ref{chap:background}.
 In section~\ref{sec:ca} we cover some commutative algebra dealing with the basic properties of modules over rings, after this in section~\ref{sec:ant} we move into algebraic number theory defining the key notions needed to study orders and considering the reasons such ideas were introduced.
-We finish up the background material in section~\ref{sec:ell} with an introduction to the theory of elliptic curves, which will be one of the interesting areas we will apply our methods to.
+We finish up the background material in section~\ref{sec:ell} with an introduction to the theory of elliptic curves, which will be one of the areas we will apply our methods to.
 
 Chapter~\ref{chap:prob} is where we consider our main problem and solutions to it.
 First we define the problems themselves and discuss the interest in studying them.
@@ -170,15 +176,15 @@ A \emph{submodule} $N$ of a module $M$ is a module whose elements all belong to 
 \end{defn}
 
 \begin{defn}[Quotient module]
-The \emph{quotient module} of two $R$-modules $M$ and $N$ with $M$ a submodule of $N$ is defined to be the quotient abelian group under addition $N/
-M$ with scalar multiplication given by
+The \emph{quotient module} of two $R$-modules $M$ and $N$ where $N$ is a submodule of $M$ is defined to be the $R$-module whose additive group quotient abelian group $M/N$ under addition with scalar multiplication given by
 \[
-r\cdot(m + N) = rm + N\text{ for all $r\in R$, $m\in M$}.
+r\cdot(m + N) = rm + N\text{ for all }r\in R,\ m\in M.
 \]
+This module is denoted by $M/N$.
 \end{defn}
 
 \begin{defn}[Index]
-Given a module $M$ that is a submodule of a module $N$ the \emph{index} of $M$ in $N$, denoted $[N:M]$ is the size of the quotient module $N / M$.
+Given a module $N$ that is a submodule of a module $m$ the \emph{index} of $N$ in $M$, denoted $[M:N]$ is the size of the quotient module $M / N$.
 \end{defn}
 
 \begin{defn}[Direct sum]
@@ -215,10 +221,10 @@ An easy consequence of this relating the indices of submodules is worth noting.
 
 \begin{cor}
 \label{cor:indexmult}
-Given a chain of submodules $M_1 \subseteq M_2 \subseteq M_3$ we have
+Given a chain of submodules $M_1 \subseteq M_2 \subseteq M_3$ where $[M_3:M_2]$ and $[M_2:M_1]$ are finite we have
 \[
 [M_3:M_1] = [M_3:M_2][M_2:M_1].
-\]
+\] %TODO can we just require 2 finite
 \end{cor}
 
 \minisec{}
@@ -282,7 +288,8 @@ A short exact sequence $0 \to M_1 \xrightarrow{q} M_2 \xrightarrow{r} M_3 \to 0$
 \label{sec:ant}
 
 Algebraic number began with the study of algebraic numbers and their uses in solving Diophantine equations.
-The subject has since expanded to encompass a huge amount of mathematics involving the use of algebraic techniques to tackle number theoretic problems. %TODO ????
+The subject has since expanded to encompass a huge amount of mathematics involving the use of algebraic techniques to tackle number theoretic problems.
+We give a short introduction to the results relevant to us here.
 As above, more details about anything not proved here can be found in any of the many texts on algebraic number theory, for example \cite{neukirch}, \cite{lang}, \cite{narkiewicz} or \cite{stewtall}.
 
 \begin{defn}[Number field]
@@ -416,15 +423,41 @@ This plot of the real points is typical for an elliptic curve, though there can 
 One of the things that makes elliptic curves so interesting to study is the fact that we can define a natural way of adding points of the curve over some field, with this definition the set of points on the curve becomes a group.
 
 \begin{defn}[Group law]
-We define the sum of two points $P,Q\in E(K)$ as follows, let $L$ be the line joining $P$ and $Q$ (take $L$ to be the tangent at $P$ if $P=Q$).
+We define the sum of two points $P,Q\in E(K)$ for some field $K$ as follows, let $L$ be the line joining $P$ and $Q$ (take $L$ to be the tangent at $P$ if $P=Q$).
 Then $L$ intersects $E$ in three points (with multiplicity) so there is one point in addition to $P$ and $Q$ on both $L$ and $E$, call this point $R$.
 Now there is at most one other point with the same $x$ coordinate as $R$ that lies on $E$, this is our sum $P+Q$.
+
+In the above definition we think of the point at infinity as lying infinitely far away in the positive $y$ direction, therefore a line from $\infty$ to the point $P$ is the line through $P$ perpendicular to the $x$-axis.
 \end{defn}
 
 With this definition of addition the set of points of $E$ over some field $K$ is a group, and moreover this group is abelian (as the line through $P$ and $Q$ is the same as the line through $Q$ and $P$).
+The identity element of our group is the point at infinity referred to above.
 From now on we will denote the point $\infty\in E(K)$ as $0$, but still refer to it as \emph{at infinity}.
 
-%TODO isom of ell
+We want to consider some special maps between elliptic curves that respect both the curve and group structure.
+\begin{defn}[Homomorphism of elliptic curves]
+Let $E$ be an elliptic curve defined over a field $K$.
+A group homomorphism $f\colon E \to E'$ such that there are polynomials $a,b,c,d\in \overline{K}[x,y]$ with
+\[
+f(x,y) = \left(\frac{a(x,y)}{b(x,y)},\frac{c(x,y)}{d(x,y)}\right) \text{ for } (x,y) \in E\setminus 0
+\]
+is called a \emph{homomorphism of elliptic curves}.
+\end{defn}
+
+\begin{defn}[Isomorphism of elliptic curves]
+If we have two elliptic curves $E$ and $E'$ such that there exists homomorphisms $f\colon E \to E'$ and $g\colon E'\to E$ with $f\circ g = \id_{E'}$ and $g\circ f = \id_{E}$ then $E$ and $E'$ are called \emph{isomorphic}.
+A homomorphism $f$ with an inverse $g$ as in the definition above is called an \emph{isomorphism}.
+\end{defn}
+
+We can also consider homomorphisms from a given elliptic cuve to itself, these are known as \emph{endomorphisms} and they form a ring.
+
+\begin{defn}[Endomorphism ring]
+The \emph{endomorphism ring} of an elliptic curve is the set
+\[
+\End(E) = \{f\colon E \to E\mid f \text{ is a homomorphism of elliptic curves}\}
+\]
+with a ring structure given by $(f+g)(P) = f(P) + g(P)$ and multiplication is composition.
+\end{defn}
 
 As remarked above any abelian group can be regarded as a $\ZZ$-module $M$ in a natural way by letting 
 \[n\cdot z = \underbrace{z + z + \cdots + z}_\text{$n$ times},\text{ for } n\in\ZZ_{\ge 0},\ z\in M\]
@@ -482,6 +515,7 @@ One very natural extension of the above problem is to consider relative extensio
 More precisely we can generalise the above problem to the following one.
 
 \begin{prob} % TODO check this is really what I mean
+\label{prob:rel}
 Given an extension of number fields $L|K$, a $\ZZ_K$-order $R$ of $\ZZ_L$ and an integer $I$ find the set
 \[
 \left\{ \O\subseteq R \mid \O\text{ is a $\ZZ_K$-suborder},\ [R:\O] = I\right\}.
@@ -538,11 +572,7 @@ This follows immediately from the above description of orders of $K$ (propositio
 \end{proof}
 
 Orders in quadratic fields appear in the theory of elliptic curves with complex multiplication.
-Specifically an elliptic curve has an associated ring, the \emph{endomorphism ring}, defined by
-\[
-\End(E) = \left\{ f\colon E \to E \mid f(x,y) = (\frac{a(x,y)}{b(x,y)},\frac{c(x,y)}{d(x,y)}) \text{ for } (x,y) \in E\setminus 0 \text{ and } f(0) = 0\right\}. %TODO complete
-\]
-The endomorphism ring of a curve is either isomorphic to $\ZZ$ or an order $\O$ of an imaginary quadratic number field (i.e. a quadratic number field $K$ where $K\cap \RR \ne K$).
+The endomorphism ring of an elliptic curve is either isomorphic to $\ZZ$ or an order $\O$ of an imaginary quadratic number field (i.e. a quadratic number field $K$ where $K\cap \RR \ne K$).
 In the second case the curve is said to have \emph{complex multiplication}, the theory of such curves is interesting and has practical applications in the field of cryptography.
 A general solution to our problem is of course not particularly useful here as the situation is so simple.
 However it is maybe conceivable that our methods could find application in generalisations of the theory of complex multiplication (to higher dimensional abelian varieties).
@@ -565,6 +595,11 @@ The ease of computing with them comes from the fact that
 \]
 and so $\{1,\alpha,\ldots,\alpha^{n-1}\}$ is a basis for $\ZZ[\alpha]$ as a $\ZZ$ module (here $n$ is $[K : \QQ]$).
 With this basis computing products of elements with a computer (and by hand) is simpler to do than in general making them natural bases to work with.
+A basis of this form is known as a \emph{power basis}.
+
+Several authors have studied the problem of finding monogenic orders, mostly with a view to showing that the ring of integers is monogenic and finding elements $\alpha$ such that $\ZZ_K = \ZZ[\alpha]$ in this case.
+This is essentially the problem of finding monogenic orders of index 1 in $\ZZ_K$.
+The most complete account of the methods known for performing such computations is Istv\'an Ga\'al's book \cite{gaal}.
 
 Given an order $R$ of a number field $K$ of degree $n$ such that
 \[
@@ -706,7 +741,7 @@ This gives the following algorithm to find cocyclic suborders with index $I$ in 
 
 \begin{alg}
 \label{alg:cocyc}~\\
-Input: Natural number $I$ and an order $R$.\\
+Input: A natural number $I$ and an order $R$.\\
 Output: All cocyclic suborders of $R$ of index $I$ in $R$.\\
 \begin{algorithm}[H]
 \For{For all ideals $J$ of $R$ of index $I^2$}{
@@ -721,7 +756,7 @@ add $M$ to the output.
 
 The question of course remains, how do we find \emph{ideals} of a given index?
 At first glance it might seem that this problem should be somehow equivalent to finding orders with a given index, and we have not gained anything by reducing to it.
-However algebraic number theory was initially developed to deal with rings of algebraic integers failing to have unique factorisation in general and the theory of ideals was introduced to remedy this.
+However algebraic number theory was initially developed to deal with the fact that elements of rings of algebraic integers failing to factorise uniquely in general and the theory of ideals was introduced to remedy this.
 So for rings of integers $\ZZ_K$ we can use the following to find ideals with a given index (or \emph{norm} as it is more commonly known).
 
 \begin{alg}
@@ -729,11 +764,16 @@ So for rings of integers $\ZZ_K$ we can use the following to find ideals with a 
 Input: Integer $I$.\\
 Output: All ideals in $\ZZ_K$ of norm $I$.\\
 \begin{algorithm}[H]
+Let $L$ be a list containing $\ZZ_K$.\\
 \For{All primes $p$ dividing $I$}
 {
-Factor the ideal $p\ZZ_K$ into prime ideals $\p_i$, store them by norm.\\
+Factor the ideal $p\ZZ_K$ into prime ideals $\p_i$, store them by norm, also add the $p$-adic order of the norm of each $\p_i$ to a set $S$.\\
+\For{All expressions of $\ord_p(I)$ as a sum of elements of $S$}
+{
+
 }
-Find all ideals in $\ZZ_K$ of index $I$.\\
+}
+Output $L$.
 \end{algorithm}
 \end{alg}
 
@@ -746,7 +786,7 @@ However this is not a full solution of our problem as not all orders of number f
 \label{ex:noncocyc}
 With $K = \QQ[x]/(x^4 + 5x + 1) = \QQ(\alpha)$ (as in example~\ref{ex:cocyc}) and $\O = \ZZ + \ZZ3\alpha + \ZZ9\alpha^2 + \ZZ3\alpha^3$ we have
 \[
-\ZZ_K/\O = 
+\ZZ_K/\O =\ZZ/3\ZZ \oplus\ZZ/3\ZZ \oplus \ZZ/9\ZZ
 \]
 and so $\O$ is not cocyclic.
 
@@ -804,6 +844,7 @@ Fast algorithms for computing Hermite normal forms is an interesting and useful 
 Cohen also gives several algorithms for finding the Hermite normal form in \cite{cohen93}, these are more classical methods that are conceptually simpler.
 Many basic operations such as checking equality of orders can be performed quickly using Hermite normal forms \cite{cohen93}.  %TODO more detail, this is important.
 
+Given a 
 %TODO det is index
 
 One possible method of finding orders with a prescribed index is therefore to attempt to generate their HNF matrices.
@@ -847,11 +888,12 @@ We'll consider them both below.
 
 To determine if a submodule contains 1 we just have to check that we can represent it by an integer vector in out new basis.
 
-\begin{alg}\label{alg:hasone}~\\
+\begin{alg}\label{alg:hasone}~\\ %TODO check
 Input: Change of basis matrix $H$.\\
 Output: Whether or not the submodule defined by $H$ contains 1.\\
 \begin{algorithm}[H]
-Check in mat zz.\\
+Find the representation $\mathbf v$ of 1 in the old basis.\\
+Check that $H^{-1}\mathbf v$ is an integer matrix.\\
 \end{algorithm}
 \end{alg}
 
@@ -874,7 +916,7 @@ Check equality.\\
 
 \subsection{The HNF algorithm}
 \begin{alg}~\\
-Input: Natural number $I$ and an order $R$.\\
+Input: A natural number $I$ and an order $R$.\\
 Output: All suborders of $R$ of index $I$ in $R$.\\
 \begin{algorithm}[H]
 \For{all $n\times n$ HNF matrices $H$ of determinant $I$}{
@@ -888,13 +930,14 @@ add $M$ to the output.
 \end{alg}
 
 In fact using the lemma~\ref{lem:onebasis} we can improve this algorithm slightly.
-As we know that we can always include 1 in the basis of an order and as all orders necessarily contain 1 we 
+As we know that we can always include 1 in the basis of an order we can take a basis of the order we are given that contains 1.
+Then we can find change of basis matrices that fix this element, this provides a slight improvement over simply looking for all submodules.
 
 \begin{alg}~\\
 Input: Natural number $I$ and an order $R$.\\
 Output: All suborders of $R$ of index $I$ in $R$.\\
 \begin{algorithm}[H]
-Ensure 1 is the first element of the $\ZZ$ basis of $R$.
+Ensure 1 is the first element of the $\ZZ$ basis of $R$.\\
 \For{all $(n-1)\times (n-1)$ HNF matrices $H$ of determinant $I$}{
 Let 
 \[
@@ -956,6 +999,9 @@ The algorithms were run on ...
 Input & HNF algorithm & Conductor algorithm & Hybrid \\
 \hline
 Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
+Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
+Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
+Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
 \hline
 \end{tabular}
 \caption{\label{tab:timings} Timings for different algorithms for several input sets}
@@ -1014,12 +1060,25 @@ E'\colon y^2 = x^3 - x + \frac{1}{4}
 \end{ex}
 
 \chapter{Conclusion}
+We have found several methods for computing orders with a given index, which work in varying generality and with various speeds.
 %TODO conclude, several variants developed all with advantages disadvantages
 
 \section{Further work}
 It seems likely that other properties of the orders we are looking for could be used to speed up the algorithms given above and so further investigations into both special and general cases could yield results.
-Further applications of these methods are certainly possible and it would be interesting to see what other areas these methods can be used in. %TODO find another word that isn't "interesting".
+Further applications of these methods are definitely possible and it would be interesting to see what other areas these methods can be used in. %TODO find another word that isn't "interesting".
 
+There are certainly several different ways of improving the above methods that could be tried and it would likely be worthwhile to do so.
+
+Firstly there may be opportunities to exploit the specific structure of orders in number fields of low degree.
+For example above we observed that the situation is very simple for orders in quadratic fields as there is a very explicit description for orders in these fields.
+While there is certainly more variety in the cubic case finding good descriptions for orders in cubic fields might allow one to find these orders far faster than any general method.
+
+There are also possibly some easy to check necessary or sufficient conditions for ideals to have a specified quotient structure, these could speed up computations in the case where cocyclic orders are needed.
+In a similar vein there may be easier to check conditions to determine whether a change of basis matrix defines a subring as opposed to just a submodule, checking such conditions would be useful in the Hermite normal form based algorithms.
+
+The natural extension to relative number fields given as problem~\ref{prob:rel} above is not something we have considered in detail however it should be fairly simple to generalise to this case as many of the ideas we use (such as the theory of Hermite normal forms and theorem~\ref{thm:coresp}) extend to this more general setting.
+
+Finally of course there may be some methods for finding orders completely different to those considered here!
 %Low-degree optimisations.
 %Conditions on ideals to be conductors and modules to be rings can be taken into account.
 %Generalising to relative number fields would be interesting.
@@ -1027,7 +1086,7 @@ Further applications of these methods are certainly possible and it would be int
 %There are possibly completely different methods to find these orders.
 
 \section{Acknowledgements}
-First and foremost I would like to thank Lassina Demb\'el\'e for his excellent guidance while I undertook the project.
+First and foremost I would like to thank Lassina Demb\'el\'e for his excellent guidance while I undertook the project, it was truly a pleasure to work with him.
 I am also grateful to John Cremona for allowing me access to one of the Warwick number theory group's servers to run computations on.
 
 %\chapter{Appendix: Code}
