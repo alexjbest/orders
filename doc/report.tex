@@ -67,6 +67,7 @@ breakatwhitespace=false,    % sets if automatic breaks should only happen at whi
 \newcommand{\CC}{\mathbf{C}}
 \newcommand{\ZZ}{\mathbf{Z}}
 \newcommand{\p}{\mathfrak{p}}
+\newcommand{\q}{\mathfrak{q}}
 \renewcommand{\O}{\mathcal{O}}
 
 \DeclareMathOperator{\Orders}{Orders}
@@ -79,8 +80,7 @@ breakatwhitespace=false,    % sets if automatic breaks should only happen at whi
 
 \begin{document}
 \maketitle
-~\\
-\clearpage
+\newpage\null\thispagestyle{empty}\newpage
 
 \begin{abstract}
 %TODO insert very small backstory, orders are objects in ant here ..
@@ -92,8 +92,8 @@ We also apply these techniques to problems relating to elliptic curves over the 
 \smallskip
 \noindent \textbf{Keywords.} Number theory, algebraic number theory, elliptic curves, number fields, algorithms.
 \end{abstract}
-~\\
-\clearpage
+
+\newpage\null\thispagestyle{empty}\newpage
 
 \tableofcontents
 
@@ -573,7 +573,8 @@ This follows immediately from the above description of orders of $K$ (propositio
 
 Orders in quadratic fields appear in the theory of elliptic curves with complex multiplication.
 The endomorphism ring of an elliptic curve is either isomorphic to $\ZZ$ or an order $\O$ of an imaginary quadratic number field (i.e. a quadratic number field $K$ where $K\cap \RR \ne K$).
-In the second case the curve is said to have \emph{complex multiplication}, the theory of such curves is interesting and has practical applications in the field of cryptography.
+In the second case the curve is said to have \emph{complex multiplication}.
+The theory of such curves is interesting and has practical applications in the field of cryptography and other areas, see \cite{schertz}.
 A general solution to our problem is of course not particularly useful here as the situation is so simple.
 However it is maybe conceivable that our methods could find application in generalisations of the theory of complex multiplication (to higher dimensional abelian varieties).
 This is not a direction we have pursued but it might be worthwhile to do so.
@@ -651,15 +652,18 @@ Let $K = \QQ[x]/(x^4 + 5x + 1) = \QQ(\alpha)$ be a number field and take
 \[
 \O = \ZZ + \ZZ(\alpha + 2\alpha^3) + \ZZ\alpha^2 + \ZZ5\alpha^3.
 \]
-Then as $\ZZ_K = \ZZ[\alpha]$ we have
+Then as $\ZZ_K = \ZZ[\alpha]$ in this case we have
 \[
 \ZZ_K/\O = \ZZ[\alpha]/\O \cong \ZZ/5\ZZ
 \]
 and so $\O$ is cocyclic suborder of $\ZZ_K$.
 \end{ex}
 
+In Brakenhoff's thesis he derives bounds for the number of orders with a given index, along with several other interesting results.
+Some of the methods used to obtain these bounds are naturally applicable to the problem of actually finding the orders of given index.
+
 The following theorem is given in \cite[Thm. 4.1]{brakenhoff}, it will allow us to find cocyclic suborders very easily.
-We include the proof here as it is quite instructive. %TODO generalise to all starting orders???
+We include the proof here as it is quite instructive.
 
 \begin{thm}
 \label{thm:coresp}
@@ -768,17 +772,19 @@ Let $L$ be a list containing $\ZZ_K$.\\
 \For{All primes $p$ dividing $I$}
 {
 Factor the ideal $p\ZZ_K$ into prime ideals $\p_i$, store them by norm, also add the $p$-adic order of the norm of each $\p_i$ to a set $S$.\\
-\For{All expressions of $\ord_p(I)$ as a sum of elements of $S$}
+Let $L'$ be an empty list.\\
+\For{All expressions $\ord_p(I) = s_1 + s_2 + \cdots + s_k$ where all $s_i\in S$.}
 {
-
+Add all products of prime ideals $\q_1\q_2\cdots \q_k$ where $\ord_p(N(\q_i)) = s_i$ to the list $L'$.
 }
+Set $L$ to be all possible products of an element of $L$ and an element of $L'$.
 }
 Output $L$.
 \end{algorithm}
 \end{alg}
 
 Ideal factorisation is not as nice in non-maximal orders and so finding ideals with a specified norm is more difficult there.
-
+However there is another approach to this problem which gener
 
 However this is not a full solution of our problem as not all orders of number fields are cocyclic.
 
@@ -801,7 +807,7 @@ g(9\ZZ_K) = \ZZ + 9\ZZ_K \ne \O\text{ as } 3\alpha \in \O\setminus(\ZZ + 9\ZZ_K)
 and so the correspondence really does fail in this case.
 \end{ex}
 
-There is a simple sufficient condition on the index that we can use to our advantage when finding orders.
+There is a simple sufficient condition on the index for a suborder to be cocyclic that we can use to our advantage when finding orders.
 
 \begin{prop}
 \label{prop:sqfree}
@@ -824,6 +830,10 @@ We now give examples of some results that would be good for our purposes if true
 As noted above in proposition~\ref{prop:sqfree} if the index we are looking for is squarefree we know all orders of that index are cocyclic and we can use the conductor method described above.
 Of course there do exist non-squarefree numbers and so we now give some positive results leading to methods that can be used to find general orders in number fields.
 
+%TODO orders represented by matrices
+Given a change of basis matrix $A$ from an order $R$ to an order $S$ we can see that as abelian groups $R \cong \ZZ^d$ for some $d$ and so $R/S$ is isomorphic to $\ZZ^d/A\ZZ^d$.
+In fact the size of this group is the absolute value of the determinant of $A$.
+
 \subsection{The Hermite normal form}
 The Hermite normal form of a matrix is a unique matrix that a given matrix of integers can be brought into by unimodular row operations.
 Using this form will allow us to find additive subgroups of orders which will provide one approach to finding all suborders.
@@ -844,10 +854,8 @@ Fast algorithms for computing Hermite normal forms is an interesting and useful 
 Cohen also gives several algorithms for finding the Hermite normal form in \cite{cohen93}, these are more classical methods that are conceptually simpler.
 Many basic operations such as checking equality of orders can be performed quickly using Hermite normal forms \cite{cohen93}.  %TODO more detail, this is important.
 
-Given a 
-%TODO det is index
-
 One possible method of finding orders with a prescribed index is therefore to attempt to generate their HNF matrices.
+These will be all those matrices with absolute value of the determinant equal to the index searched for that define suborders rather than simply submodules.
 In the next sections we look at the steps needed to do this in detail.
 
 \subsection{Generating matrices in Hermite normal form}
@@ -877,8 +885,9 @@ Add each factorisation obtained to the output.
 
 Now given the possible diagonal entries we need to consider ways of filling in the off diagonal elements.
 As mentioned above the only restriction is that we have each entry above the diagonal in column $i$ positive and strictly bounded by $A_{i,i}$ above.
+So when the diagonal entries are fixed the set of matrices in the right form can be seen 
 
-In order to generate matrices that are already in Hermite normal form
+Hence in order to generate matrices that are already in Hermite normal form we use the following algorithm.
 
 \subsection{Determining if a module is a ring}
 Assuming that we are given a change of basis matrix $A$ from the basis of an order $R$ we wish to determine if the module spanned by the new basis is an order.
@@ -984,6 +993,9 @@ add $M$ to the output.
 
 \section{Practical considerations}
 Though the methods described above are the best we have been able to obtain so far from a theoretical perspective, when it comes down to computing examples in the real world there are a number of ideas and techniques we can use to reduce the time taken.
+
+Many of the algorithms given above are presented in a manner similar to the way in which they are motivated and can in fact be implemented in a faster manner than as they are written.
+For example %TODO finish
 
 \subsection{Parallelisation}
 Several stages of the algorithms for general orders can be naturally parallelised reducing the total time taken linearly with the number of threads used.
