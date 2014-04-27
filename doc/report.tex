@@ -74,6 +74,7 @@ breakatwhitespace=false,    % sets if automatic breaks should only happen at whi
 \DeclareMathOperator{\Ann}{Ann}
 \DeclareMathOperator{\End}{End}
 \DeclareMathOperator{\Mat}{Mat}
+\DeclareMathOperator{\disc}{disc}
 \DeclareMathOperator{\ord}{ord}
 \DeclareMathOperator{\im}{im}
 \DeclareMathOperator{\id}{id}
@@ -283,6 +284,11 @@ A short exact sequence $0 \to M_1 \xrightarrow{q} M_2 \xrightarrow{r} M_3 \to 0$
 \end{enumerate}
 \end{defn}
 
+We have one more notion to define.
+
+\begin{defn}[$R$-algebra]
+An $R$-module which is also a 
+\end{defn} %TODO
 
 \section{Algebraic number theory}
 \label{sec:ant}
@@ -498,17 +504,12 @@ The aim of the project was to find a general method to solve the following probl
 \begin{prob}
 Given an order $R$ of an absolute number field $K$ and an integer $I$ find the set
 \[
-\left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R:\O] = I\right\}.
+\Orders(R,I) = \left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R:\O] = I\right\}.
 \]
 \end{prob}
 
-To find a suborder we really mean to compute a $\ZZ$ basis for the order in terms of the basis of the larger order.
+To find a suborder we really mean to compute a $\ZZ$ basis for the suborder in terms of the basis of the larger order.
 Such a basis defines an order completely.
-With $R$ and $I$ as in the proposition we introduce the following notation to refer to the set we are looking for.
-
-\[
-\Orders(R,I) = \left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R:\O] = I\right\}.
-\]
 
 \minisec{}
 One very natural extension of the above problem is to consider relative extensions of number fields.
@@ -582,7 +583,7 @@ This is not a direction we have pursued but it might be worthwhile to do so.
 %TODO cubic????
 
 \section{Monogenic orders}
-
+\label{sec:monogenic}
 We now look at a special class of orders that have been studied extensively by other authors, though the focus of their methods has been slightly different to ours.
 
 \begin{defn}[Monogenic order]
@@ -598,16 +599,116 @@ and so $\{1,\alpha,\ldots,\alpha^{n-1}\}$ is a basis for $\ZZ[\alpha]$ as a $\ZZ
 With this basis computing products of elements with a computer (and by hand) is simpler to do than in general making them natural bases to work with.
 A basis of this form is known as a \emph{power basis}.
 
+\minisec{}
 Several authors have studied the problem of finding monogenic orders, mostly with a view to showing that the ring of integers is monogenic and finding elements $\alpha$ such that $\ZZ_K = \ZZ[\alpha]$ in this case.
 This is essentially the problem of finding monogenic orders of index 1 in $\ZZ_K$.
-The most complete account of the methods known for performing such computations is Istv\'an Ga\'al's book \cite{gaal}.
+An up-to-date account of the methods known for performing such computations is given in Istv\'an Ga\'al's book \cite{gaal}.
+Here we attempt to convey the approach these methods take without going into detail concerning the exact methods of solution.
 
-Given an order $R$ of a number field $K$ of degree $n$ such that
+Given an order $\O$ of a number field $K$ of degree $n$ such that
 \[
-R = \ZZ + \ZZ\omega_2 + \cdots + \ZZ\omega_n.
+\O = \ZZ + \ZZ\omega_2 + \cdots + \ZZ\omega_n.
 \]
-We can calculate the index of the order $\ZZ[\alpha]$ where $\alpha = x_1 + x_2\omega_2 + \cdots x_n\omega_n\in R$ as follows.
-First we let
+We can calculate the index of the order $\ZZ[\alpha]$ where $\alpha = x_1 + x_2\omega_2 + \cdots x_n\omega_n\in \O$ as follows.
+
+First we recall \cite[pp. 11--15]{neukirch} that the discriminant of an order $\O$ in a number field $K$ is given by
+\[
+d(\O) = \det(\sigma_i(\alpha_j))^2
+\]
+where the $\sigma_i$ are the embeddings of $K$ into $\CC$ and the $\alpha_j$ are a $\ZZ$-basis for $\O$.
+Now given two orders $\O \subset \O'$ it is the case that
+\[
+d(\O) = [\O':\O]^2 d(\O')
+\]
+And so the index is given by
+\begin{equation}
+[\O':\O] = \sqrt{\frac{d(\O)}{d(\O')}}.
+\label{eq:indexsq}
+\end{equation}
+In the special case where $\O = \ZZ[\alpha]$ a $\ZZ$-basis for $\O$ is $1,\alpha,\ldots,\alpha^{n-1}$ and we have that
+\begin{align*}
+d(\O) &= \det\begin{pmatrix}
+1 & \alpha & \cdots & \alpha^{n-1}\\
+1 & \sigma_1(\alpha) & \cdots & \sigma_1(\alpha)^{n-1}\\
+\vdots & \vdots & \ddots & \vdots\\
+1 & \sigma_{n-1}(\alpha) & \cdots & \sigma_{n-1}(\alpha)^{n-1}
+\end{pmatrix}^2\\
+&=\prod_{1\le i<j\le n} (\sigma_i(\alpha) - \sigma_j(\alpha))^2
+\end{align*}
+
+Now if we take $\alpha$ to be given by $\alpha = x_1 + x_2\omega_2 + \cdots x_n\omega_n$ we have that in fact
+\[
+\prod_{1\le i<j\le n} (\sigma_i(\alpha) - \sigma_j(\alpha))^2 = \prod_{1\le i<j\le n} (\sigma_i(x_2\omega_2 + \cdots + x_n\omega_n) - \sigma_j(x_2\omega_2 + \cdots + x_n\omega_n))^2
+\]
+as the term $x_1$ will be fixed under all embeddings $\sigma_i$.
+To simplify things a little we let $\beta = x_2\omega_2 + \cdots + x_n\omega_n$.
+
+We can introduce polynomials $f_{i,j}(x_2,\ldots,x_n)$ for $1\le i,j\le n$ such that
+\[
+\beta^{i-1} = f_{1,i}(x_2,\ldots,x_n) + f_{2,i}(x_2,\ldots,x_n)\omega_2 + \cdots + f_{n,i}(x_2,\ldots,x_n)\omega_n
+\]
+and then we have
+\begin{align*}
+d(\O) =& \prod_{1\le i<j\le n} (\sigma_i(\beta) - \sigma_j(\beta))^2\\
+=&\det\begin{pmatrix}
+1 & \beta & \cdots & \beta^{n-1}\\
+1 & \sigma_1(\beta) & \cdots & \sigma_1(\beta)^{n-1}\\
+\vdots & \vdots & \ddots & \vdots\\
+1 & \sigma_{n-1}(\beta) & \cdots & \sigma_{n-1}(\beta)^{n-1}
+\end{pmatrix}^2\\
+=&\det\begin{pmatrix}
+1 & \omega & \cdots & \omega^{n-1}\\
+1 & \sigma_1(\omega) & \cdots & \sigma_1(\omega)^{n-1}\\
+\vdots & \vdots & \ddots & \vdots\\
+1 & \sigma_{n-1}(\omega) & \cdots & \sigma_{n-1}(\omega)^{n-1}
+\end{pmatrix}^2 \cdot\\
+&\det\begin{pmatrix}
+f_{1,1}(x_2,\ldots,x_n) & \cdots & f_{1,n}(x_2,\ldots,x_n)\\
+f_{2,1}(x_2,\ldots,x_n)& \cdots & f_{2,n}(x_2,\ldots,x_n)\\
+\vdots & \ddots & \vdots\\
+f_{n,1}(x_2,\ldots,x_n) & \cdots & f_{n,n}(x_2,\ldots,x_n)
+\end{pmatrix}^2\\
+=& d(\O') I(x_2,\ldots,x_n)^2.
+\end{align*}
+Where $I(x_2,\ldots,x_n)$ is the determinant of the last matrix above, this is a homogeneous polynomial of degree $n(n-1)/2$, known as the \emph{index form}.
+
+Substituting this into \ref{eq:indexsq} gives that
+\[
+[\O':\O] = |I(x_2,\ldots,x_n)|
+\]
+and so solving this equation $I(x_2,\ldots,x_n)$ for plus and minus the index we would like to find will give us generators for monogenic orders of the required index.
+
+\begin{ex}
+Let $K = \QQ(\alpha) = \QQ[x]/(x^3 + x - 1)$ and $\O' = \ZZ + \ZZ2\alpha + \ZZ4\alpha^2$, so in this case $\beta = 2x_2\alpha + 4x_3\alpha^2$.
+And we find the $f_{i,j}$ as follows
+\begin{align*}
+\beta^0 &= 1 = 1 + 0\omega_2 + 0\omega_3,\\
+\beta^1 &= 0 + x_2\omega_2 + x_3\omega_3,\\
+\beta^2 &= (2x_2\alpha + 4x_3\alpha^2)^2 = 4x_2^2\alpha^2 + 16x_2x_3\alpha^3 + 16x_3^2\alpha^4 \\
+&= 16x_2x_3 + 8x_3(x_3-x_2)\omega_2 + (x_2^2 - 4x_3^2)\omega_3.
+\end{align*}
+So the index form is given by
+\[
+I(x_2,\ldots,x_n) = \det\begin{pmatrix}
+1 & 0   &  16x_2x_3\\
+0 & x_2 & 8x_3(x_3-x_2)\\
+0 & x_3 & x_2^2 -4x_3^2
+\end{pmatrix}
+= x_2^3 + 4x_2x_3^2 - 8x_3^3.
+\]
+
+To find monogenic orders $\O$ of index $n$ in $\O'$ we can now solve 
+\[x_2^3 + 4x_2x_3^2 - 8x_3^3 = \pm n\]
+to find the $\beta$ generating the order.
+So for example if wish to find orders of index 3 could observe that $x_2 = x_3 = 1$ is a solution to $x_2^3 + 4x_2x_3^2 - 8x_3^3 = -3$ and therefore
+\[
+\ZZ[\beta] = \ZZ[1\cdot\omega_2 + 1\cdot \omega_3] = \ZZ[2\alpha + 4\alpha^2]
+\]
+is a suborder of index 3 in $\O'$.
+\end{ex}
+
+Both Ga\'al's book and many papers both by him and other authors methods to explicitly solve diophantine equations appearing in the above setting are given.
+As the degree of the field increases so does the number of variables in the index form and the degree of the form so it becomes difficult to solve such equations for even moderate degree.
 
 Unfortunately not all orders are monogenic and even rings of integers need not be in general.
 Dedekind was the first to give an example of a ring of integers that is not monogenic.
@@ -709,7 +810,8 @@ A/f(R) \cong R/f(R) \oplus Z/J \cong (Z/J)^2.
 \]
 So the map $f$ is indeed a map from $W$ to $V$.
 
-Now for $g$ we note that 
+Now for $g$ we note that $Z + I$ is a $Z$-algebra as it is a ring invariant under multiplication by elements of $Z$. % TODO more deets?
+We have that $A/I$ is a quadratic $Z/J$ algebra 
 
 \end{proof}
 
@@ -865,7 +967,7 @@ For a square ($n\times n$) matrix of full rank the conditions for a matrix to be
 \begin{enumerate}[i)]
 \item if $i < j$ then $H_{i,j} = 0$,
 \item if $i = j$ then $H_{i,j} > 0$,
-\item and if $j < i$ then $0\le H_{i,j} < H_{i,i}$.
+\item and if $i < j$ then $0\le H_{i,j} < H_{j,j}$.
 \end{enumerate}%TODO check
 So the matrix is upper triangular and all entries are positive and bounded above by the last non-zero entry of their column.
 The determinant of an upper triangular matrix is the product of the elements on the diagonal so we first look at ways of expressing our desired determinant as a product of $n$ positive integers.
@@ -902,7 +1004,13 @@ Input: Change of basis matrix $H$.\\
 Output: Whether or not the submodule defined by $H$ contains 1.\\
 \begin{algorithm}[H]
 Find the representation $\mathbf v$ of 1 in the old basis.\\
-Check that $H^{-1}\mathbf v$ is an integer matrix.\\
+\eIf{$H^{-1}\mathbf v$ is an integer matrix}
+{
+Return yes.
+}
+{
+Return no.
+}
 \end{algorithm}
 \end{alg}
 
@@ -913,12 +1021,18 @@ The correctness of the method hinges on the fact that if the products of all pai
 
 \begin{alg}
 \label{alg:multclose}~\\
-Input: Change of basis matrix $H$.\\
+Input: Change of basis matrix $B$.\\
 Output: Whether or not the submodule defined by $H$ is multiplicatively closed.\\
 \begin{algorithm}[H]
-Find matrix.\\
-Compute HNF.\\
-Check equality.\\
+Find matrix $B'$.\\
+Compute the Hermite normal forms of $B$ and $B'$ denote them $H$ and $H'$.\\
+\eIf{$H' = H$ on the first $n$ rows}
+{
+Return yes.
+}
+{
+Return no.
+}
 \end{algorithm}
 \end{alg} 
 %TODO local property?
@@ -1022,10 +1136,10 @@ Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
 
 \chapter{Finding elliptic curves}
 \label{chap:ellapp}
-Through the main problem itself is an interesting one which is worth studying in its own right we were also motivated to look at it by the potential applications to other questions within different areas of mathematics.
+Though the main problem itself is an interesting one which is worth studying in its own right we were also motivated to look at it by the potential applications to other questions within different areas of mathematics.
 % TODO what you tryin to say?
 One problem relating to elliptic curves where the methods developed above can be applied is detailed below.
-We also give a few examples solved using our techniques along with results obtained from the application of our methods.
+We also give a few examples we have solved using our techniques.
 
 Given an elliptic curve we can define a number field to help us study the torsion points of $E$.
 
@@ -1047,13 +1161,35 @@ E' \colon y^2 = x^3 + a_2'x^2 + a_4'x + a_6',
 such a curve is said to be in \emph{medium Weierstrass form}.
 
 \minisec{}
-Assuming that the curve $E$ has no rational 2-torsion points we must have no rational solution to $f = x^3 + a_2x^2 + a_4x + a_6$ and hence this polynomial is irreducible over $\QQ$.
-We can then see that we have
+Assuming that the curve $E$ has no rational 2-torsion points we must have no rational solution to $f = x^3 + a_2x^2 + a_4x + a_6$ and hence this polynomial is irreducible over $\QQ$ as it is of degree 3.
+We can then see that we have $\QQ[x]/(f)$ isomorphic to a subfield of the two torsion field $\QQ(E[2])$, we will let $K_E$ be $\QQ[x]/(f)$.
+%as $\QQ(E[2])$ is the splitting field of $f$ and $f$ is irreducible. %TODO checkeroo
+Letting $\alpha$ be the image of $x$ in the above quotient, we can see that $\ZZ[\alpha]$ is an order of $K_E$.
+The index of this order in $\ZZ_K$ is given, as mentioned in the section on monogenic orders, by the following expression
 \[
-\QQ(E[2]) \cong \QQ[x]/(f)
+[\ZZ_K:\ZZ[\alpha]] = \sqrt{\frac{\disc(f)}{\Delta_K}}.
 \]
-as $\QQ(E[2])$ is the splitting field of $f$ and $f$ is irreducible. %TODO checkeroo
-Letting $\alpha$ be the image of $x$ in the above quotient, we can see that $ \ZZ[\alpha]$ is an order of $\QQ(\alpha)\cong \QQ(E[2])$.
+The discriminant of $f$ is then related to $\Delta_E$, the discriminant of $E$, in a simple manner.
+We have that
+\[
+\disc(f) = 2^8 \Delta_E,
+\]
+this can be seen from the definition of $\Delta_E$. %TODO can it?
+
+We want to reverse this process and look at the following problem.
+
+\begin{prob}
+Given a cubic number field $K$ and an integer $\Delta$ find an elliptic curve $E$ of discriminant $\Delta$ such that $K_E = K$.
+\end{prob}
+
+As noted above the polynomial $f$ obtained from the curve will give us an order in the number field $K$ with an index that we can calculate from $\Delta$ and $\Delta_K$.
+So our strategy for finding such curves will be as follows, we first find the possible orders, then try and find a polynomial $f$ that can define the order before reconstructing the curve from that.
+In order for an order to be of the right form it must be monogenic, so we have two approaches to finding these orders.
+First we could use the methods discussed in section~\ref{sec:monogenic} to find monogenic orders by finding their ring generators.
+We could instead use one of the other more general methods for finding orders, and then afterwards attempt to determine if they are monogenic and find their generators if so.
+
+Once a generator for such a monogenic order has been found the polynomial $f$ is simply the minimal polynomial of the ring generator.
+While the polynomial does change if a different ring generator is used (i.e using some $\alpha + n$ instead of $\alpha$, with $n\in\ZZ$) the different polynomials will give isomorphic curves.%TODO monogenics etc.
 
 %TODO explain, monogenic so seems like diophantine is good, try to find large example where cocyclic works better than monogenic
 
@@ -1062,13 +1198,19 @@ The elliptic curve
 \[
 E\colon y^2 + y = x^3 - x
 \]
-is isomorphic to
+has discriminant $\Delta = 37$ and is isomorphic to
 \[
-E'\colon y^2 = x^3 - x + \frac{1}{4}
+E'\colon y^2 = x^3 - x + \frac{1}{4}.
 \]
+So the field $K_E$ as defined above is $\QQ[x]/(x^3 - 16x + 16)$.
+
+gives the curve $E'\colon ...$ which is isomorphic to $E$!%TODO
 \end{ex}
 
+In this example we knew the curve we were searching for at the start, but in the next one we perform a more open-ended search.
+
 \begin{ex}
+Let us try and find elliptic curves $E$ with discriminant in the set $\{\pm 11^s\mid s = 1,\ldots,11\}$ and $K_E = \QQ[x]/(x^3 - x^2 + x + 1)$.
 \end{ex}
 
 \chapter{Conclusion}
@@ -1077,7 +1219,7 @@ We have found several methods for computing orders with a given index, which wor
 
 \section{Further work}
 It seems likely that other properties of the orders we are looking for could be used to speed up the algorithms given above and so further investigations into both special and general cases could yield results.
-Further applications of these methods are definitely possible and it would be interesting to see what other areas these methods can be used in. %TODO find another word that isn't "interesting".
+Other applications of these methods are definitely possible and it would be interesting to see what other areas these methods can be used in.
 
 There are certainly several different ways of improving the above methods that could be tried and it would likely be worthwhile to do so.
 
@@ -1091,11 +1233,6 @@ In a similar vein there may be easier to check conditions to determine whether a
 The natural extension to relative number fields given as problem~\ref{prob:rel} above is not something we have considered in detail however it should be fairly simple to generalise to this case as many of the ideas we use (such as the theory of Hermite normal forms and theorem~\ref{thm:coresp}) extend to this more general setting.
 
 Finally of course there may be some methods for finding orders completely different to those considered here!
-%Low-degree optimisations.
-%Conditions on ideals to be conductors and modules to be rings can be taken into account.
-%Generalising to relative number fields would be interesting.
-%There are likely more applications of these methods that we aren't aware of.
-%There are possibly completely different methods to find these orders.
 
 \section{Acknowledgements}
 First and foremost I would like to thank Lassina Demb\'el\'e for his excellent guidance while I undertook the project, it was truly a pleasure to work with him.
