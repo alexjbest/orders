@@ -222,10 +222,11 @@ An easy consequence of this relating the indices of submodules is worth noting.
 
 \begin{cor}
 \label{cor:indexmult}
-Given a chain of submodules $M_1 \subseteq M_2 \subseteq M_3$ where $[M_3:M_2]$ and $[M_2:M_1]$ are finite we have
+Given a chain of submodules $M_1 \subseteq M_2 \subseteq M_3$ we have
 \[
-[M_3:M_1] = [M_3:M_2][M_2:M_1].
-\] %TODO can we just require 2 finite
+[M_3:M_1] = [M_3:M_2][M_2:M_1]
+\]
+note that this only really makes sense when all modules are of finite index inside each other.
 \end{cor}
 
 \minisec{}
@@ -254,6 +255,8 @@ A module $M$ is called a torsion module if $M_\text{tors} = M$, and torsion-free
 Given a $\ZZ$-module $M$ we can always write $M = M_\text{tors} \oplus \ZZ^r$ for some unique $r\in \ZZ_{\ge 0}$.
 This $r$ is called the \emph{rank} of the $\ZZ$-module.
 \end{defn}
+
+This notion generalises in a natural way to modules over other principal ideal domains.
 
 \begin{ex}
 \[M = \ZZ^2 = \{(a,b)\mid a,b\in \ZZ\}\]
@@ -517,7 +520,7 @@ More precisely we can generalise the above problem to the following one.
 
 \begin{prob} % TODO check this is really what I mean
 \label{prob:rel}
-Given an extension of number fields $L|K$, a $\ZZ_K$-order $R$ of $\ZZ_L$ and an integer $I$ find the set
+Given an extension of number fields $L|K$, a $\ZZ_K$-order $R$ of $L$ and an integer $I$ find the set
 \[
 \left\{ \O\subseteq R \mid \O\text{ is a $\ZZ_K$-suborder},\ [R:\O] = I\right\}.
 \]
@@ -707,8 +710,9 @@ So for example if wish to find orders of index 3 could observe that $x_2 = x_3 =
 is a suborder of index 3 in $\O'$.
 \end{ex}
 
-Both Ga\'al's book and many papers both by him and other authors methods to explicitly solve diophantine equations appearing in the above setting are given.
+Both Ga\'al's book and many papers both by him and other authors give methods to solve Diophantine equations appearing in the above setting.
 As the degree of the field increases so does the number of variables in the index form and the degree of the form so it becomes difficult to solve such equations for even moderate degree.
+Nevertheless using this method we can certainly hope to find some orders quickly if the index form ends up being easy to solve.
 
 Unfortunately not all orders are monogenic and even rings of integers need not be in general.
 Dedekind was the first to give an example of a ring of integers that is not monogenic.
@@ -725,11 +729,12 @@ then
 \]
 and there is no $\beta\in \ZZ_K$ such that $\ZZ_K=\ZZ[\beta]$. %TODO check
 \end{ex}
-
 %TODO give examples of non-monogenic orders, orders with n-1 ring gens for any n??
 
-%TODO explain that in some ways idea was to generalise this to arbitrary orders
-While our techniques differ from the ones developed for monogenic orders we originally were inspired to consider this problem after using an implementation of some of these techniques in the Magma computational algebra system \cite{magma}.
+In fact Pleasants has shown that the number of generators as a ring of $\ZZ_K$ can be arbitrarily large as the degree of $K$ increases \cite{pleasants}.
+So although we can certainly find some orders with this method we cannot hope to find all of them in general using these techniques.
+
+While the strategies developed below differ from the ones that have been found for monogenic orders we were originally inspired to consider this problem after using an implementation of these techniques in the Magma computational algebra system \cite{magma}.
 
 
 \section{Cocyclic orders}
@@ -1150,6 +1155,8 @@ Here $\overline{\QQ}$ denotes the algebraic closure of $\QQ$, the algebraic numb
 As the $n$-torsion subgroup $E(\overline{\QQ})[n]$ is always finite there are at most finitely many elements (all of which are algebraic) that need adjoining to $\QQ$.
 So the $n$-division field is always a number field. %TODO ref
 
+\minisec{}
+
 For an elliptic curve defined over the rationals in long Weierstrass form such as
 \[
 E \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6\text{ with }a_i \in \QQ,
@@ -1159,9 +1166,12 @@ we can always find an isomorphic curve of the form
 E' \colon y^2 = x^3 + a_2'x^2 + a_4'x + a_6',
 \]
 such a curve is said to be in \emph{medium Weierstrass form}.
-
-\minisec{}
-Assuming that the curve $E$ has no rational 2-torsion points we must have no rational solution to $f = x^3 + a_2x^2 + a_4x + a_6$ and hence this polynomial is irreducible over $\QQ$ as it is of degree 3.
+Indeed if $E_0\colon y^2 + P(x)y  = Q(x)$ then we can see that
+\[
+E_0\cong E \colon y^2 = \frac{4Q(x) + P^2(x)}{4} = R(x).
+\]
+Assuming that the curve $E$ has no rational 2-torsion points we must have no rational solution to $R(x) = x^3 + a_2x^2 + a_4x + a_6$ and hence this polynomial is irreducible over $\QQ$ as it is of degree 3.
+However this polynomial is not guaranteed to have integer coefficients so we let $f = 4^3 R(x/4)$ which will have coefficients in the integers.
 We can then see that we have $\QQ[x]/(f)$ isomorphic to a subfield of the two torsion field $\QQ(E[2])$, we will let $K_E$ be $\QQ[x]/(f)$.
 %as $\QQ(E[2])$ is the splitting field of $f$ and $f$ is irreducible. %TODO checkeroo
 Letting $\alpha$ be the image of $x$ in the above quotient, we can see that $\ZZ[\alpha]$ is an order of $K_E$.
@@ -1182,35 +1192,58 @@ We want to reverse this process and look at the following problem.
 Given a cubic number field $K$ and an integer $\Delta$ find an elliptic curve $E$ of discriminant $\Delta$ such that $K_E = K$.
 \end{prob}
 
-As noted above the polynomial $f$ obtained from the curve will give us an order in the number field $K$ with an index that we can calculate from $\Delta$ and $\Delta_K$.
+As noted above the polynomial $f$ obtained from the curve will give us an order in the number field $K$ with an index in the maximal order that we can calculate from $\Delta$ and $\Delta_K$.
 So our strategy for finding such curves will be as follows, we first find the possible orders, then try and find a polynomial $f$ that can define the order before reconstructing the curve from that.
 In order for an order to be of the right form it must be monogenic, so we have two approaches to finding these orders.
 First we could use the methods discussed in section~\ref{sec:monogenic} to find monogenic orders by finding their ring generators.
 We could instead use one of the other more general methods for finding orders, and then afterwards attempt to determine if they are monogenic and find their generators if so.
 
 Once a generator for such a monogenic order has been found the polynomial $f$ is simply the minimal polynomial of the ring generator.
-While the polynomial does change if a different ring generator is used (i.e using some $\alpha + n$ instead of $\alpha$, with $n\in\ZZ$) the different polynomials will give isomorphic curves.%TODO monogenics etc.
+While the polynomial does change if a different ring generator is used (i.e using some $\alpha + n$ instead of $\alpha$, with $n\in\ZZ$) the different polynomials will give isomorphic curves.%TODO check???
 
 %TODO explain, monogenic so seems like diophantine is good, try to find large example where cocyclic works better than monogenic
 
 \begin{ex}
 The elliptic curve
 \[
-E\colon y^2 + y = x^3 - x
+E_0\colon y^2 + y = x^3 - x
 \]
 has discriminant $\Delta = 37$ and is isomorphic to
 \[
-E'\colon y^2 = x^3 - x + \frac{1}{4}.
+E\colon y^2 = x^3 - x + \frac{1}{4}.
 \]
 So the field $K_E$ as defined above is $\QQ[x]/(x^3 - 16x + 16)$.
 
-gives the curve $E'\colon ...$ which is isomorphic to $E$!%TODO
+We are looking for an order of index $??$ in the maximal order of this field, an application of the Hermite normal form method finds ?? orders
+\[
+\ZZ,\ \text{ and }
+\]
+Finding ring generators can be difficult but for these orders we can see that some of the module generators found generate them as a ring too and so we get the following elements
+\[
+\alpha
+\]
+with minimal polynomials
+\[
+x,\ \text{ and }
+\]
+The ?? gives the curve $E\colon y^2 = ??$ which is isomorphic to $E$!
+%TODO
 \end{ex}
 
 In this example we knew the curve we were searching for at the start, but in the next one we perform a more open-ended search.
 
 \begin{ex}
 Let us try and find elliptic curves $E$ with discriminant in the set $\{\pm 11^s\mid s = 1,\ldots,11\}$ and $K_E = \QQ[x]/(x^3 - x^2 + x + 1)$.
+
+$K_E$ has discriminant $-44 = -4\cdot 11$ and so we can observe that for the discriminant we are looking for to be well defined we have to have a negative?? discriminant as otherwise we could not take the square root and obtain a natural number.
+Similarly we can tell that the discriminant must be an odd power of 11 rather than even, as otherwise the index required would not be natural again.
+So we need only check the discriminants in the set $\{\}$.
+Using the methods obtained above again we get the following orders
+
+So we obtain the following ?? curves with the required properties
+\[
+.
+\]
 \end{ex}
 
 \chapter{Conclusion}
