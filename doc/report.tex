@@ -1024,14 +1024,16 @@ Output: All possible $n\times n$ Hermite normal form matrices of full rank with 
 \begin{algorithm}[H]
 \For{each factorisation $(d_1,\ldots,d_n)$ of $D$ into $n$ natural numbers}{
 Let $A$ be the matrix with diagonal entries $A_{i,i} = d_i$ for $i$ from 1 to $n$.\\
+Add $A$ to the output.\\
 \For{$k$ from 0 to $\prod_{i = 0}^n d_i^{i-1} - 1$}{
-Increment $A_{n,1}$, repeatedly carrying digits that exceed the diagonal entry down and then over to the next column when the diagonal is reached.
+Increment $A_{n,1}$, repeatedly carrying digits that exceed the diagonal entry down and then over to the next column when the diagonal is reached.\\
+Add $A$ to the output.
 }
 }
 \end{algorithm}
 \end{alg}
 
-Here is an example of the carrying process
+Here is an example of how the carrying process works
 \[
 \begin{pmatrix}
 2& 1 &1\\
@@ -1234,7 +1236,7 @@ So the $n$-division field is always a number field.
 
 For an elliptic curve defined over the rationals in long Weierstrass form such as
 \[
-E \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6\text{ with }a_i \in \QQ,
+E \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6\text{ with }a_i \in \ZZ,
 \]
 we can always find an isomorphic curve of the form
 \[
@@ -1259,7 +1261,8 @@ We have that
 \[
 \disc(f) = 2^8 \Delta_E,
 \]
-this can be seen from the definition of $\Delta_E$. %TODO can it?
+this can be seen from the definition of $\Delta_E$.
+And hence $[\ZZ_K:\ZZ[\alpha]] = \sqrt{2^8\Delta_E/\Delta_K}$.
 
 We want to reverse this process and look at the following problem.
 
@@ -1290,33 +1293,41 @@ has discriminant $\Delta = 37$ and is isomorphic to
 \[
 E\colon y^2 = x^3 - x + \frac{1}{4}.
 \]
-So the field $K_E$ as defined above is $\QQ[x]/(x^3 - 16x + 16)$.
+So the field $K_E$ as defined above is $\QQ[x]/(x^3 - 16x + 16) = \QQ(\alpha)$ and we have $\Delta_K = 148 = 2^2 \cdot 37$.
 
-We are looking for an order of index $??$ in the maximal order of this field, an application of the Hermite normal form method finds ?? orders
+We are looking for an order of index $\sqrt{2^8\cdot 37/148} = \sqrt{2^6} = 8$ in the maximal order of this field.
+An application of the Hermite normal form method finds 3 orders with this index
 \[
-\ZZ,\ \text{ and }
+\ZZ + \ZZ\alpha + \ZZ\alpha^2,\ \ZZ + \ZZ2\alpha + \ZZ\alpha^2/2\text{ and } \ZZ + \ZZ\alpha^2 + \ZZ(\alpha^2/2 + \alpha).
 \]
-Finding ring generators can be difficult but for these orders we can see that some of the module generators found generate them as a ring too and so we get the following elements
+Finding ring generators can be difficult but for these orders we can see that some of the module generators found generate them as a ring too and so we get the following expressions
 \[
-\alpha
+\ZZ + \ZZ\alpha + \ZZ\alpha^2 = \ZZ[\alpha]\text{ and } \ZZ + \ZZ\alpha^2 + \ZZ(\alpha^2/2 + \alpha) = \ZZ[\alpha^2/2 + \alpha]
 \]
-with minimal polynomials
+with corresponding minimal polynomials for their ring generators as
 \[
-x,\ \text{ and }
+x^3 -16x + 16\text{ and }x^3 - 16x^2 + 72x - 80.
 \]
-The ?? gives the curve $E\colon y^2 = ??$ which is isomorphic to $E$!
-%TODO
+The first gives the polynomial $R(x) = x^3 - x + \frac{1}{4}$ and then the curve $y^2 =  x^3 - x + \frac{1}{4}$ which is of course $E$!
+The second gives $R(x) = x^3 -4x^2 + \frac{9}{2}x -\frac{5}{4}$ which is also a curve of discriminant 37 defined over the rationals with the required field $K_E$.
 \end{ex}
 
-In this example we knew the curve we were searching for at the start, but in the next one we perform a more open-ended search.
+In this example we knew one curve we were searching for at the start, but in the next one we perform a more open-ended search.
 
 \begin{ex}
-Let us try and find elliptic curves $E$ with discriminant in the set $\{\pm 11^s\mid s = 1,\ldots,11\}$ and $K_E = \QQ[x]/(x^3 - x^2 + x + 1)$.
+Let us try and find an elliptic curve $E$ with discriminant in the set $\{\pm 11^s\mid s = 1,\ldots,11\}$ and $K_E = \QQ[x]/(x^3 - x^2 + x + 1)$.
 
-$K_E$ has discriminant $-44 = -4\cdot 11$ and so we can observe that for the discriminant we are looking for to be well defined we have to have a negative?? discriminant as otherwise we could not take the square root and obtain a natural number.
+$K_E$ has discriminant $-44 = -4\cdot 11$ and so we can observe that for the discriminant we are looking for to be well defined we have to have a negative discriminant as otherwise we could not take the square root and obtain a natural number.
 Similarly we can tell that the discriminant must be an odd power of 11 rather than even, as otherwise the index required would not be natural again.
-So we need only check the discriminants in the set $\{\}$.
+So we need only check the discriminants in the set $\{-11,-11^3,-11^5,-11^7,-11^9,-11^11\}$.
+
+We start with discriminant -11, giving index 8.
 Using the methods obtained above again we get the following orders
+\[
+\ZZ + \ZZ4\alpha + \ZZ2\alpha^2,\ \ZZ + \ZZ2\alpha + \ZZ4\alpha^2\text{ and } \ZZ + \ZZ(2\alpha + 2\alpha^2) + \ZZ4\alpha^2.
+\]
+
+Of these only the second has an obvious ring generator, so we work with this getting $R(x) = x^3 -\frac{1}{2}x^2 + \frac{1}{4}x + \frac{1}{8}$ and the curve $E\colon y^2 = R(x)$ does have the right discriminant, however as $4R(x)$ does not have integer coefficients there is no way that this curve could have been obtained from an integral model via the above process.
 
 So we obtain the following ?? curves with the required properties
 \[
