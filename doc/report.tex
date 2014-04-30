@@ -218,11 +218,10 @@ An easy consequence of this relating the indices of submodules is worth noting.
 
 \begin{cor}
 \label{cor:indexmult}
-Given a chain of submodules $M_1 \subseteq M_2 \subseteq M_3$ we have
+Given a chain of submodules $M_1 \subseteq M_2 \subseteq M_3$ with finite indices inside each other we have
 \[
-[M_3:M_1] = [M_3:M_2][M_2:M_1]
+[M_3:M_1] = [M_3:M_2][M_2:M_1].
 \]
-note that this only really makes sense when all modules are of finite index inside each other.
 \end{cor}
 
 \minisec{}
@@ -687,8 +686,8 @@ and so solving this equation $I(x_2,\ldots,x_n)$ for plus and minus the index we
 Let $K = \QQ(\alpha) = \QQ[x]/(x^3 + x - 1)$ and $\O' = \ZZ + \ZZ2\alpha + \ZZ4\alpha^2$, so in this case $\beta = 2x_2\alpha + 4x_3\alpha^2$.
 And we find the $f_{i,j}$ as follows
 \begin{align*}
-\beta^0 &= 1 = 1 + 0\omega_2 + 0\omega_3,\\
-\beta^1 &= 0 + x_2\omega_2 + x_3\omega_3,\\
+\beta^0 &= 1 + 0\omega_2 + 0\omega_3,\\
+\beta^1 &=  + x_2\omega_2 + x_3\omega_3,\\
 \beta^2 &= (2x_2\alpha + 4x_3\alpha^2)^2 = 4x_2^2\alpha^2 + 16x_2x_3\alpha^3 + 16x_3^2\alpha^4 \\
 &= 16x_2x_3 + 8x_3(x_3-x_2)\omega_2 + (x_2^2 - 4x_3^2)\omega_3.
 \end{align*}
@@ -778,9 +777,9 @@ We include the proof here as it is quite instructive.
 Let $Z$ be a commutative ring, $A$ a commutative $Z$-algebra and fix some ideal $J$ of $Z$.
 If we let
 \begin{align*}
-W &= \{R \text{ an order of } K\mid \ZZ_K/R \cong Z/J\}
+W &= \{R \text{ a sub-}Z\text{-algebra of } A\mid A/R \cong Z/J\}
 \intertext{and}
-V &= \{ I \text{ an ideal of }\ZZ_K \mid A/I \cong (Z/J)^2 \}.
+V &= \{ I \text{ an ideal of } A \mid A/I \cong (Z/J)^2 \}.
 \end{align*}
 then there is a bijection between $V$ and $W$ given by
 \begin{align*}
@@ -864,7 +863,7 @@ This gives the following algorithm to find cocyclic suborders with index $I$ in 
 Input: A natural number $I$ and an order $R$.\\
 Output: All cocyclic suborders of $R$ of index $I$ in $R$.\\
 \begin{algorithm}[H]
-\For{For all ideals $J$ of $R$ of index $I^2$}{
+\For{all ideals $J$ of $R$ of index $I^2$}{
 Let $M = \ZZ + I$.\\
 \If{$M$ is of index $I$}
 {
@@ -885,11 +884,11 @@ Input: Integer $I$.\\
 Output: All ideals in $\ZZ_K$ of norm $I$.\\
 \begin{algorithm}[H]
 Let $L$ be a list containing $\ZZ_K$.\\
-\For{All primes $p$ dividing $I$}
+\For{all primes $p$ dividing $I$}
 {
 Factor the ideal $p\ZZ_K$ into prime ideals $\p_i$, store them by norm, also add the $p$-adic order of the norm of each $\p_i$ (its residual degree) to a set $S$.\\
 Let $L'$ be an empty list.\\
-\For{All expressions $\ord_p(I) = s_1 + s_2 + \cdots + s_k$ where all $s_i\in S$.}
+\For{all expressions $\ord_p(I) = s_1 + s_2 + \cdots + s_k$ where all $s_i\in S$.}
 {
 Add all products of prime ideals $\q_1\q_2\cdots \q_k$ where $\ord_p(N(\q_i)) = s_i$ to the list $L'$.
 }
@@ -1142,11 +1141,12 @@ add $M$ to the output.
 \end{alg}
 
 This algorithm is far slower than the previous less general methods we have discussed, but of course it has the major advantage of being complete.
+We now move on to looking at a result that will allow us to use the cocylic method to speed our computations up in certain cases, whilst still finding all orders.
 
 \subsection{Factoring the index}
 This section could well have appeared earlier as it does not rely on any previous results and could have been used to simplify the assumptions of some earlier results slightly, however it seems natural to include it here.
 
-There is a relatively simple observation we can use to break the problem down into more manageable subproblems in some cases.
+There is a fairly intuitive observation we can use to break the problem down into more manageable subproblems in some cases.
 This result also appears in Brakenhoff's thesis \cite[pp. 49--50]{brakenhoff}, its usefulness should be fairly apparent.
 
 \begin{prop}
@@ -1337,11 +1337,11 @@ which has discriminant $-11^5$, as required.
 \chapter{Conclusion}
 We have found several methods for computing orders with a given index, which work in varying generality and with various speeds.
 In all I feel that we have only started to achieve what is possible here with these algorithms and that further increases in efficiency both in special and general cases should be possible.
-Some ways this might be possible are given below.
+Some ways in which improvements might be obtained are given below.
 
 Of the variants considered here, only one is truly general in that it finds all orders of a given index, rather than those with special properties.
 But we have also seen how the less general methods can be used to improve this algorithm in some scenarios.
-There are still many cases that appear to be very slow.
+There are still many cases that appear to be very slow however.
 For example when the index is a large prime power none of the techniques we have given here can be applied to speed the computation up.
 
 %TODO be positive?
