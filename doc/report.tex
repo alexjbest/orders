@@ -2,18 +2,14 @@
 % - Include thanks? anyone else?
 % - How will code be included, snippets or on disk??
 % - Proofs/detailed arguments for correctness of algos.
-% - Add input output to algos
 % - Include project managementy bits
 % - Practical considerations, lines of code, sage vs magma python etc.
-% - Include more about ZZ bases
 
 % Structure:
 % - Introduction
 % - Background
 % - Problem
-% -  History??
 % -- Quadratics
-% -- Cubics?
 % -- Cocyclics
 % -- Monogenics
 % -- General absolute
@@ -891,7 +887,7 @@ Output: All ideals in $\ZZ_K$ of norm $I$.\\
 Let $L$ be a list containing $\ZZ_K$.\\
 \For{All primes $p$ dividing $I$}
 {
-Factor the ideal $p\ZZ_K$ into prime ideals $\p_i$, store them by norm, also add the $p$-adic order of the norm of each $\p_i$ to a set $S$.\\
+Factor the ideal $p\ZZ_K$ into prime ideals $\p_i$, store them by norm, also add the $p$-adic order of the norm of each $\p_i$ (its residual degree) to a set $S$.\\
 Let $L'$ be an empty list.\\
 \For{All expressions $\ord_p(I) = s_1 + s_2 + \cdots + s_k$ where all $s_i\in S$.}
 {
@@ -1084,10 +1080,10 @@ The correctness of the method hinges on the fact that if the products of all pai
 
 \begin{alg}
 \label{alg:multclose}~\\
-Input: Change of basis matrix $B$.\\
-Output: Whether or not the submodule defined by $H$ is multiplicatively closed.\\
+Input: A submodule $M$ given by a change of basis matrix $B$.\\
+Output: Whether or not $M$ is multiplicatively closed.\\
 \begin{algorithm}[H]
-Find matrix $B'$.\\ %TODO
+Let $B'$ be the $n(n+1)/2\times n$ matrix whose rows are given by the representations of each of the possible products of pairs of basis elements of $M$.\\
 Compute the Hermite normal forms of $B$ and $B'$ denote them $H$ and $H'$.\\
 \eIf{$H' = H$ on the first $n$ rows}
 {
