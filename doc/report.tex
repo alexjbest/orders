@@ -1306,6 +1306,7 @@ x^3 -16x + 16\text{ and }x^3 - 16x^2 + 72x - 80.
 \]
 The first gives the polynomial $R(x) = x^3 - x + \frac{1}{4}$ and then the curve $y^2 =  x^3 - x + \frac{1}{4}$ which is of course $E$!
 The second gives $R(x) = x^3 -4x^2 + \frac{9}{2}x -\frac{5}{4}$ which is also a curve of discriminant 37 defined over the rationals with the required field $K_E$.
+But the minimal integral model for this curve is $y^2 = x^3 - x^2 - 13x + 5$ which has discriminant $2^12\cdot 37$ rather than 37 itself.
 \end{ex}
 
 In this example we knew one curve we were searching for at the start, but in the next one we perform a more open-ended search.
@@ -1323,12 +1324,14 @@ Using the methods obtained above again we get the following orders
 \ZZ + \ZZ4\alpha + \ZZ2\alpha^2,\ \ZZ + \ZZ2\alpha + \ZZ4\alpha^2\text{ and } \ZZ + \ZZ(2\alpha + 2\alpha^2) + \ZZ4\alpha^2.
 \]
 
-Of these only the second has an obvious ring generator, so we work with this getting $R(x) = x^3 -\frac{1}{2}x^2 + \frac{1}{4}x + \frac{1}{8}$ and the curve $E\colon y^2 = R(x)$ does have the right discriminant, however as $4R(x)$ does not have integer coefficients there is no way that this curve could have been obtained from an integral model via the above process.
+Of these only the second has an obvious ring generator, so we work with this getting $R(x) = x^3 -\frac{1}{2}x^2 + \frac{1}{4}x + \frac{1}{8}$ and the curve $E\colon y^2 = R(x)$ does have the right discriminant, however the minimal integral model does not.
 
-So we obtain the following ?? curves with the required properties
+For discriminant $-11^3$ we get a similar result, some curves but the discriminants of their minimal models are wrong.
+However when we try $-11^5$ we obtain a curve whose minimal integral model is
 \[
-.
+E\colon y^2 + y = x^3 - x^2 - 10*x - 20
 \]
+which has discriminant $-11^5$, as required.
 \end{ex}
 
 \chapter{Conclusion}
