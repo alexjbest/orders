@@ -2,7 +2,7 @@ load "orderofindex.m";
 
 R<x> := PolynomialRing(RationalField());
 
-//K := NumberField(x^5+ 18*x^2 +  5*x+ 178);
+//K := NumberField(x^3+ 18*x^2 +  5*x+ 178);
 K1 := NumberField(x^2- 5);
 K2 := NumberField(x^2- 7);
 K := Compositum(K1,K2);
@@ -12,17 +12,21 @@ Zk := Integers(K);
 
 procedure test()
     repeat
-        randElt := [K!Random(Zk,5) : i in [1..1]];
+        randElt := [K!Random(Zk,3) : i in [1..3]];
         O := Order(randElt);
         I := Index(Zk,O);
     until I ne 1;
-
-    "Discriminant:", Factorisation(Discriminant(K));
-    "Index:", I;
-
+    
     result := orderOfIndex(K,I);
-    for o in result do
-        #(Factorisation(idealOfO(Zk,Conductor(o))));
-    end for;
+
+    if #(result) eq 0 then
+        ">>>>>BUUUG";
+        "Order:", O;
+        "Conductor", Conductor(O);
+        "Index:", I;
+    end if;
 end procedure;
-test();
+
+for i := 0 to 50 do
+    test();
+end for;

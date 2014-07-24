@@ -124,14 +124,15 @@ def cocyclic_orders_of_index(O,I):
         q = ZK.free_module().quotient(f.free_module())
         if q.ngens() == 2:
             if q.gens()[0].order() == I: # ????
-                orders.append(cocyclic_order_with_conductor(f))
+                O = cocyclic_order_with_conductor(f)
+                if not O in orders:
+                    orders.append(cocyclic_order_with_conductor(f))
         #print f
         #print f.basis()
     return orders
 
 def cocyclic_order_with_conductor(f):
     K = f.number_field()
-    Zk = K.maximal_order()
     O = K.order(f.basis()) # Use ring_generators here?!
     if conductor(O) == f:
         return O
@@ -140,12 +141,11 @@ def cocyclic_order_with_conductor(f):
 
 def expressions_as_product(n,k):
     if k == 1:
-        return [[n]]
-    exps = []
-    for d in divisors(n):
-        for se in expressions_as_product(n/d,k-1):
-            exps.append(se + [d])
-    return exps
+        yield [n]
+    else:
+        for d in divisors(n):
+            for se in expressions_as_product(n/d,k-1):
+                yield se + [d]
 
 def hnf_matrices_with_det(I,n):
     matrices = []
@@ -186,3 +186,13 @@ def orders_of_index_via_hnf(O,I):
         except:
             pass
     return orders
+
+def orders_of_index_iterative(O,I):
+    if I == 1:
+        return [O]
+    r = I.radical()
+    ords_r = cocyclic_orders_of_index(O,r)
+    ords = []
+    for R in ords_r:
+        ords += orders_of_index_iterative(R,Integer(I/r))
+    return ords
