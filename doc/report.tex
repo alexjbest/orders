@@ -1,19 +1,8 @@
-% TODO list:
-% - Include thanks? anyone else?
-% - How will code be included, snippets or on disk??
-% - Proofs/detailed arguments for correctness of algos.
-% - Add input output to algos
-% - Include project managementy bits
-% - Practical considerations, lines of code, sage vs magma python etc.
-% - Include more about ZZ bases
-
 % Structure:
 % - Introduction
 % - Background
 % - Problem
-% -  History??
 % -- Quadratics
-% -- Cubics?
 % -- Cocyclics
 % -- Monogenics
 % -- General absolute
@@ -23,7 +12,7 @@
 
 \documentclass[12pt,a4paper,abstracton,bibtotoc]{scrreprt}
 
-\author{Alex J. Best \\ Supervised by Dr. Lassina Demb\'el\'e}
+\author{Alex J. Best \\ {\large Supervised by Dr. Lassina Demb\'el\'e}}
 \date{2014}
 \title{Finding orders with prescribed index in number fields}
 
@@ -74,6 +63,7 @@ breakatwhitespace=false,    % sets if automatic breaks should only happen at whi
 \DeclareMathOperator{\Ann}{Ann}
 \DeclareMathOperator{\End}{End}
 \DeclareMathOperator{\Mat}{Mat}
+\DeclareMathOperator{\disc}{disc}
 \DeclareMathOperator{\ord}{ord}
 \DeclareMathOperator{\im}{im}
 \DeclareMathOperator{\id}{id}
@@ -83,11 +73,10 @@ breakatwhitespace=false,    % sets if automatic breaks should only happen at whi
 \newpage\null\thispagestyle{empty}\newpage
 
 \begin{abstract}
-%TODO insert very small backstory, orders are objects in ant here ..
 Orders of number fields are common objects of study in algebraic number theory.
 Here we develop methods to obtain all orders with a specified index inside another given one.
-The performance, both theoretically and in implementations of these methods is discussed.
-We also apply these techniques to problems relating to elliptic curves over the rational numbers.
+The performance and coverage of these methods is discussed.
+We also apply these techniques to a problem relating to elliptic curves over the rational numbers.
 
 \smallskip
 \noindent \textbf{Keywords.} Number theory, algebraic number theory, elliptic curves, number fields, algorithms.
@@ -112,9 +101,9 @@ We finish up the background material in section~\ref{sec:ell} with an introducti
 Chapter~\ref{chap:prob} is where we consider our main problem and solutions to it.
 First we define the problems themselves and discuss the interest in studying them.
 After this in the rest of chapter~\ref{chap:prob} we detail the techniques used to solve the problems considered, starting with some special cases before moving onto more general results.
-Next we discuss the advantages of the algorithms developed and their practical timings.
+Next we discuss the advantages of the algorithms developed and ideas worth bearing in mind when implementing these algorithms.
 
-Finally in chapter~\ref{chap:ellapp} we move on to some interesting applications of these methods to finding elliptic curves with given properties.
+Finally in chapter~\ref{chap:ellapp} we move on to looking at an interesting application of these methods to finding elliptic curves with given properties.
 
 
 \chapter{Background material}
@@ -201,12 +190,19 @@ M_1 + M_2 = \{m_1 + m_2 \mid m_1\in M_1,\ m_2\in M_2\}.
 \]
 For example with this elementwise addition we have $M + M = M$ for any module $M$, whereas $M\oplus M$ is not isomorphic to $M$ unless $M$ is the trivial module (i.e. the module containing only a zero element and no others).
 
-The well known isomorphism theorems also hold for modules, we require only two.
+The well known isomorphism theorems also hold for modules, we will need all three.
 
 \begin{thm}[First isomorphism theorem for modules]
 Given a surjective module homomorphism $f\colon M \to N$ the kernel of $f$ is a submodule of $M$ and
 \[
 M/\ker(f) \cong N.
+\]
+\end{thm}
+
+\begin{thm}[Second isomorphism theorem for modules]
+Given a module $M$ with submodules $N_1$ and $N_2$ the sum $N_1 + N_2$ is a submodule of $M$ too, such that $N_1 \cap N_2$ is a submodule of $N_1$ and we have the isomorphism
+\[
+(N_1 + N_2)/N_2 \cong N_1/(N_1 \cap N_2).
 \]
 \end{thm}
 
@@ -221,10 +217,10 @@ An easy consequence of this relating the indices of submodules is worth noting.
 
 \begin{cor}
 \label{cor:indexmult}
-Given a chain of submodules $M_1 \subseteq M_2 \subseteq M_3$ where $[M_3:M_2]$ and $[M_2:M_1]$ are finite we have
+Given a chain of submodules $M_1 \subseteq M_2 \subseteq M_3$ with finite indices inside each other we have
 \[
 [M_3:M_1] = [M_3:M_2][M_2:M_1].
-\] %TODO can we just require 2 finite
+\]
 \end{cor}
 
 \minisec{}
@@ -247,12 +243,12 @@ As implied by the name this is always submodule of $M$.
 
 A module $M$ is called a torsion module if $M_\text{tors} = M$, and torsion-free if $M_\text{tors} = 0$.
 
-% TODO generalise to module over PID
-
 \begin{defn}[Rank of a $\ZZ$-module]
 Given a $\ZZ$-module $M$ we can always write $M = M_\text{tors} \oplus \ZZ^r$ for some unique $r\in \ZZ_{\ge 0}$.
 This $r$ is called the \emph{rank} of the $\ZZ$-module.
 \end{defn}
+
+This notion generalises in a natural way to modules over other principal ideal domains.
 
 \begin{ex}
 \[M = \ZZ^2 = \{(a,b)\mid a,b\in \ZZ\}\]
@@ -283,6 +279,12 @@ A short exact sequence $0 \to M_1 \xrightarrow{q} M_2 \xrightarrow{r} M_3 \to 0$
 \end{enumerate}
 \end{defn}
 
+We have one more notion to define.
+
+\begin{defn}[$R$-algebra]
+A ring $S$ with a ring homomorphism $f$ from another ring $R$ to $S$ is called an \emph{$R$-algebra}.
+The homomorphism gives $S$ the structure of an $R$-module by letting $r\cdot s = f(r)s$.
+\end{defn}
 
 \section{Algebraic number theory}
 \label{sec:ant}
@@ -386,9 +388,9 @@ y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6\text{ with }a_i\in K.
 \]
 To such a curve we assign several $b$ invariants based on the coefficients in the definition as follows
 \begin{align*}
-b_2 &= a_1^2 + 4a_2\\
-b_4 &= 2a_4 + a_1a_3\\
-b_6 &= a_3^2 + 4a_6\\
+b_2 &= a_1^2 + 4a_2,\\
+b_4 &= 2a_4 + a_1a_3,\\
+b_6 &= a_3^2 + 4a_6,\\
 b_8 &= a_1^2a_6 + 4a_2a_6 - a_1a_3a_4 + a_2a_3^2 -a_4^2.
 \end{align*}
 We then also require that the \emph{discriminant} $\Delta$ of $E$, given by
@@ -449,7 +451,7 @@ If we have two elliptic curves $E$ and $E'$ such that there exists homomorphisms
 A homomorphism $f$ with an inverse $g$ as in the definition above is called an \emph{isomorphism}.
 \end{defn}
 
-We can also consider homomorphisms from a given elliptic cuve to itself, these are known as \emph{endomorphisms} and they form a ring.
+We can also consider homomorphisms from a given elliptic curve to itself, these are known as \emph{endomorphisms} and they form a ring.
 
 \begin{defn}[Endomorphism ring]
 The \emph{endomorphism ring} of an elliptic curve is the set
@@ -483,8 +485,8 @@ For some $n\in\ZZ$ the set of \emph{$n$-division points} (or \emph{$n$-torsion p
 \[
 E(K)[n] = \{P\in E(K) \mid nP = 0\}.
 \]
+The notation $E[n]$ then refers to $E(\overline{K})[n]$.
 \end{defn}
-%Although $E(\QQ)_\text{tors}$ cannot be large by theorem~\ref{thm:tors} it is still useful to consider the $n$-division points of a curve over the rationals and we will use this group later.
 
 \minisec{}
 We are now ready to state in precise terms the problem we aimed to solve and to detail the methods used in its solution.
@@ -498,32 +500,36 @@ The aim of the project was to find a general method to solve the following probl
 \begin{prob}
 Given an order $R$ of an absolute number field $K$ and an integer $I$ find the set
 \[
-\left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R:\O] = I\right\}.
+\Orders(R,I) = \left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R:\O] = I\right\}.
 \]
 \end{prob}
 
-To find a suborder we really mean to compute a $\ZZ$ basis for the order in terms of the basis of the larger order.
+To find a suborder we really mean to compute a $\ZZ$ basis for the suborder in terms of the basis of the larger order.
 Such a basis defines an order completely.
-With $R$ and $I$ as in the proposition we introduce the following notation to refer to the set we are looking for.
-
-\[
-\Orders(R,I) = \left\{ \O\subseteq R \mid \O\text{ is a suborder},\ [R:\O] = I\right\}.
-\]
 
 \minisec{}
 One very natural extension of the above problem is to consider relative extensions of number fields.
 More precisely we can generalise the above problem to the following one.
 
-\begin{prob} % TODO check this is really what I mean
+\begin{prob}
 \label{prob:rel}
-Given an extension of number fields $L|K$, a $\ZZ_K$-order $R$ of $\ZZ_L$ and an integer $I$ find the set
+Given an extension of number fields $L|K$, a $\ZZ_K$-order $R$ of $L$ and an integer $I$ find the set
 \[
 \left\{ \O\subseteq R \mid \O\text{ is a $\ZZ_K$-suborder},\ [R:\O] = I\right\}.
 \]
 \end{prob}
+Much of what follows should be extendible to relative orders fairly easily, however we do not consider this problem any further.
+
+\minisec{}
+We have defined our problem in terms of a general starting order and attempt to work with this hypothesis throughout.
+However it is worth noting that as any order of a number field $K$ is contained in the maximal order $\ZZ_K$ we have that
+\[
+\Orders(R,I) = \Orders(\ZZ_K, I[\ZZ_K : R]) \cap \{\O\mid \O \text{ is a suborder of } R\}.
+\]
+So we can always reduce to the case where our base order is $\ZZ_K$ and filter out resulting orders not contained in $R$.
+We try to avoid this algorithmically undesirable solution wherever possible though.
 
 We now detail some methods to solve the problem in the absolute setting in varying generality.
-Much of what follows should be extendible to relative orders fairly easily, however we do not consider this problem any further.
 
 \section{Quadratic number fields}
 
@@ -579,10 +585,8 @@ A general solution to our problem is of course not particularly useful here as t
 However it is maybe conceivable that our methods could find application in generalisations of the theory of complex multiplication (to higher dimensional abelian varieties).
 This is not a direction we have pursued but it might be worthwhile to do so.
 
-%TODO cubic????
-
 \section{Monogenic orders}
-
+\label{sec:monogenic}
 We now look at a special class of orders that have been studied extensively by other authors, though the focus of their methods has been slightly different to ours.
 
 \begin{defn}[Monogenic order]
@@ -598,16 +602,117 @@ and so $\{1,\alpha,\ldots,\alpha^{n-1}\}$ is a basis for $\ZZ[\alpha]$ as a $\ZZ
 With this basis computing products of elements with a computer (and by hand) is simpler to do than in general making them natural bases to work with.
 A basis of this form is known as a \emph{power basis}.
 
+\minisec{}
 Several authors have studied the problem of finding monogenic orders, mostly with a view to showing that the ring of integers is monogenic and finding elements $\alpha$ such that $\ZZ_K = \ZZ[\alpha]$ in this case.
 This is essentially the problem of finding monogenic orders of index 1 in $\ZZ_K$.
-The most complete account of the methods known for performing such computations is Istv\'an Ga\'al's book \cite{gaal}.
+An up-to-date account of the methods known for performing such computations is given in Istv\'an Ga\'al's book \cite{gaal}.
+Here we attempt to convey the approach these methods take without going into detail concerning the exact methods of solution.
 
-Given an order $R$ of a number field $K$ of degree $n$ such that
+Given an order $\O$ of a number field $K$ of degree $n$ such that
 \[
-R = \ZZ + \ZZ\omega_2 + \cdots + \ZZ\omega_n.
+\O = \ZZ + \ZZ\omega_2 + \cdots + \ZZ\omega_n.
 \]
-We can calculate the index of the order $\ZZ[\alpha]$ where $\alpha = x_1 + x_2\omega_2 + \cdots x_n\omega_n\in R$ as follows.
-First we let
+We can calculate the index of the order $\ZZ[\alpha]$ where $\alpha = x_1 + x_2\omega_2 + \cdots x_n\omega_n\in \O$ as follows.
+
+First we recall \cite[pp. 11--15]{neukirch} that the discriminant of an order $\O$ in a number field $K$ is given by
+\[
+d(\O) = \det(\sigma_i(\alpha_j))^2
+\]
+where the $\sigma_i$ are the embeddings of $K$ into $\CC$ and the $\alpha_j$ are a $\ZZ$-basis for $\O$.
+Now given two orders $\O \subset \O'$ it is the case that
+\[
+d(\O) = [\O':\O]^2 d(\O')
+\]
+And so the index is given by
+\begin{equation}
+[\O':\O] = \sqrt{\frac{d(\O)}{d(\O')}}.
+\label{eq:indexsq}
+\end{equation}
+In the special case where $\O = \ZZ[\alpha]$ a $\ZZ$-basis for $\O$ is $1,\alpha,\ldots,\alpha^{n-1}$ and we have that
+\begin{align*}
+d(\O) &= \det\begin{pmatrix}
+1 & \alpha & \cdots & \alpha^{n-1}\\
+1 & \sigma_1(\alpha) & \cdots & \sigma_1(\alpha)^{n-1}\\
+\vdots & \vdots & \ddots & \vdots\\
+1 & \sigma_{n-1}(\alpha) & \cdots & \sigma_{n-1}(\alpha)^{n-1}
+\end{pmatrix}^2\\
+&=\prod_{1\le i<j\le n} (\sigma_i(\alpha) - \sigma_j(\alpha))^2
+\end{align*}
+
+Now if we take $\alpha$ to be given by $\alpha = x_1 + x_2\omega_2 + \cdots x_n\omega_n$ we have that in fact
+\[
+\prod_{1\le i<j\le n} (\sigma_i(\alpha) - \sigma_j(\alpha))^2 = \prod_{1\le i<j\le n} (\sigma_i(x_2\omega_2 + \cdots + x_n\omega_n) - \sigma_j(x_2\omega_2 + \cdots + x_n\omega_n))^2
+\]
+as the term $x_1$ will be fixed under all embeddings $\sigma_i$.
+To simplify things a little we let $\beta = x_2\omega_2 + \cdots + x_n\omega_n$.
+
+We can introduce polynomials $f_{i,j}(x_2,\ldots,x_n)$ for $1\le i,j\le n$ such that
+\[
+\beta^{i-1} = f_{1,i}(x_2,\ldots,x_n) + f_{2,i}(x_2,\ldots,x_n)\omega_2 + \cdots + f_{n,i}(x_2,\ldots,x_n)\omega_n
+\]
+and then we have
+\begin{align*}
+d(\O) =& \prod_{1\le i<j\le n} (\sigma_i(\beta) - \sigma_j(\beta))^2\\
+=&\det\begin{pmatrix}
+1 & \beta & \cdots & \beta^{n-1}\\
+1 & \sigma_1(\beta) & \cdots & \sigma_1(\beta)^{n-1}\\
+\vdots & \vdots & \ddots & \vdots\\
+1 & \sigma_{n-1}(\beta) & \cdots & \sigma_{n-1}(\beta)^{n-1}
+\end{pmatrix}^2\\
+=&\det\begin{pmatrix}
+1 & \omega & \cdots & \omega^{n-1}\\
+1 & \sigma_1(\omega) & \cdots & \sigma_1(\omega)^{n-1}\\
+\vdots & \vdots & \ddots & \vdots\\
+1 & \sigma_{n-1}(\omega) & \cdots & \sigma_{n-1}(\omega)^{n-1}
+\end{pmatrix}^2 \cdot\\
+&\det\begin{pmatrix}
+f_{1,1}(x_2,\ldots,x_n) & \cdots & f_{1,n}(x_2,\ldots,x_n)\\
+f_{2,1}(x_2,\ldots,x_n)& \cdots & f_{2,n}(x_2,\ldots,x_n)\\
+\vdots & \ddots & \vdots\\
+f_{n,1}(x_2,\ldots,x_n) & \cdots & f_{n,n}(x_2,\ldots,x_n)
+\end{pmatrix}^2\\
+=& d(\O') I(x_2,\ldots,x_n)^2.
+\end{align*}
+Where $I(x_2,\ldots,x_n)$ is the determinant of the last matrix above, this is a homogeneous polynomial of degree $n(n-1)/2$, known as the \emph{index form}.
+
+Substituting this into \ref{eq:indexsq} gives that
+\[
+[\O':\O] = |I(x_2,\ldots,x_n)|
+\]
+and so solving this equation $I(x_2,\ldots,x_n)$ for plus and minus the index we would like to find will give us generators for monogenic orders of the required index.
+
+\begin{ex}
+Let $K = \QQ(\alpha) = \QQ[x]/(x^3 + x - 1)$ and $\O' = \ZZ + \ZZ2\alpha + \ZZ4\alpha^2$, so in this case $\beta = 2x_2\alpha + 4x_3\alpha^2$.
+And we find the $f_{i,j}$ as follows
+\begin{align*}
+\beta^0 &= 1 + 0\omega_2 + 0\omega_3,\\
+\beta^1 &=  + x_2\omega_2 + x_3\omega_3,\\
+\beta^2 &= (2x_2\alpha + 4x_3\alpha^2)^2 = 4x_2^2\alpha^2 + 16x_2x_3\alpha^3 + 16x_3^2\alpha^4 \\
+&= 16x_2x_3 + 8x_3(x_3-x_2)\omega_2 + (x_2^2 - 4x_3^2)\omega_3.
+\end{align*}
+So the index form is given by
+\[
+I(x_2,\ldots,x_n) = \det\begin{pmatrix}
+1 & 0   &  16x_2x_3\\
+0 & x_2 & 8x_3(x_3-x_2)\\
+0 & x_3 & x_2^2 -4x_3^2
+\end{pmatrix}
+= x_2^3 + 4x_2x_3^2 - 8x_3^3.
+\]
+
+To find monogenic orders $\O$ of index $n$ in $\O'$ we can now solve 
+\[x_2^3 + 4x_2x_3^2 - 8x_3^3 = \pm n\]
+to find the $\beta$ generating the order.
+So for example if wish to find orders of index 3 could observe that $x_2 = x_3 = 1$ is a solution to $x_2^3 + 4x_2x_3^2 - 8x_3^3 = -3$ and therefore
+\[
+\ZZ[\beta] = \ZZ[1\cdot\omega_2 + 1\cdot \omega_3] = \ZZ[2\alpha + 4\alpha^2]
+\]
+is a suborder of index 3 in $\O'$.
+\end{ex}
+
+Both Ga\'al's book and many papers both by him and other authors give methods to solve Diophantine equations appearing in the above setting.
+As the degree of the field increases so does the number of variables in the index form and the degree of the form so it becomes difficult to solve such equations for even moderate degree.
+Nevertheless using this method we can certainly hope to find some orders quickly if the index form ends up being easy to solve.
 
 Unfortunately not all orders are monogenic and even rings of integers need not be in general.
 Dedekind was the first to give an example of a ring of integers that is not monogenic.
@@ -616,19 +721,20 @@ His example lies inside a cubic field and it is easy to see that in the quadrati
 \begin{ex}[Dedekind, 1878]
 Let 
 \[
-K = \QQ(\alpha) = \QQ[x]/(x^3 -x^2 -2x-8)
+K = \QQ(\alpha) = \QQ[x]/(x^3 +x^2 -2x-8)
 \]
 then
 \[
 \ZZ_K=\ZZ\left[ \alpha,\frac{\alpha + \alpha^2}{2}\right]
 \]
-and there is no $\beta\in \ZZ_K$ such that $\ZZ_K=\ZZ[\beta]$. %TODO check
+and there is no $\beta\in \ZZ_K$ such that $\ZZ_K=\ZZ[\beta]$.
 \end{ex}
 
-%TODO give examples of non-monogenic orders, orders with n-1 ring gens for any n??
+In fact Pleasants has shown that the number of generators as a ring of $\ZZ_K$ can be arbitrarily large as the degree of $K$ increases \cite{pleasants}.
+So even developing improved variants of this method for finding, say, orders generated by two elements would not allow us to obtain all orders.
+Hence while we can certainly find some orders with this method we cannot hope to find all of them in general using these techniques.
 
-%TODO explain that in some ways idea was to generalise this to arbitrary orders
-While our techniques differ from the ones developed for monogenic orders we originally were inspired to consider this problem after using an implementation of some of these techniques in the Magma computational algebra system \cite{magma}.
+While the strategies developed below differ from the ones that have been found for monogenic orders we were originally inspired to consider this problem after using an implementation of these techniques in the Magma computational algebra system \cite{magma}.
 
 
 \section{Cocyclic orders}
@@ -670,9 +776,9 @@ We include the proof here as it is quite instructive.
 Let $Z$ be a commutative ring, $A$ a commutative $Z$-algebra and fix some ideal $J$ of $Z$.
 If we let
 \begin{align*}
-W &= \{R \text{ an order of } K\mid \ZZ_K/R \cong Z/J\}
+W &= \{R \text{ a sub-}Z\text{-algebra of } A\mid A/R \cong Z/J\}
 \intertext{and}
-V &= \{ I \text{ an ideal of }\ZZ_K \mid A/I \cong (Z/J)^2 \}.
+V &= \{ I \text{ an ideal of } A \mid A/I \cong (Z/J)^2 \}.
 \end{align*}
 then there is a bijection between $V$ and $W$ given by
 \begin{align*}
@@ -684,7 +790,7 @@ I&\mapsto \ZZ + I.
 \end{align*}
 \end{thm}
 
-\begin{proof}\cite[Thm. 4.1, pp. 35]{brakenhoff} %TODO 
+\begin{proof}\cite[Thm. 4.1, pp. 35]{brakenhoff}
 We first show the maps are well defined.
 $f(R) = \Ann_{A}(A/R)$ which is an ideal of $A$.
 As $Z/J$ is generated by $1$ as a $Z$-module $Z/J\cong \End_Z (Z/J) \cong \End_Z(A/R)$ and so
@@ -692,7 +798,7 @@ As $Z/J$ is generated by $1$ as a $Z$-module $Z/J\cong \End_Z (Z/J) \cong \End_Z
 \phi \colon R &\to \End_Z(A/R) \\
 r&\mapsto (a\mapsto ra)
 \end{align*}
-is a surjective map. %TODO ??
+is a surjective map.
 We therefore have the short exact sequence of $Z$-modules
 \[
 0\to f(R) \to R \to \End_Z(A/R) \to 0
@@ -709,14 +815,35 @@ A/f(R) \cong R/f(R) \oplus Z/J \cong (Z/J)^2.
 \]
 So the map $f$ is indeed a map from $W$ to $V$.
 
-Now for $g$ we note that 
+Now for $g$ we note that $Z + I$ is a $Z$-algebra as it is a ring invariant under multiplication by elements of $Z$.
+We have that $A/I$ is a quadratic $Z/J$ algebra and so by lemma 4.2 of \cite{brakenhoff} there is a basis of $A/I$ over $Z/J$ that contains 1, say $\{1,a\}$.
+Now letting $\phi\colon A \to A/I$ be the canonical homomorphism we get the isomorphisms
+\[
+A/(Z + I) \cong (A/I)/\phi(Z) \cong (1\cdot Z/J\oplus a\cdot Z/J)/(1\cdot Z/J) \cong a\cdot A/J \cong Z/J
+\]
+so $g$ is correct.
 
+Now let $I$ be an ideal of $A$ with $A/I \cong (Z/J)^2$, we want that $Z\cap I = J$.
+As $J = \Ann_Z(A/I)$ we have that $J\subset Z\cap I$.
+To see the reverse inclusion note that if $x\in Z\cap I$ then $xA\subset I$ and so $x\in \Ann_Z(A/I) = J$.
+Hence $Z\cap I = J$.
+
+To complete the proof we show that $f$ and $g$ are inverse maps.
+From earlier $A/(Z+ I)$ is isomorphic to $Z/J$, and then the above gives that we have a $Z$-linear isomorphisms
+\[
+A/(Z+I) \cong Z/J \cong Z/(Z\cap I) \cong (Z+I)/I.
+\]
+As $I$ acts in a trivial way on $A/(Z+I)$ and $(Z+I)/I$ the isomorphism above is $Z+ I$-linear.
+So for an ideal $I\in V$ we know $fg(I) = \Ann_{Z + I}(A/(Z+I)) = \Ann_{Z+I}((Z+I)/I) = I$.
+
+For the function $gf$ we have that for any $R\in W$ that $gf(R) = Z + f(R) \subset R$.
+As $Z$ is mapped by $\phi$ on to $R/f(R)$ surjectively we have that $R$ and $gf(R)$ are equal.
 \end{proof}
 
-The image of $f$ above is still well defined for non-cocyclic orders and this ideal is known as the \emph{conductor} of $\O$ in $R$. %TODO just defined for maximal?
+The image of $f$ above is still well defined for non-cocyclic orders and this ideal is known as the \emph{conductor} of $\O$ in $R$.
 Earlier we called the order $\ZZ + f\ZZ_K$ of a quadratic number field the order of conductor $f$, note that with our new terminology the conductor of $\ZZ + f\ZZ_K$ in $\ZZ_K$ is the ideal $(f)$.
 
-An equivalent definition for the conductor of an order $R$ in another $S$ is that it is the largest ideal of $S$ that is contained in $R$. %TODO check
+An equivalent definition for the conductor of an order $R$ in another $S$ is that it is the largest ideal of $S$ that is contained in $R$.
 Though it is not actually required for an algorithmic resolution of our problem (we go the other way, via $g$, in our approach) being able to find the conductor of an order is useful for experimentation.
 An algorithm for computing the conductor is given in \cite{klunerspauli}.
 
@@ -748,7 +875,7 @@ This gives the following algorithm to find cocyclic suborders with index $I$ in 
 Input: A natural number $I$ and an order $R$.\\
 Output: All cocyclic suborders of $R$ of index $I$ in $R$.\\
 \begin{algorithm}[H]
-\For{For all ideals $J$ of $R$ of index $I^2$}{
+\For{all ideals $J$ of $R$ of index $I^2$}{
 Let $M = \ZZ + I$.\\
 \If{$M$ is of index $I$}
 {
@@ -769,11 +896,11 @@ Input: Integer $I$.\\
 Output: All ideals in $\ZZ_K$ of norm $I$.\\
 \begin{algorithm}[H]
 Let $L$ be a list containing $\ZZ_K$.\\
-\For{All primes $p$ dividing $I$}
+\For{all primes $p$ dividing $I$}
 {
-Factor the ideal $p\ZZ_K$ into prime ideals $\p_i$, store them by norm, also add the $p$-adic order of the norm of each $\p_i$ to a set $S$.\\
+Factor the ideal $p\ZZ_K$ into prime ideals $\p_i$, store them by norm, also add the $p$-adic order of the norm of each $\p_i$ (its residual degree) to a set $S$.\\
 Let $L'$ be an empty list.\\
-\For{All expressions $\ord_p(I) = s_1 + s_2 + \cdots + s_k$ where all $s_i\in S$.}
+\For{all expressions $\ord_p(I) = s_1 + s_2 + \cdots + s_k$ where all $s_i\in S$.}
 {
 Add all products of prime ideals $\q_1\q_2\cdots \q_k$ where $\ord_p(N(\q_i)) = s_i$ to the list $L'$.
 }
@@ -784,9 +911,9 @@ Output $L$.
 \end{alg}
 
 Ideal factorisation is not as nice in non-maximal orders and so finding ideals with a specified norm is more difficult there.
-However there is another approach to this problem which gener
+We do not delve further into this interesting problem here.
 
-However this is not a full solution of our problem as not all orders of number fields are cocyclic.
+This method does not provide a full solution of our problem as not all orders of number fields are cocyclic.
 
 \begin{ex}
 \label{ex:noncocyc}
@@ -823,23 +950,26 @@ So we want to find suborders with some squarefree index we can just search for c
 \section{General orders in absolute number fields}
 
 We originally hoped that the correspondence between suborders and their conductors that exists in the quadratic case (theorem~\ref{thm:coresp}) could be generalised to higher degree number fields.
-However the direct generalisations of this result fail to hold even in degree 3 number fields.
-We now give examples of some results that would be good for our purposes if true and explicit counter examples for each of them.
-% TODO list some generalisations here
+However the at least the most direct extensions of this result fail to hold even in degree 3 number fields.
 
 As noted above in proposition~\ref{prop:sqfree} if the index we are looking for is squarefree we know all orders of that index are cocyclic and we can use the conductor method described above.
 Of course there do exist non-squarefree numbers and so we now give some positive results leading to methods that can be used to find general orders in number fields.
 
-%TODO orders represented by matrices
+As mentioned above to compute a suborder we mean to find a representation of the $\ZZ$-basis of the suborder in terms of the basis of the larger order.
+We can represent this as a change of basis matrix with integer entries, as all orders are of the same rank it will be square of size the degree of the number field worked in.
+
 Given a change of basis matrix $A$ from an order $R$ to an order $S$ we can see that as abelian groups $R \cong \ZZ^d$ for some $d$ and so $R/S$ is isomorphic to $\ZZ^d/A\ZZ^d$.
 In fact the size of this group is the absolute value of the determinant of $A$.
+So the change of basis matrix representing a suborder of index $I$ will have determinant $\pm I$.
+This suggests a method to find orders, can we simply find their change of basis matrices.
+Of course there are infinitely many matrices of integers with any given determinant and only finitely many orders of a given index so we need some theory that will help to reduce the possibilities before this can be even remotely feasible.
 
 \subsection{The Hermite normal form}
 The Hermite normal form of a matrix is a unique matrix that a given matrix of integers can be brought into by unimodular row operations.
-Using this form will allow us to find additive subgroups of orders which will provide one approach to finding all suborders.
+Using this form will allow us to find all additive subgroups of orders which will provide one approach to finding all suborders.
 There are varying definitions of the Hermite normal form (HNF) the one we use here is fairly common and is used in the Sage mathematical software system \cite{sage}, though others exist such as the one given in \cite{cohen93}, they mostly differ by operations such as transposition and reordering of rows.
 
-\begin{defn}[Hermite normal form] %TODO check this
+\begin{defn}[Hermite normal form]
 A matrix $H\in\Mat_{m\times n}(\ZZ)$ is said to be in \emph{Hermite normal form} if there is a strictly increasing function $f\colon \{1, \ldots, m\} \to \{1,\ldots , n\}$ such that
 \begin{enumerate}[i)]
 \item if $n' < f(m)$ then $H_{m,n'} = 0$,
@@ -847,12 +977,14 @@ A matrix $H\in\Mat_{m\times n}(\ZZ)$ is said to be in \emph{Hermite normal form}
 \item and if $m' < m$ then $0\le H_{m',f(m)} < H_{m,f(m)}$.
 \end{enumerate}
 
-Given a matrix $A$, the unique matrix in Hermite normal form that can be obtained from $A$ by unimodular row and column operations is called \emph{the} Hermite normal form of $A$.
+Given a matrix $A$, the unique matrix in Hermite normal form that can be obtained from $A$ by unimodular row operations is called \emph{the} Hermite normal form of $A$.
 \end{defn}
 
 Fast algorithms for computing Hermite normal forms is an interesting and useful area of study, for a practical discussion of some of the most effective ways of doing this see Pernet and Stein \cite{pernetstein}.
 Cohen also gives several algorithms for finding the Hermite normal form in \cite{cohen93}, these are more classical methods that are conceptually simpler.
-Many basic operations such as checking equality of orders can be performed quickly using Hermite normal forms \cite{cohen93}.  %TODO more detail, this is important.
+Many basic operations such as checking equality of orders can be performed quickly using Hermite normal forms \cite{cohen93}.
+Two orders are equal if the Hermite normal forms of their change of basis matrices with respect to a fixed basis are equal.
+Checking equality of orders allows us to check other properties such as containment too.
 
 One possible method of finding orders with a prescribed index is therefore to attempt to generate their HNF matrices.
 These will be all those matrices with absolute value of the determinant equal to the index searched for that define suborders rather than simply submodules.
@@ -865,8 +997,8 @@ For a square ($n\times n$) matrix of full rank the conditions for a matrix to be
 \begin{enumerate}[i)]
 \item if $i < j$ then $H_{i,j} = 0$,
 \item if $i = j$ then $H_{i,j} > 0$,
-\item and if $j < i$ then $0\le H_{i,j} < H_{i,i}$.
-\end{enumerate}%TODO check
+\item and if $i < j$ then $0\le H_{i,j} < H_{j,j}$.
+\end{enumerate}
 So the matrix is upper triangular and all entries are positive and bounded above by the last non-zero entry of their column.
 The determinant of an upper triangular matrix is the product of the elements on the diagonal so we first look at ways of expressing our desired determinant as a product of $n$ positive integers.
 We can do this with a simple recursive algorithm as follows.
@@ -883,11 +1015,51 @@ Add each factorisation obtained to the output.
 \end{algorithm}
 \end{alg}
 
-Now given the possible diagonal entries we need to consider ways of filling in the off diagonal elements.
+Now given the possible diagonal entries of a matrix $A$ in Hermite normal form we need to consider ways of filling in the off diagonal elements.
 As mentioned above the only restriction is that we have each entry above the diagonal in column $i$ positive and strictly bounded by $A_{i,i}$ above.
-So when the diagonal entries are fixed the set of matrices in the right form can be seen 
+So when the diagonal entries are fixed the set of matrices in the right form can be seen to be in bijection with the set of integers from 0 to $N - 1$ (inclusive), where $N$ is given by
+\[
+\prod_{i = 0}^n A_{i,i}^{i-1}.
+\]
+This is as we can view the entries above the diagonal in column $i$ as the base $A_{i,i}$ representation of a number from 0 to $A_{i,i}^{i-1} - 1$.
 
 Hence in order to generate matrices that are already in Hermite normal form we use the following algorithm.
+
+\begin{alg}~\\
+Input: Integers $n$ and $D$.\\
+Output: All possible $n\times n$ Hermite normal form matrices of full rank with determinant $D$.\\
+\begin{algorithm}[H]
+\For{each factorisation $(d_1,\ldots,d_n)$ of $D$ into $n$ natural numbers}{
+Let $A$ be the matrix with diagonal entries $A_{i,i} = d_i$ for $i$ from 1 to $n$.\\
+Add $A$ to the output.\\
+\For{$k$ from 0 to $\prod_{i = 0}^n d_i^{i-1} - 1$}{
+Increment $A_{n,1}$, repeatedly carrying digits that exceed the diagonal entry down and then over to the next column when the diagonal is reached.\\
+Add $A$ to the output.
+}
+}
+\end{algorithm}
+\end{alg}
+
+Here is an example of how the carrying process works
+\[
+\begin{pmatrix}
+2& 1 &1\\
+0& 3 &2\\
+0& 0 &3
+\end{pmatrix}
+\to
+\begin{pmatrix}
+2& 1 &2\\
+0& 3 &2\\
+0& 0 &3
+\end{pmatrix}
+\to
+\begin{pmatrix}
+2& 2 &0\\
+0& 3 &0\\
+0& 0 &3
+\end{pmatrix}.
+\]
 
 \subsection{Determining if a module is a ring}
 Assuming that we are given a change of basis matrix $A$ from the basis of an order $R$ we wish to determine if the module spanned by the new basis is an order.
@@ -897,12 +1069,18 @@ We'll consider them both below.
 
 To determine if a submodule contains 1 we just have to check that we can represent it by an integer vector in out new basis.
 
-\begin{alg}\label{alg:hasone}~\\ %TODO check
+\begin{alg}\label{alg:hasone}~\\
 Input: Change of basis matrix $H$.\\
 Output: Whether or not the submodule defined by $H$ contains 1.\\
 \begin{algorithm}[H]
 Find the representation $\mathbf v$ of 1 in the old basis.\\
-Check that $H^{-1}\mathbf v$ is an integer matrix.\\
+\eIf{$H^{-1}\mathbf v$ is an integer vector}
+{
+Return yes.
+}
+{
+Return no.
+}
 \end{algorithm}
 \end{alg}
 
@@ -913,15 +1091,20 @@ The correctness of the method hinges on the fact that if the products of all pai
 
 \begin{alg}
 \label{alg:multclose}~\\
-Input: Change of basis matrix $H$.\\
-Output: Whether or not the submodule defined by $H$ is multiplicatively closed.\\
+Input: A submodule $M$ given by a change of basis matrix $B$.\\
+Output: Whether or not $M$ is multiplicatively closed.\\
 \begin{algorithm}[H]
-Find matrix.\\
-Compute HNF.\\
-Check equality.\\
+Let $B'$ be the $n(n+1)/2\times n$ matrix whose rows are given by the representations of each of the possible products of pairs of basis elements of $M$.\\
+Compute the Hermite normal forms of $B$ and $B'$ denote them $H$ and $H'$.\\
+\eIf{$H' = H$ on the first $n$ rows}
+{
+Return yes.
+}
+{
+Return no.
+}
 \end{algorithm}
 \end{alg} 
-%TODO local property?
 
 \subsection{The HNF algorithm}
 \begin{alg}~\\
@@ -938,8 +1121,8 @@ add $M$ to the output.
 \end{algorithm}
 \end{alg}
 
-In fact using the lemma~\ref{lem:onebasis} we can improve this algorithm slightly.
-As we know that we can always include 1 in the basis of an order we can take a basis of the order we are given that contains 1.
+In fact, as we can always include 1 in the basis of an order.
+We can simplify our task slightly by taking a basis of the order we are given that contains 1.
 Then we can find change of basis matrices that fix this element, this provides a slight improvement over simply looking for all submodules.
 
 \begin{alg}~\\
@@ -969,115 +1152,225 @@ add $M$ to the output.
 \end{algorithm}
 \end{alg}
 
-%\subsection{Making use of less general methods} %TODO cut this section :( / reduce as speedup is small
-%Given the results discussed in \ref{sec:cocyc} we can improve the performance of the above algorithm as follows.
-%\begin{alg}~\\
-%\begin{algorithm}[H]
-%Find cocyclic orders of index $I$ in $\O$ using algorithm~\ref{alg:cocyc}.\\
-%\For{all HNF matrices $H$ of determinant $I$}{
-%\If{$H$ is the matrix of a cocyclic order already found}
-%{
-%Move to the next matrix.
-%}
-%Find the submodule $M$ of $\O$ corresponding to $H$.\\
-%\If{$M$ is a subring}
-%{
-%add $M$ to the output.
-%}
-%}
-%\end{algorithm}
-%\end{alg}
+This algorithm is far slower than the previous less general methods we have discussed, but of course it has the major advantage of being complete.
+We now move on to looking at a result that will allow us to use the cocylic method to speed our computations up in certain cases, whilst still finding all orders.
 
-%\section{Relative number fields}
+\subsection{Factoring the index}
+This section could well have appeared earlier as it does not rely on any previous results and could have been used to simplify the assumptions of some earlier results slightly, however it seems natural to include it here.
+
+There is a fairly intuitive observation we can use to break the problem down into more manageable subproblems in some cases.
+This result also appears in Brakenhoff's thesis \cite[pp. 49--50]{brakenhoff}, its usefulness should be fairly apparent.
+
+\begin{prop}
+Given coprime integers $m$ and $n$ and an order $\O$ there is a bijection
+\[
+\phi\colon\Orders(\O,m)\times\Orders(\O,n) \to \Orders(\O,mn),
+\]
+given by
+\[
+(R_1,R_2) \mapsto R_1 \cap R_2.
+\]
+\end{prop}
+
+\begin{proof}
+We first show $\phi$ is correct, i.e. that $R_1\cap R_2$ is an order of index $mn$ in $\O$.
+
+The intersection of two orders being again an order is clear from the definition.
+Consider the map $p\colon \O \to \O/R_1 \times \O/R_2$, given by $x\mapsto (x+R_1,x+R_2)$.
+Letting $a$ and $b$ be such that $am + bn = 1$ we can see that given $(x_1 + R_1,x_2 + R_2)\in \O/R_1 \times \O/R_2$ the element $max_1 + nbx_2$ maps to
+\[
+(amx_2 + bnx_1 + R_1, amx_2 + bnx_1 + R_2) = (bnx_1 + R_1, amx_2 + R_2) = (x_1 + R_1,x_2 + R_2).
+\]
+Hence $p$ is surjective and has kernel $R_1 \cap R_2$ so $\O/(R_1\cap R_2) \cong \O/R_1 \times \O/R_2$ and so the index of $R_1 \cap R_2$ is correct.
+
+Given a suborder $R$ of $\O$ of index $mn$ with some $mn$ coprime we can use the bijection
+\[
+\{\text{submodules of } \O \text{ containing } R\} \leftrightarrow \{\text{submodules of }\O/R\}
+\]
+to obtain submodules $R_1$ and $R_2$ of $\O$ of index $m$ and $n$ as $\O/R$ is a finite abelian group.
+The intersection of these is therefore $R$ as they both contain $R$ their intersection is of index $mn$ in $\O$, so the map is surjective.
+
+To see injectivity note that in the above argument there will only be one submodule of $\O/R$ with index $m$ or $n$ and so we can only have one pair $(R_1,R_2)$ mapping to any given $R$.
+\end{proof}
+
+So given an index $I$ we can factor into prime powers to reduce the problem to several smaller ones, before recombining the resulting orders to obtain the full set.
+One situation where this technique is especially effective is when the index is in a form such as $p_1^2p_2p_3\cdots p_k$ for distinct primes $p_i$.
+Here we cannot search only for cocyclic orders initially as we have no guarantee that all orders with this index will be cocyclic.
+However we can search for cocyclic orders of index $p_2p_3\cdots p_k$ (or even each $p_i$ individually) and non-cocyclic orders of index $p_1^2$ and intersect the resulting orders.
+
+Another conclusion we can draw from this result is that if we have some divisor $d$ of $I$ which is coprime to $I/d$ then if there is no suborder of index $d$ there can be no order of index $I$ either.
+While this is a fairly obvious observation it is worth noting when implementing these methods in practice.
 
 
 \section{Practical considerations}
 Though the methods described above are the best we have been able to obtain so far from a theoretical perspective, when it comes down to computing examples in the real world there are a number of ideas and techniques we can use to reduce the time taken.
 
 Many of the algorithms given above are presented in a manner similar to the way in which they are motivated and can in fact be implemented in a faster manner than as they are written.
-For example %TODO finish
+For example many algorithms rely on the large output of other algorithms run previously, so it can very memory intensive to keep this information on hand depending on the representation used for the data.
+So in some cases it is far better to run these methods alongside each other rather than waiting for the full output of one before running the other.
+
+We have implemented some of these methods in both the Sage and Magma computer algebra systems and used these implementations to work out real examples in reasonable time.
 
 \subsection{Parallelisation}
 Several stages of the algorithms for general orders can be naturally parallelised reducing the total time taken linearly with the number of threads used.
 For example once the set of potential conductors has been computed the orders to which they correspond can all be computed in parallel.
 Similarly the set of HNF matrices used can be computed in parallel and whether the modules they generate form rings or not can be checked simultaneously too.
+These will naturally only produce linear speed ups but nevertheless with larger examples they may be worth doing as they are simple to implement.
 
-\subsection{Timings}
-In order to get an idea for how these algorithms behave in practice we have timed the different methods on several large input sets.
-The algorithms were run on ...
-\begin{table}[H]
-\begin{tabular}{|p{14em}|l|l|l|}
-\hline
-Input & HNF algorithm & Conductor algorithm & Hybrid \\
-\hline
-Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
-Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
-Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
-Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
-\hline
-\end{tabular}
-\caption{\label{tab:timings} Timings for different algorithms for several input sets}
-\end{table}
+%\subsection{Timings}
+%In order to get an idea for how these algorithms behave in practice we have timed the different methods on several large input sets.
+%The algorithms were run on ...
+%\begin{table}[h]
+%\begin{tabular}{|p{14em}|l|l|l|}
+%\hline
+%Input & HNF algorithm & Conductor algorithm & Hybrid \\
+%\hline
+%Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
+%Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
+%Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
+%Cubic fields of small discriminant ($< 100$) & 1.0s & 1.0s & 1.0s \\
+%\hline
+%\end{tabular}
+%\caption{\label{tab:timings} Timings for different algorithms for several input sets}
+%\end{table}
 
 
 \chapter{Finding elliptic curves}
 \label{chap:ellapp}
-Through the main problem itself is an interesting one which is worth studying in its own right we were also motivated to look at it by the potential applications to other questions within different areas of mathematics.
-% TODO what you tryin to say?
+Though the main problem itself is an interesting one which is worth studying in its own right we were also motivated to look at it by the potential applications to other questions within different areas of mathematics.
 One problem relating to elliptic curves where the methods developed above can be applied is detailed below.
-We also give a few examples solved using our techniques along with results obtained from the application of our methods.
+We also give a few examples of this application we have solved using our techniques.
 
 Given an elliptic curve we can define a number field to help us study the torsion points of $E$.
 
-\begin{defn}[$n$-division field] %TODO find ref for this
+\begin{defn}[$n$-division field]
 For a natural number $n$ the \emph{$n$-division field} (or \emph{$n$-torsion field}) of $E$, denoted $\QQ(E[n])$ is obtained by taking all points $(x,y) \in E(\overline{\QQ})[n]\setminus 0$ and adjoining the collections of each of the coordinates $x$ and $y$ to $\QQ$.
-Here $\overline{\QQ}$ denotes the algebraic closure of $\QQ$, the algebraic numbers. %TODO use CC instead?
+Here $\overline{\QQ}$ denotes the algebraic closure of $\QQ$, the algebraic numbers.
 \end{defn}
 As the $n$-torsion subgroup $E(\overline{\QQ})[n]$ is always finite there are at most finitely many elements (all of which are algebraic) that need adjoining to $\QQ$.
-So the $n$-division field is always a number field. %TODO ref
+So the $n$-division field is always a number field.
+
+\minisec{}
 
 For an elliptic curve defined over the rationals in long Weierstrass form such as
 \[
-E \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6\text{ with }a_i \in \QQ,
+E \colon y^2 + a_1xy + a_3y = x^3 + a_2x^2 + a_4x + a_6\text{ with }a_i \in \ZZ,
 \]
 we can always find an isomorphic curve of the form
 \[
 E' \colon y^2 = x^3 + a_2'x^2 + a_4'x + a_6',
 \]
 such a curve is said to be in \emph{medium Weierstrass form}.
-
-\minisec{}
-Assuming that the curve $E$ has no rational 2-torsion points we must have no rational solution to $f = x^3 + a_2x^2 + a_4x + a_6$ and hence this polynomial is irreducible over $\QQ$.
-We can then see that we have
+Indeed if $E_0\colon y^2 + P(x)y  = Q(x)$ then we can see that
 \[
-\QQ(E[2]) \cong \QQ[x]/(f)
+E_0\cong E \colon y^2 = \frac{4Q(x) + P^2(x)}{4} = R(x).
 \]
-as $\QQ(E[2])$ is the splitting field of $f$ and $f$ is irreducible. %TODO checkeroo
-Letting $\alpha$ be the image of $x$ in the above quotient, we can see that $ \ZZ[\alpha]$ is an order of $\QQ(\alpha)\cong \QQ(E[2])$.
+Assuming that the curve $E$ has no rational 2-torsion points we must have no rational solution to $R(x) = x^3 + a_2x^2 + a_4x + a_6$ and hence this polynomial is irreducible over $\QQ$ as it is of degree 3.
+However this polynomial is not guaranteed to have integer coefficients so we let $f = 4^3 R(x/4)$ which will have coefficients in the integers.
+We can then see that we have $\QQ[x]/(f)$ isomorphic to a subfield of the two torsion field $\QQ(E[2])$, we will let $K_E$ be $\QQ[x]/(f)$.
+Letting $\alpha$ be the image of $x$ in the above quotient, we can see that $\ZZ[\alpha]$ is an order of $K_E$.
+The index of this order in $\ZZ_K$ is given, as mentioned in the section on monogenic orders, by the following expression
+\[
+[\ZZ_K:\ZZ[\alpha]] = \sqrt{\frac{\disc(f)}{\Delta_K}}.
+\]
+The discriminant of $f$ is then related to $\Delta_E$, the discriminant of $E$, in a simple manner.
+We have that
+\[
+\disc(f) = 2^8 \Delta_E,
+\]
+this can be seen from the definition of $\Delta_E$.
+And hence $[\ZZ_K:\ZZ[\alpha]] = \sqrt{2^8\Delta_E/\Delta_K}$.
 
-%TODO explain, monogenic so seems like diophantine is good, try to find large example where cocyclic works better than monogenic
+We want to reverse this process and look at the following problem.
+
+\begin{prob}
+Given a cubic number field $K$ and an integer $\Delta$ find an elliptic curve $E$ of discriminant $\Delta$ such that $K_E = K$.
+\end{prob}
+
+As noted above the polynomial $f$ obtained from the curve will give us an order in the number field $K$ with an index in the maximal order that we can calculate from $\Delta$ and $\Delta_K$.
+So our strategy for finding such curves will be as follows, we first find the possible orders, then try and find a polynomial $f$ that can define the order before reconstructing the curve from that.
+In order for an order to be of the right form it must be monogenic, so we have two approaches to finding these orders.
+First we could use the methods discussed in section~\ref{sec:monogenic} to find monogenic orders by finding their ring generators.
+We could instead use one of the other more general methods for finding orders, and then afterwards attempt to determine if they are monogenic and find their generators if so.
+This is actually another potentially difficult problem but we can get lucky in that one of our module basis elements generates the whole order as a ring.
+
+Once a generator for such a monogenic order has been found the polynomial $f$ is simply the minimal polynomial of the ring generator.
+We will always have multiple ring generators if we have one as using some $\alpha + n$ with $n\in \ZZ$ instead of $\alpha$ will give the same ring, however we can see that although a change of this form will give an isomorphic curve.
+We say for the moment that ring generators differing only by an element of $\ZZ$ are equivalent.
+It is a result of Gy\H{o}ry that there are finitely many equivalence classes of ring generators and there are many subsequent results making this bound more explicit \cite{monogenic}.
 
 \begin{ex}
 The elliptic curve
 \[
-E\colon y^2 + y = x^3 - x
+E_0\colon y^2 + y = x^3 - x
 \]
-is isomorphic to
+has discriminant $\Delta = 37$ and is isomorphic to
 \[
-E'\colon y^2 = x^3 - x + \frac{1}{4}
+E\colon y^2 = x^3 - x + \frac{1}{4}.
 \]
+So the field $K_E$ as defined above is $\QQ[x]/(x^3 - 16x + 16) = \QQ(\alpha)$ and we have $\Delta_K = 148 = 2^2 \cdot 37$.
+
+We are looking for an order of index $\sqrt{2^8\cdot 37/148} = \sqrt{2^6} = 8$ in the maximal order of this field.
+An application of the Hermite normal form method finds 3 orders with this index
+\[
+\ZZ + \ZZ\alpha + \ZZ\alpha^2,\ \ZZ + \ZZ2\alpha + \ZZ\alpha^2/2\text{ and } \ZZ + \ZZ\alpha^2 + \ZZ(\alpha^2/2 + \alpha).
+\]
+Finding ring generators can be difficult but for these orders we can see that some of the module generators found generate them as a ring too and so we get the following expressions
+\[
+\ZZ + \ZZ\alpha + \ZZ\alpha^2 = \ZZ[\alpha]\text{ and } \ZZ + \ZZ\alpha^2 + \ZZ(\alpha^2/2 + \alpha) = \ZZ[\alpha^2/2 + \alpha]
+\]
+with corresponding minimal polynomials for their ring generators as
+\[
+x^3 -16x + 16\text{ and }x^3 - 16x^2 + 72x - 80.
+\]
+The first gives the polynomial $R(x) = x^3 - x + \frac{1}{4}$ and then the curve $y^2 =  x^3 - x + \frac{1}{4}$ which is of course $E$!
+The second gives $R(x) = x^3 -4x^2 + \frac{9}{2}x -\frac{5}{4}$ which is also a curve of discriminant 37 defined over the rationals with the required field $K_E$.
+But the minimal integral model for this curve is $y^2 = x^3 - x^2 - 13x + 5$ which has discriminant $2^12\cdot 37$ rather than 37 itself.
 \end{ex}
 
+In this example we knew one curve we were searching for at the start, but in the next one we perform a more open-ended search.
+
 \begin{ex}
+Let us try and find an elliptic curve $E$ with discriminant in the set $\{\pm 11^s\mid s = 1,\ldots,11\}$ and $K_E = \QQ[x]/(x^3 - x^2 + x + 1)$.
+
+$K_E$ has discriminant $-44 = -4\cdot 11$ and so we can observe that for the discriminant we are looking for to be well defined we have to have a negative discriminant as otherwise we could not take the square root and obtain a natural number.
+Similarly we can tell that the discriminant must be an odd power of 11 rather than even, as otherwise the index required would not be natural again.
+So we need only check the discriminants in the set $\{-11,-11^3,-11^5,-11^7,-11^9,-11^{11}\}$.
+
+We start with discriminant $-11$, giving index 8.
+Using the methods obtained above again we get the following orders
+\[
+\ZZ + \ZZ4\alpha + \ZZ2\alpha^2,\ \ZZ + \ZZ2\alpha + \ZZ4\alpha^2\text{ and } \ZZ + \ZZ(2\alpha + 2\alpha^2) + \ZZ4\alpha^2.
+\]
+
+Of these only the second has an obvious ring generator, so we work with this getting $R(x) = x^3 -\frac{1}{2}x^2 + \frac{1}{4}x + \frac{1}{8}$ and the curve $E\colon y^2 = R(x)$ does have the right discriminant, however the minimal integral model does not.
+
+For discriminant $-11^3$ we get a similar result, some curves but the discriminants of their minimal models are wrong.
+However when we try $-11^5$ we obtain a curve whose minimal integral model is
+\[
+E\colon y^2 + y = x^3 - x^2 - 10x - 20
+\]
+which has discriminant $-11^5$, as required.
+
+It is worth noting here that problems of this type do arise naturally when attempting to find the elliptic curve associated to a given modular form.
+The details of this however are beyond the scope of this project.
 \end{ex}
 
 \chapter{Conclusion}
 We have found several methods for computing orders with a given index, which work in varying generality and with various speeds.
-%TODO conclude, several variants developed all with advantages disadvantages
+In all I feel that we have only started to achieve what is possible here with these algorithms and that further increases in efficiency both in special and general cases should be possible.
+Some ways in which improvements might be obtained are given below.
+
+Of the variants considered here, only one is truly general in that it finds all orders of a given index, rather than those with special properties.
+But we have also seen how the less general methods can be used to improve this algorithm in some scenarios.
+There are still many cases that appear to be very slow however.
+For example when the index is a large prime power none of the techniques we have given here can be applied to speed the computation up.
+
+Nevertheless the problem has been a very interesting one to consider and the fact that it is trickier than we originally thought has only made it more satisfying to make some progress on.
 
 \section{Further work}
 It seems likely that other properties of the orders we are looking for could be used to speed up the algorithms given above and so further investigations into both special and general cases could yield results.
-Further applications of these methods are definitely possible and it would be interesting to see what other areas these methods can be used in. %TODO find another word that isn't "interesting".
+Other applications of these methods are definitely possible and it would be interesting to see what other areas these methods can be used in.
 
 There are certainly several different ways of improving the above methods that could be tried and it would likely be worthwhile to do so.
 
@@ -1091,25 +1384,12 @@ In a similar vein there may be easier to check conditions to determine whether a
 The natural extension to relative number fields given as problem~\ref{prob:rel} above is not something we have considered in detail however it should be fairly simple to generalise to this case as many of the ideas we use (such as the theory of Hermite normal forms and theorem~\ref{thm:coresp}) extend to this more general setting.
 
 Finally of course there may be some methods for finding orders completely different to those considered here!
-%Low-degree optimisations.
-%Conditions on ideals to be conductors and modules to be rings can be taken into account.
-%Generalising to relative number fields would be interesting.
-%There are likely more applications of these methods that we aren't aware of.
-%There are possibly completely different methods to find these orders.
 
 \section{Acknowledgements}
-First and foremost I would like to thank Lassina Demb\'el\'e for his excellent guidance while I undertook the project, it was truly a pleasure to work with him.
+First and foremost I would like to thank Lassina Demb\'el\'e for his excellent guidance while I undertook the project.
+It was truly a pleasure to work with him and I look forward to seeing if we can make further progress.
+
 I am also grateful to John Cremona for allowing me access to one of the Warwick number theory group's servers to run computations on.
-
-%\chapter{Appendix: Code}
-
-%Much of what was done has been implemented in both the Sage and Magma and so we provide annotated source code listings for the algorithms in both languages below.
- 
-%\section{Sage}
-%\lstinputlisting[language=Python]{../sage/order_of_index.py}
-
-%\section{Magma}
-%\lstinputlisting[language=Pascal]{../magma/orderofindex.m}
 
 \nocite{*}
 \bibliographystyle{alpha}
